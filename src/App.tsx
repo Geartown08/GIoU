@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Grid } from '@react-three/drei';
 import { CuboidPanel } from './components/CuboidPanel';
+import { CuboidInfo } from './components/CuboidInfo.tsx';
 import './App.css';
 import type { CuboidData, TransformMode } from './types/Cuboid.ts';
 import { Cuboid } from './components/Cuboid.tsx';
@@ -71,6 +72,11 @@ function App() {
         onDelete={handleDelete}
         onSelect={id => setSelectedId(id)}
         onModeChange={setMode}
+      />
+      
+      <CuboidInfo
+      cuboids={cuboids}
+      selectedId={selectedId}
       />
 
       <Canvas camera={{ position: [4, 4, 8], fov: 50 }}>
