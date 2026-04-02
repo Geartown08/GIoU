@@ -127,7 +127,7 @@ export function CuboidPanel({ cuboids, selectedId, mode, onAdd, onDelete, onSele
   );
 }
 
-const styles: Record<string, React.CSSProperties> = {
+export const styles: Record<string, React.CSSProperties> = {
   panel: {
     position: 'absolute',
     top: 16,
