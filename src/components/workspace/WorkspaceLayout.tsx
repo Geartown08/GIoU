@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import type { ToolMode, RightPanelTab } from '../../types/Workspace';
+import type { CuboidData } from '../../types/Cuboid';
 import { TopBar } from './TopBar';
 import { LeftToolbar } from './LeftToolbar';
 import { ViewportPanel } from './ViewportPanel';
@@ -8,12 +9,22 @@ import { BottomStatusBar } from './BottomStatusBar';
 import '../../styles/workspace.css';
 
 interface WorkspaceLayoutProps {
-  /** Content to render inside the viewport (e.g. Three.js Canvas) */
   viewportContent?: React.ReactNode;
-  objectCount: number;
+  cuboids: CuboidData[];
+  selectedId: string | null;
+  onAdd: (cuboid: Omit<CuboidData, 'id' | 'position' | 'rotation' | 'scale'>) => void;
+  onDelete: (id: string) => void;
+  onSelect: (id: string | null) => void;
 }
 
-export function WorkspaceLayout({ viewportContent, objectCount }: WorkspaceLayoutProps) {
+export function WorkspaceLayout({
+  viewportContent,
+  cuboids,
+  selectedId,
+  onAdd,
+  onDelete,
+  onSelect,
+}: WorkspaceLayoutProps) {
   const [activeTool, setActiveTool] = useState<ToolMode>('select');
   const [activeTab, setActiveTab] = useState<RightPanelTab>('metrics');
 
@@ -38,19 +49,39 @@ export function WorkspaceLayout({ viewportContent, objectCount }: WorkspaceLayou
   }, []);
 
   const handleTopBarAction = useCallback((action: string) => {
-    // Placeholder — will be wired to real logic later
     console.log(`[TopBar] action: ${action}`);
   }, []);
+
+  const handleToolChange = useCallback((tool: ToolMode) => {
+    setActiveTool(tool);
+
+    // Action-type tools trigger immediately
+    if (tool === 'add') {
+      onAdd({ width: 1, height: 1, depth: 1, color: '#4ecdc4' });
+      setActiveTool('select');
+    } else if (tool === 'delete' && selectedId) {
+      onDelete(selectedId);
+      setActiveTool('select');
+    }
+  }, [selectedId, onAdd, onDelete]);
 
   return (
     <div className="workspace">
       <TopBar onAction={handleTopBarAction} />
       <div className="workspace-body">
-        <LeftToolbar activeTool={activeTool} onToolChange={setActiveTool} />
+        <LeftToolbar activeTool={activeTool} onToolChange={handleToolChange} />
         <ViewportPanel>{viewportContent}</ViewportPanel>
-        <RightSidebar activeTab={activeTab} onTabChange={setActiveTab} />
+        <RightSidebar
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+          cuboids={cuboids}
+          selectedId={selectedId}
+          onAdd={onAdd}
+          onDelete={onDelete}
+          onSelect={onSelect}
+        />
       </div>
-      <BottomStatusBar objectCount={objectCount} activeTool={activeTool} />
+      <BottomStatusBar objectCount={cuboids.length} activeTool={activeTool} />
     </div>
   );
 }

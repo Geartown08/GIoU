@@ -264,3 +264,175 @@
 .bottom-section {
   white-space: nowrap;
 }
+
+/* ---------- Object tab ---------- */
+
+.object-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.object-input-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.object-label {
+  font-size: 11px;
+  color: #999;
+  width: 14px;
+  flex-shrink: 0;
+}
+
+.object-input {
+  width: 48px;
+  padding: 4px 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+  color: #e0e0e0;
+  font-size: 12px;
+}
+
+.object-input:focus {
+  outline: none;
+  border-color: rgba(100, 108, 255, 0.5);
+}
+
+.object-color-row {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+.object-color-swatch {
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: border-color 0.15s;
+}
+
+.object-color-swatch:hover {
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.object-color-swatch--active {
+  border-color: #fff;
+}
+
+.object-add-button {
+  width: 100%;
+  padding: 7px;
+  background: rgba(100, 108, 255, 0.6);
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+  font-weight: 600;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.object-add-button:hover {
+  background: rgba(100, 108, 255, 0.8);
+}
+
+/* Object properties */
+
+.object-props {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 12px;
+}
+
+.object-prop-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 3px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.object-prop-label {
+  font-size: 11px;
+  color: #888;
+}
+
+.object-prop-value {
+  font-size: 11px;
+  font-family: monospace;
+  color: #bbb;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Object list */
+
+.object-list {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.object-list-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.04);
+  transition: background 0.15s;
+}
+
+.object-list-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.object-list-item--selected {
+  background: rgba(100, 108, 255, 0.15);
+}
+
+.object-color-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  flex-shrink: 0;
+  display: inline-block;
+}
+
+.object-list-label {
+  font-size: 11px;
+  color: #999;
+  width: 24px;
+}
+
+.object-list-dims {
+  font-size: 11px;
+  color: #bbb;
+  flex: 1;
+}
+
+.object-delete-button {
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  font-size: 11px;
+  padding: 2px 4px;
+  border-radius: 3px;
+  transition: color 0.15s;
+}
+
+.object-delete-button:hover {
+  color: #ff6b6b;
+}

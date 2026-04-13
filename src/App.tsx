@@ -24,8 +24,21 @@ function App() {
   const [mode] = useState<TransformMode>('translate');
   const [orbitEnabled, setOrbitEnabled] = useState(true);
 
-  const handleSelect = useCallback((id: string) => {
-    setSelectedId(prev => (prev === id ? null : id));
+  const handleAdd = useCallback((data: Omit<CuboidData, 'id' | 'position' | 'rotation' | 'scale'>) => {
+    const id = String(nextId++);
+    setCuboids(prev => [
+      ...prev,
+      { ...data, id, position: getNextPosition(prev.length), rotation: [0, 0, 0], scale: [1, 1, 1] },
+    ]);
+  }, []);
+
+  const handleDelete = useCallback((id: string) => {
+    setCuboids(prev => prev.filter(c => c.id !== id));
+    setSelectedId(prev => (prev === id ? null : prev));
+  }, []);
+
+  const handleSelect = useCallback((id: string | null) => {
+    setSelectedId(id);
   }, []);
 
   const handleUpdate = useCallback((id: string, updates: Partial<Pick<CuboidData, 'position' | 'rotation' | 'scale'>>) => {
@@ -56,7 +69,7 @@ function App() {
           data={c}
           isSelected={selectedId === c.id}
           mode={mode}
-          onSelect={handleSelect}
+          onSelect={(id) => handleSelect(selectedId === id ? null : id)}
           onUpdate={handleUpdate}
           onDragStart={() => setOrbitEnabled(false)}
           onDragEnd={() => setOrbitEnabled(true)}
@@ -75,7 +88,11 @@ function App() {
   return (
     <WorkspaceLayout
       viewportContent={sceneContent}
-      objectCount={cuboids.length}
+      cuboids={cuboids}
+      selectedId={selectedId}
+      onAdd={handleAdd}
+      onDelete={handleDelete}
+      onSelect={handleSelect}
     />
   );
 }
