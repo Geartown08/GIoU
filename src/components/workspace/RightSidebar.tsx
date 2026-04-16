@@ -1,4 +1,3 @@
-import React from 'react';
 import type { RightPanelTab } from '../../types/Workspace';
 import type { CuboidData } from '../../types/Cuboid';
 import { MetricsTab } from './tabs/MetricsTab';

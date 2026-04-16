@@ -1,4 +1,3 @@
-import React from 'react';
 import type { ToolMode, ToolDefinition } from '../../types/Workspace';
 
 const TOOLS: ToolDefinition[] = [

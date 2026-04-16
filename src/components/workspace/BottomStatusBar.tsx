@@ -1,4 +1,3 @@
-import React from 'react';
 import type { ToolMode } from '../../types/Workspace';
 
 interface BottomStatusBarProps {

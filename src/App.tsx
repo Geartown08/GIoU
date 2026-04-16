@@ -49,6 +49,12 @@ function App() {
     setSelectedId(null);
   }, []);
 
+  const handleLoadScene = useCallback((loaded: CuboidData[]) => {
+    setCuboids(loaded);
+    setSelectedId(null);
+    nextId = Math.max(0, ...loaded.map(c => parseInt(c.id))) + 1;
+  }, []);
+
   const sceneContent = (
     <Canvas camera={{ position: [4, 4, 8], fov: 50 }} style={{ width: '100%', height: '100%' }}>
       <ambientLight intensity={0.6} />
@@ -93,6 +99,7 @@ function App() {
       onAdd={handleAdd}
       onDelete={handleDelete}
       onSelect={handleSelect}
+      onLoadScene={handleLoadScene}
     />
   );
 }

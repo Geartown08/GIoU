@@ -1,5 +1,3 @@
-import React from 'react';
-
 const TOP_ACTIONS = ['New', 'Open', 'Save', 'Import', 'Help'] as const;
 
 interface TopBarProps {

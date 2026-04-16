@@ -1,5 +1,3 @@
-import React from 'react';
-
 export function MetricsTab() {
   return (
     <div className="tab-content">

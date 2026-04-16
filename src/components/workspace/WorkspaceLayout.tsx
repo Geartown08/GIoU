@@ -6,6 +6,8 @@ import { LeftToolbar } from './LeftToolbar';
 import { ViewportPanel } from './ViewportPanel';
 import { RightSidebar } from './RightSidebar';
 import { BottomStatusBar } from './BottomStatusBar';
+import { saveScene } from '../../utils/saveScene';
+import { openAndLoadScene } from '../../utils/loadScene';
 import '../../styles/workspace.css';
 
 interface WorkspaceLayoutProps {
@@ -15,6 +17,7 @@ interface WorkspaceLayoutProps {
   onAdd: (cuboid: Omit<CuboidData, 'id' | 'position' | 'rotation' | 'scale'>) => void;
   onDelete: (id: string) => void;
   onSelect: (id: string | null) => void;
+  onLoadScene: (cuboids: CuboidData[]) => void;
 }
 
 export function WorkspaceLayout({
@@ -24,6 +27,7 @@ export function WorkspaceLayout({
   onAdd,
   onDelete,
   onSelect,
+  onLoadScene,
 }: WorkspaceLayoutProps) {
   const [activeTool, setActiveTool] = useState<ToolMode>('select');
   const [activeTab, setActiveTab] = useState<RightPanelTab>('metrics');
@@ -49,8 +53,24 @@ export function WorkspaceLayout({
   }, []);
 
   const handleTopBarAction = useCallback((action: string) => {
-    console.log(`[TopBar] action: ${action}`);
-  }, []);
+    switch (action) {
+      case 'save':
+        saveScene(cuboids);
+        break;
+      case 'open':
+        openAndLoadScene((cuboids) => {
+            onLoadScene(cuboids);
+        }, (err) => {
+            console.error('[loadScene]', err);
+        });
+        break;
+      case 'new':
+        onLoadScene([]);
+        break;
+      default:
+        console.log(`[TopBar] unhandled action: ${action}`);
+    }
+  }, [cuboids, onLoadScene]);
 
   const handleToolChange = useCallback((tool: ToolMode) => {
     setActiveTool(tool);

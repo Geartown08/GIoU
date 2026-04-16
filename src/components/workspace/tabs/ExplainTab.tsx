@@ -1,5 +1,3 @@
-import React from 'react';
-
 export function ExplainTab() {
   return (
     <div className="tab-content">
