@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import {AdditiveBlending, Mesh, MultiplyBlending} from 'three';
+import {AdditiveBlending, Mesh} from 'three';
 import type { ThreeEvent } from '@react-three/fiber';
 import { TransformControls } from '@react-three/drei';
 import type { CuboidProps } from '../types/Cuboid.ts';
@@ -26,9 +26,9 @@ export function Cuboid({ data, isSelected, mode, onSelect, onUpdate, onDragStart
 
   return (
     <>
-      {isSelected && (
+      {isSelected && meshRef.current && (
         <TransformControls
-          object={meshRef}
+          object={meshRef.current}
           mode={mode}
           onMouseDown={onDragStart}
           onMouseUp={handleMouseUp}
