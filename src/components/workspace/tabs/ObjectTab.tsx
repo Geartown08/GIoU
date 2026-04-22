@@ -84,7 +84,9 @@ export function ObjectTab({ cuboids, selectedId, onAdd, onDelete, onSelect }: Ob
           <div className="object-props">
             <div className="object-prop-row">
               <span className="object-prop-label">Size</span>
-              <span className="object-prop-value">{selected.width} × {selected.height} × {selected.depth}</span>
+              <span className="object-prop-value">
+                {(selected.width * selected.scale[0]).toFixed(2)} × {(selected.height * selected.scale[1]).toFixed(2)} × {(selected.depth * selected.scale[2]).toFixed(2)}
+              </span>
             </div>
             <div className="object-prop-row">
               <span className="object-prop-label">Position</span>
@@ -129,7 +131,9 @@ export function ObjectTab({ cuboids, selectedId, onAdd, onDelete, onSelect }: Ob
           >
             <span className="object-color-dot" style={{ backgroundColor: c.color }} />
             <span className="object-list-label">#{i + 1}</span>
-            <span className="object-list-dims">{c.width}×{c.height}×{c.depth}</span>
+            <span className="object-list-dims">
+              {(c.width * c.scale[0]).toFixed(2)}×{(c.height * c.scale[1]).toFixed(2)}×{(c.depth * c.scale[2]).toFixed(2)}
+            </span>
             <button
               className="object-delete-button"
               onClick={e => { e.stopPropagation(); onDelete(c.id); }}
