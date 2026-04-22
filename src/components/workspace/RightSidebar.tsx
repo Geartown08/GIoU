@@ -14,7 +14,7 @@ interface RightSidebarProps {
   activeTab: RightPanelTab;
   onTabChange: (tab: RightPanelTab) => void;
   cuboids: CuboidData[];
-  selectedId: string | null;
+  selectedId: string[] | null;
   onAdd: (cuboid: Omit<CuboidData, 'id' | 'position' | 'rotation' | 'scale'>) => void;
   onDelete: (id: string) => void;
   onSelect: (id: string | null) => void;
@@ -35,7 +35,12 @@ export function RightSidebar({ activeTab, onTabChange, cuboids, selectedId, onAd
         ))}
       </div>
       <div className="sidebar-tab-body">
-        {activeTab === 'metrics' && <MetricsTab />}
+        {activeTab === 'metrics' && (
+	  <MetricsTab 
+	    cuboids={cuboids}
+	    selectedId={selectedId}
+	  />
+	)}
         {activeTab === 'object' && (
           <ObjectTab
             cuboids={cuboids}

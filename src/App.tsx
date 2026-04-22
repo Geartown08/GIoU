@@ -73,10 +73,7 @@ function App() {
         position={[0, -0.01, 0]}
       />
       
-      <CuboidInfo
-      cuboids={cuboids}
-      selectedId={selectedId}
-      />
+      
 
       {cuboids.map(c => (
         <Cuboid
