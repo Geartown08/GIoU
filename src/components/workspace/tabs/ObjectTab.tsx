@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import type { CuboidData } from '../../../types/Cuboid';
 
 const COLORS = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#ffeaa7', '#dda0dd', '#98d8c8', '#f7dc6f'];
@@ -17,14 +17,23 @@ export function ObjectTab({ cuboids, selectedId, onAdd, onDelete, onSelect }: Ob
   const [depth, setDepth] = useState('1');
   const [color, setColor] = useState(COLORS[0]);
 
-  const handleAdd = () => {
+  const handleAdd = useCallback(() => {
     const w = parseFloat(width);
     const h = parseFloat(height);
     const d = parseFloat(depth);
     if (w > 0 && h > 0 && d > 0) {
       onAdd({ width: w, height: h, depth: d, color });
     }
-  };
+  }, [width, height, depth, color, onAdd]);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+      if (e.key.toLowerCase() === 'a') handleAdd();
+    };
+    window.addEventListener('keydown', handleKeyDown, { capture: true });
+    return () => window.removeEventListener('keydown', handleKeyDown, { capture: true });
+  }, [handleAdd]);
 
   const selected = cuboids.find(c => c.id === selectedId) ?? null;
 
@@ -73,7 +82,7 @@ export function ObjectTab({ cuboids, selectedId, onAdd, onDelete, onSelect }: Ob
           ))}
         </div>
         <button onClick={handleAdd} className="object-add-button">
-          + Add Cuboid
+          + Add Cuboid <kbd style={{ marginLeft: '6px', opacity: 0.7, fontSize: '0.75em' }}>A</kbd>
         </button>
       </div>
 

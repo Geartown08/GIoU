@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Grid } from '@react-three/drei';
 import { WorkspaceLayout } from './components/workspace/WorkspaceLayout';
@@ -22,7 +22,7 @@ function getNextPosition(count: number): [number, number, number] {
 function App() {
   const [cuboids, setCuboids] = useState<CuboidData[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [activeTool, onToolChange] = useState<ToolMode>('select');
+  const [activeTool, setActiveTool] = useState<ToolMode>('select');
   const [orbitEnabled, setOrbitEnabled] = useState(true);
 
   const mode: TransformMode = activeTool === 'rotate' || activeTool === 'scale' ? activeTool : 'translate';
@@ -57,6 +57,54 @@ function App() {
     setSelectedId(null);
     nextId = Math.max(0, ...loaded.map(c => parseInt(c.id))) + 1;
   }, []);
+
+  const handleToolChange = useCallback((tool: ToolMode) => {
+    setActiveTool(tool);
+
+    if (tool === 'add') {
+      handleAdd({ width: 1, height: 1, depth: 1, color: '#4ecdc4' });
+      setActiveTool('select');
+    } else if (tool === 'duplicate' && selectedId) {
+      setCuboids(prev => {
+        const source = prev.find(c => c.id === selectedId);
+        if (!source) return prev;
+        const newId = String(nextId++);
+        const copy = {
+          ...source,
+          id: newId,
+          position: [
+            source.position[0] + 0.5,
+            source.position[1],
+            source.position[2] + 0.5,
+          ] as [number, number, number],
+        };
+        setSelectedId(newId); // select the copy so you can move it immediately
+        return [...prev, copy];
+      });
+      setActiveTool('translate'); // switch to translate so it's ready to drag
+    } else if (tool === 'delete' && selectedId) {
+      handleDelete(selectedId);
+      setActiveTool('select');
+    }
+  }, [selectedId, handleAdd, handleDelete]);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+      const key = e.key.toLowerCase();
+      const map: Record<string, ToolMode> = {
+        v: 'select',
+        w: 'translate',
+        e: 'rotate',
+        r: 'scale',
+        d: 'duplicate',
+        x: 'delete',
+      };
+      if (map[key]) handleToolChange(map[key]);
+    };
+    window.addEventListener('keydown', handleKeyDown, { capture: true });
+    return () => window.removeEventListener('keydown', handleKeyDown, { capture: true });
+  }, [handleToolChange]);
 
   const sceneContent = (
     <Canvas camera={{ position: [4, 4, 8], fov: 50 }} style={{ width: '100%', height: '100%' }}>
@@ -104,7 +152,7 @@ function App() {
       onSelect={handleSelect}
       onLoadScene={handleLoadScene}
       activeTool={activeTool}
-      onToolChange={onToolChange}
+      onToolChange={handleToolChange}
     />
   );
 }
