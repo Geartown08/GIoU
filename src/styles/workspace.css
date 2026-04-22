@@ -461,3 +461,95 @@
 .object-list::-webkit-scrollbar-thumb:hover {
   background: #3a3a6a;
 }
+
+/* Colour Wheel for cubes*/
+.object-color-picker-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+}
+
+.object-color-swatch-button {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  cursor: pointer;
+  flex-shrink: 0;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  transition: border-color 0.15s, transform 0.1s;
+}
+
+.object-color-swatch-button:hover {
+  border-color: rgba(255, 255, 255, 0.35);
+  transform: scale(1.05);
+}
+
+.object-hex-input {
+  flex: 1;
+  font-family: monospace;
+  letter-spacing: 0.5px;
+}
+
+.object-color-popout {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 100;
+  background: #16162a;
+  border: 1px solid #2a2a4a;
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+/* Style the react-colorful internals to match */
+.object-color-popout .react-colorful {
+  width: 200px;
+  height: 200px;
+  border-radius: 8px;
+}
+
+.object-color-popout .react-colorful__saturation {
+  border-radius: 8px 8px 0 0;
+}
+
+.object-color-popout .react-colorful__hue {
+  border-radius: 8px;
+  margin-top: 10px;
+  height: 12px;
+}
+
+.object-color-popout .react-colorful__pointer {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+}
+
+.object-color-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #2a2a4a;
+}
+
+.object-preset-swatch {
+  width: 22px;
+  height: 22px;
+  border-radius: 5px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: border-color 0.15s, transform 0.1s;
+}
+
+.object-preset-swatch:hover {
+  transform: scale(1.15);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.object-preset-swatch--active {
+  border-color: #fff;
+}
