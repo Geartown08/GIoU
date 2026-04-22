@@ -20,7 +20,7 @@ function getNextPosition(count: number): [number, number, number] {
 
 function App() {
   const [cuboids, setCuboids] = useState<CuboidData[]>([]);
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [selectedId, setSelectedId] = useState<string[] | null>(null);
   const [mode] = useState<TransformMode>('translate');
   const [orbitEnabled, setOrbitEnabled] = useState(true);
 
@@ -34,11 +34,15 @@ function App() {
 
   const handleDelete = useCallback((id: string) => {
     setCuboids(prev => prev.filter(c => c.id !== id));
-    setSelectedId(prev => (prev === id ? null : prev));
+    setSelectedId(null);
   }, []);
 
-  const handleSelect = useCallback((id: string | null) => {
-    setSelectedId(id);
+  const handleSelect = useCallback((selId: string[] | null, id: string | null) => {
+    if (id === null || selId === null || selId.length === 0) {
+	id === null ? setSelectedId(null) : setSelectedId([id])
+    } else if (selId.includes(id)) {setSelectedId([id])}
+      else if (selId.length > 1) {setSelectedId([selId[1], id])}
+      else {setSelectedId([...selId, id])};
   }, []);
 
   const handleUpdate = useCallback((id: string, updates: Partial<Pick<CuboidData, 'position' | 'rotation' | 'scale'>>) => {
@@ -78,9 +82,9 @@ function App() {
         <Cuboid
           key={c.id}
           data={c}
-          isSelected={selectedId === c.id}
+          isSelected={selectedId?.includes(c.id) ?? false}
           mode={mode}
-          onSelect={(id) => handleSelect(selectedId === id ? null : id)}
+          onSelect={(id) => handleSelect(selectedId, id)}
           onUpdate={handleUpdate}
           onDragStart={() => setOrbitEnabled(false)}
           onDragEnd={() => setOrbitEnabled(true)}
@@ -103,7 +107,7 @@ function App() {
       selectedId={selectedId}
       onAdd={handleAdd}
       onDelete={handleDelete}
-      onSelect={handleSelect}
+      onSelect={(id) => handleSelect(selectedId, id)}
       onLoadScene={handleLoadScene}
     />
   );
