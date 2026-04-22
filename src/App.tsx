@@ -4,6 +4,7 @@ import { OrbitControls, Grid } from '@react-three/drei';
 import { WorkspaceLayout } from './components/workspace/WorkspaceLayout';
 import { Cuboid } from './components/Cuboid';
 import type { CuboidData, TransformMode } from './types/Cuboid';
+import type { ToolMode } from './types/Workspace';
 import './App.css';
 
 let nextId = 1;
@@ -21,8 +22,10 @@ function getNextPosition(count: number): [number, number, number] {
 function App() {
   const [cuboids, setCuboids] = useState<CuboidData[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [mode] = useState<TransformMode>('translate');
+  const [activeTool, onToolChange] = useState<ToolMode>('select');
   const [orbitEnabled, setOrbitEnabled] = useState(true);
+
+  const mode: TransformMode = activeTool === 'rotate' || activeTool === 'scale' ? activeTool : 'translate';
 
   const handleAdd = useCallback((data: Omit<CuboidData, 'id' | 'position' | 'rotation' | 'scale'>) => {
     const id = String(nextId++);
@@ -100,6 +103,8 @@ function App() {
       onDelete={handleDelete}
       onSelect={handleSelect}
       onLoadScene={handleLoadScene}
+      activeTool={activeTool}
+      onToolChange={onToolChange}
     />
   );
 }
