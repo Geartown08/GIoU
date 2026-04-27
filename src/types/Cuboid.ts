@@ -27,6 +27,6 @@ export interface CuboidPanelProps {
     mode: TransformMode;
     onAdd: (cuboid: Omit<CuboidData, 'id' | 'position' | 'rotation' | 'scale'>) => void;
     onDelete: (id: string) => void;
-    onSelect: (id: string | null) => void;
+    onSelect: (id: string[] | null) => void;
     onModeChange: (mode: TransformMode) => void;
 }
