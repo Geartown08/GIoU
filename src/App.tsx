@@ -98,7 +98,6 @@ function App() {
       const key = e.key.toLowerCase();
       const map: Record<string, ToolMode> = {
         v: 'select',
-        m: 'mselect',
         w: 'translate',
         e: 'rotate',
         r: 'scale',
