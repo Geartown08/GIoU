@@ -99,7 +99,7 @@ export function CuboidPanel({ cuboids, selectedId, mode, onAdd, onDelete, onSele
         {cuboids.map((c, i) => (
           <div
             key={c.id}
-            onClick={() => onSelect(selectedId === c.id ? null : c.id)}
+            onClick={() => onSelect(selectedId === c.id ? null : [c.id])}
             style={{
               ...styles.listItem,
               background: selectedId === c.id ? 'rgba(255,255,255,0.15)' : 'rgba(255,255,255,0.05)',
