@@ -6,7 +6,6 @@ const TOOLS: ToolDefinition[] = [
   { key: 'translate', label: 'Move',        shortcut: 'W' },
   { key: 'rotate',    label: 'Rotate',      shortcut: 'E' },
   { key: 'scale',     label: 'Scale',       shortcut: 'R' },
-  { key: 'add',       label: 'Add Cube',    shortcut: 'A' },
   { key: 'random',    label: 'Random' },
   { key: 'duplicate', label: 'Duplicate',   shortcut: 'D' },
   { key: 'delete',    label: 'Delete',      shortcut: 'X' },
