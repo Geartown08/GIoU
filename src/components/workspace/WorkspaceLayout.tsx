@@ -13,7 +13,7 @@ import '../../styles/workspace.css';
 interface WorkspaceLayoutProps {
   viewportContent?: React.ReactNode;
   cuboids: CuboidData[];
-  selectedId: string[] | null;
+  selectedId: string[];
   onAdd: (cuboid: Omit<CuboidData, 'id' | 'position' | 'rotation' | 'scale'>) => void;
   onDelete: (id: string) => void;
   onSelect: (id: string | null) => void;
@@ -64,8 +64,8 @@ export function WorkspaceLayout({
     if (tool === 'add') {
       onAdd({ width: 1, height: 1, depth: 1, color: '#4ecdc4' });
       onToolChange('select');
-    } else if (tool === 'delete' && selectedId) {
-      onDelete(selectedId);
+    } else if (tool === 'delete') {
+      onDelete(selectedId[0]);
       onToolChange('select');
     }
   }, [selectedId, onAdd, onDelete, onToolChange]);
