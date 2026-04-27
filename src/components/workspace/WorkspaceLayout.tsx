@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useCallback, useState } from 'react';
 import type { ToolMode, RightPanelTab } from '../../types/Workspace';
 import type { CuboidData } from '../../types/Cuboid';
 import { TopBar } from './TopBar';
@@ -18,6 +18,8 @@ interface WorkspaceLayoutProps {
   onDelete: (id: string) => void;
   onSelect: (id: string | null) => void;
   onLoadScene: (cuboids: CuboidData[]) => void;
+  activeTool: ToolMode;
+  onToolChange: (tool: ToolMode) => void;
 }
 
 export function WorkspaceLayout({
@@ -28,29 +30,13 @@ export function WorkspaceLayout({
   onDelete,
   onSelect,
   onLoadScene,
+  activeTool,        // ← now destructured from props
+  onToolChange,      // ← now destructured from props
 }: WorkspaceLayoutProps) {
-  const [activeTool, setActiveTool] = useState<ToolMode>('select');
+  // ← useState for activeTool removed, it lives in App.tsx now
   const [activeTab, setActiveTab] = useState<RightPanelTab>('metrics');
 
-  // Keyboard shortcuts for tools
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
-      const key = e.key.toLowerCase();
-      const map: Record<string, ToolMode> = {
-        v: 'select',
-        w: 'translate',
-        e: 'rotate',
-        r: 'scale',
-        a: 'add',
-        d: 'duplicate',
-        x: 'delete',
-      };
-      if (map[key]) setActiveTool(map[key]);
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  // ← useEffect for keyboard shortcuts removed, it lives in App.tsx now
 
   const handleTopBarAction = useCallback((action: string) => {
     switch (action) {
@@ -59,9 +45,9 @@ export function WorkspaceLayout({
         break;
       case 'open':
         openAndLoadScene((cuboids) => {
-            onLoadScene(cuboids);
+          onLoadScene(cuboids);
         }, (err) => {
-            console.error('[loadScene]', err);
+          console.error('[loadScene]', err);
         });
         break;
       case 'new':
@@ -73,17 +59,16 @@ export function WorkspaceLayout({
   }, [cuboids, onLoadScene]);
 
   const handleToolChange = useCallback((tool: ToolMode) => {
-    setActiveTool(tool);
+    onToolChange(tool);  // ← was setActiveTool, now calls up to App.tsx
 
-    // Action-type tools trigger immediately
     if (tool === 'add') {
       onAdd({ width: 1, height: 1, depth: 1, color: '#4ecdc4' });
-      setActiveTool('select');
+      onToolChange('select');
     } else if (tool === 'delete' && selectedId) {
       onDelete(selectedId);
-      setActiveTool('select');
+      onToolChange('select');
     }
-  }, [selectedId, onAdd, onDelete]);
+  }, [selectedId, onAdd, onDelete, onToolChange]);
 
   return (
     <div className="workspace">
