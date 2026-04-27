@@ -33,6 +33,7 @@ export function WorkspaceLayout({
   activeTool,        // ← now destructured from props
   onToolChange,      // ← now destructured from props
 }: WorkspaceLayoutProps) {
+  // ← useState for activeTool removed, it lives in App.tsx now
   const [activeTab, setActiveTab] = useState<RightPanelTab>('metrics');
 
   // ← useEffect for keyboard shortcuts removed, it lives in App.tsx now
@@ -63,8 +64,8 @@ export function WorkspaceLayout({
     if (tool === 'add') {
       onAdd({ width: 1, height: 1, depth: 1, color: '#4ecdc4' });
       onToolChange('select');
-    } else if (tool === 'delete' && selectedId && selectedId.length > 0) {
-      onDelete(selectedId[0]);
+    } else if (tool === 'delete' && selectedId) {
+      onDelete(selectedId);
       onToolChange('select');
     }
   }, [selectedId, onAdd, onDelete, onToolChange]);
