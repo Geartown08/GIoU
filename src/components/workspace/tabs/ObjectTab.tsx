@@ -4,7 +4,7 @@ import type { CuboidData } from '../../../types/Cuboid';
 
 interface ObjectTabProps {
   cuboids: CuboidData[];
-  selectedId: string[] | null;
+  selectedId: string | null;
   onAdd: (cuboid: Omit<CuboidData, 'id' | 'position' | 'rotation' | 'scale'>) => void;
   onDelete: (id: string) => void;
   onSelect: (id: string | null) => void;
@@ -60,7 +60,7 @@ export function ObjectTab({ cuboids, selectedId, onAdd, onDelete, onSelect }: Ob
     return () => window.removeEventListener('keydown', handleKeyDown, { capture: true });
   }, [handleAdd]);
 
-  const selected = cuboids.find(c => selectedId?.includes(c.id)) ?? null;
+  const selected = cuboids.find(c => c.id === selectedId) ?? null;
 
   return (
     <div className="tab-content">
@@ -160,8 +160,8 @@ export function ObjectTab({ cuboids, selectedId, onAdd, onDelete, onSelect }: Ob
         {cuboids.map((c, i) => (
           <div
             key={c.id}
-            className={`object-list-item ${selectedId === null ? null : selectedId.includes(c.id) ? 'object-list-item--selected' : ''}`}
-            onClick={() => onSelect(c.id)}
+            className={`object-list-item ${selectedId === c.id ? 'object-list-item--selected' : ''}`}
+            onClick={() => onSelect(selectedId === c.id ? null : c.id)}
           >
             <span className="object-color-dot" style={{ backgroundColor: c.color }} />
             <span className="object-list-label">#{i + 1}</span>

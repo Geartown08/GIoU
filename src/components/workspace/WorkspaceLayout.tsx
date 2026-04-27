@@ -13,7 +13,7 @@ import '../../styles/workspace.css';
 interface WorkspaceLayoutProps {
   viewportContent?: React.ReactNode;
   cuboids: CuboidData[];
-  selectedId: string[] | null;
+  selectedId: string | null;
   onAdd: (cuboid: Omit<CuboidData, 'id' | 'position' | 'rotation' | 'scale'>) => void;
   onDelete: (id: string) => void;
   onSelect: (id: string | null) => void;

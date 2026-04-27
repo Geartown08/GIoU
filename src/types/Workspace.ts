@@ -1,4 +1,4 @@
-export type ToolMode = 'select' | 'mselect' | 'translate' | 'rotate' | 'scale' | 'add' | 'random' | 'duplicate' | 'delete';
+export type ToolMode = 'select' | 'translate' | 'rotate' | 'scale' | 'add' | 'random' | 'duplicate' | 'delete';
 
 export type RightPanelTab = 'metrics' | 'object' | 'explain';
 
