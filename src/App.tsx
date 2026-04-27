@@ -37,15 +37,11 @@ function App() {
 
   const handleDelete = useCallback((id: string) => {
     setCuboids(prev => prev.filter(c => c.id !== id));
-    setSelectedId(null);
+    setSelectedId(prev => (prev === id ? null : prev));
   }, []);
 
-  const handleSelect = useCallback((selId: string[] | null, id: string | null) => {
-    if (id === null || selId === null || selId.length === 0) {
-	id === null ? setSelectedId(null) : setSelectedId([id])
-    } else if (selId.includes(id)) {setSelectedId([id])}
-      else if (selId.length > 1) {setSelectedId([selId[1], id])}
-      else {setSelectedId([...selId, id])};
+  const handleSelect = useCallback((id: string | null) => {
+    setSelectedId(id);
   }, []);
 
   const handleUpdate = useCallback((id: string, updates: Partial<Pick<CuboidData, 'position' | 'rotation' | 'scale'>>) => {
@@ -98,7 +94,6 @@ function App() {
       const key = e.key.toLowerCase();
       const map: Record<string, ToolMode> = {
         v: 'select',
-        m: 'mselect',
         w: 'translate',
         e: 'rotate',
         r: 'scale',
@@ -124,16 +119,14 @@ function App() {
         fadeDistance={30}
         position={[0, -0.01, 0]}
       />
-      
-      
 
       {cuboids.map(c => (
         <Cuboid
           key={c.id}
           data={c}
-          isSelected={selectedId?.includes(c.id) ?? false}
+          isSelected={selectedId === c.id}
           mode={mode}
-          onSelect={(id) => handleSelect(selectedId, id)}
+          onSelect={(id) => handleSelect(selectedId === id ? null : id)}
           onUpdate={handleUpdate}
           onDragStart={() => setOrbitEnabled(false)}
           onDragEnd={() => setOrbitEnabled(true)}
@@ -156,7 +149,7 @@ function App() {
       selectedId={selectedId}
       onAdd={handleAdd}
       onDelete={handleDelete}
-      onSelect={(id) => handleSelect(selectedId, id)}
+      onSelect={handleSelect}
       onLoadScene={handleLoadScene}
       activeTool={activeTool}
       onToolChange={handleToolChange}
