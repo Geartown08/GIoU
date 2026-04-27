@@ -1,13 +1,14 @@
 import type { ToolMode, ToolDefinition } from '../../types/Workspace';
 
 const TOOLS: ToolDefinition[] = [
-  { key: 'select',    label: 'Select',    shortcut: 'V' },
-  { key: 'translate', label: 'Move',      shortcut: 'W' },
-  { key: 'rotate',    label: 'Rotate',    shortcut: 'E' },
-  { key: 'scale',     label: 'Scale',     shortcut: 'R' },
+  { key: 'select',    label: 'Select',      shortcut: 'V' },
+  { key: 'mselect',   label: 'Analyse',     shortcut: 'M' },
+  { key: 'translate', label: 'Move',        shortcut: 'W' },
+  { key: 'rotate',    label: 'Rotate',      shortcut: 'E' },
+  { key: 'scale',     label: 'Scale',       shortcut: 'R' },
   { key: 'random',    label: 'Random' },
-  { key: 'duplicate', label: 'Duplicate', shortcut: 'D' },
-  { key: 'delete',    label: 'Delete',    shortcut: 'X' },
+  { key: 'duplicate', label: 'Duplicate',   shortcut: 'D' },
+  { key: 'delete',    label: 'Delete',      shortcut: 'X' },
 ];
 
 interface LeftToolbarProps {
