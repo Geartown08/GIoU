@@ -21,7 +21,7 @@ function getNextPosition(count: number): [number, number, number] {
 
 function App() {
   const [cuboids, setCuboids] = useState<CuboidData[]>([]);
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [activeTool, setActiveTool] = useState<ToolMode>('select');
   const [orbitEnabled, setOrbitEnabled] = useState(true);
 
@@ -37,11 +37,15 @@ function App() {
 
   const handleDelete = useCallback((id: string) => {
     setCuboids(prev => prev.filter(c => c.id !== id));
-    setSelectedId(prev => (prev === id ? null : prev));
+    setSelectedIds([]);
   }, []);
 
-  const handleSelect = useCallback((id: string | null) => {
-    setSelectedId(id);
+  const handleSelect = useCallback((selId: string[] | null, id: string | null) => {
+    if (id === null || selId === null || selId.length === 0) {
+      id === null ? setSelectedIds([]) : setSelectedIds([id])
+    } else if (selId.includes(id)) { setSelectedIds([id]) }
+    else if (selId.length > 1) { setSelectedIds([selId[1], id]) }
+    else { setSelectedIds([...selId, id]) };
   }, []);
 
   const handleUpdate = useCallback((id: string, updates: Partial<Pick<CuboidData, 'position' | 'rotation' | 'scale'>>) => {
@@ -49,12 +53,12 @@ function App() {
   }, []);
 
   const handleCanvasClick = useCallback(() => {
-    setSelectedId(null);
+    setSelectedIds([]);
   }, []);
 
   const handleLoadScene = useCallback((loaded: CuboidData[]) => {
     setCuboids(loaded);
-    setSelectedId(null);
+    setSelectedIds([]);
     nextId = Math.max(0, ...loaded.map(c => parseInt(c.id))) + 1;
   }, []);
 
@@ -64,9 +68,9 @@ function App() {
     if (tool === 'add') {
       handleAdd({ width: 1, height: 1, depth: 1, color: '#4ecdc4' });
       setActiveTool('select');
-    } else if (tool === 'duplicate' && selectedId) {
+    } else if (tool === 'duplicate' && selectedIds.length > 0) {
       setCuboids(prev => {
-        const source = prev.find(c => c.id === selectedId);
+        const source = prev.find(c => c.id === selectedIds[0]);
         if (!source) return prev;
         const newId = String(nextId++);
         const copy = {
@@ -78,15 +82,15 @@ function App() {
             source.position[2] + 0.5,
           ] as [number, number, number],
         };
-        setSelectedId(newId); // select the copy so you can move it immediately
+        setSelectedIds([newId]); // select the copy so you can move it immediately
         return [...prev, copy];
       });
       setActiveTool('translate'); // switch to translate so it's ready to drag
-    } else if (tool === 'delete' && selectedId) {
-      handleDelete(selectedId);
+    } else if (tool === 'delete' && selectedIds.length > 0) {
+      handleDelete(selectedIds[0]);
       setActiveTool('select');
     }
-  }, [selectedId, handleAdd, handleDelete]);
+  }, [selectedIds, handleAdd, handleDelete]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -120,13 +124,15 @@ function App() {
         position={[0, -0.01, 0]}
       />
 
+
+
       {cuboids.map(c => (
         <Cuboid
           key={c.id}
           data={c}
-          isSelected={selectedId === c.id}
+          isSelected={selectedIds.includes(c.id)}
           mode={mode}
-          onSelect={(id) => handleSelect(selectedId === id ? null : id)}
+          onSelect={(id) => handleSelect(selectedIds, id)}
           onUpdate={handleUpdate}
           onDragStart={() => setOrbitEnabled(false)}
           onDragEnd={() => setOrbitEnabled(true)}
@@ -146,10 +152,10 @@ function App() {
     <WorkspaceLayout
       viewportContent={sceneContent}
       cuboids={cuboids}
-      selectedId={selectedId}
+      selectedId={selectedIds}
       onAdd={handleAdd}
       onDelete={handleDelete}
-      onSelect={handleSelect}
+      onSelect={(id) => handleSelect(selectedIds, id)}
       onLoadScene={handleLoadScene}
       activeTool={activeTool}
       onToolChange={handleToolChange}
