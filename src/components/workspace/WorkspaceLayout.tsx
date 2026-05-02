@@ -70,15 +70,7 @@ export function WorkspaceLayout({
 
   const handleToolChange = useCallback((tool: ToolMode) => {
     onToolChange(tool);  // ← was setActiveTool, now calls up to App.tsx
-
-    if (tool === 'add') {
-      onAdd({ width: 1, height: 1, depth: 1, color: '#4ecdc4' });
-      onToolChange('select');
-    } else if (tool === 'delete') {
-      onDelete(selectedId[0]);
-      onToolChange('select');
-    }
-  }, [selectedId, onAdd, onDelete, onToolChange]);
+  }, [onToolChange]);
 
   return (
     <div className="workspace">
