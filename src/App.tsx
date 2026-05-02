@@ -42,10 +42,14 @@ function App() {
 
   const handleSelect = useCallback((selId: string[] | null, id: string | null) => {
     if (id === null || selId === null || selId.length === 0) {
-	id === null ? setSelectedIds([]) : setSelectedIds([id])
-    } else if (selId.includes(id)) {setSelectedIds([id])}
-      else if (selId.length > 1) {setSelectedIds([selId[1], id])}
-      else {setSelectedIds([...selId, id])};
+      setSelectedIds(id === null ? [] : [id]);
+    } else if (selId.includes(id)) {
+      setSelectedIds([id]);
+    } else if (selId.length > 1) {
+      setSelectedIds([selId[1], id]);
+    } else {
+      setSelectedIds([...selId, id]);
+    }
   }, []);
 
   const handleUpdate = useCallback((id: string, updates: Partial<Pick<CuboidData, 'position' | 'rotation' | 'scale'>>) => {

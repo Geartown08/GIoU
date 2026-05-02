@@ -8,6 +8,7 @@ import { RightSidebar } from './RightSidebar';
 import { BottomStatusBar } from './BottomStatusBar';
 import { saveScene } from '../../utils/saveScene';
 import { openAndLoadScene } from '../../utils/loadScene';
+import { useUiScale } from '../../hooks/useUiScale';
 import '../../styles/workspace.css';
 
 interface WorkspaceLayoutProps {
@@ -35,6 +36,7 @@ export function WorkspaceLayout({
 }: WorkspaceLayoutProps) {
   // ← useState for activeTool removed, it lives in App.tsx now
   const [activeTab, setActiveTab] = useState<RightPanelTab>('metrics');
+  const { scaleOverride, resolvedScale, setScaleOverride } = useUiScale();
 
   // ← useEffect for keyboard shortcuts removed, it lives in App.tsx now
 
@@ -72,7 +74,12 @@ export function WorkspaceLayout({
 
   return (
     <div className="workspace">
-      <TopBar onAction={handleTopBarAction} />
+      <TopBar
+        onAction={handleTopBarAction}
+        uiScale={scaleOverride}
+        resolvedScale={resolvedScale}
+        onUiScaleChange={setScaleOverride}
+      />
       <div className="workspace-body">
         <LeftToolbar activeTool={activeTool} onToolChange={handleToolChange} />
         <ViewportPanel>{viewportContent}</ViewportPanel>
