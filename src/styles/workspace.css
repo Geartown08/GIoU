@@ -333,7 +333,37 @@
 }
 
 .bottom-section {
+  display: flex;
+  align-items: center;
+  gap: var(--ui-space-4);
   white-space: nowrap;
+}
+
+.bottom-section--controls {
+  gap: var(--ui-space-3);
+}
+
+.status-toggle {
+  min-height: calc(22px * var(--ui-scale));
+  padding: var(--ui-space-1) var(--ui-space-4);
+  background: rgba(255, 255, 255, 0.04);
+  border: var(--ui-border) solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--ui-radius-sm);
+  color: #8f8fa8;
+  font-size: var(--ui-font-xs);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.status-toggle:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #d6d6e8;
+}
+
+.status-toggle--active {
+  background: rgba(100, 108, 255, 0.18);
+  border-color: rgba(100, 108, 255, 0.42);
+  color: #c4c9ff;
 }
 
 /* ---------- Object tab ---------- */

@@ -21,6 +21,10 @@ interface WorkspaceLayoutProps {
   onLoadScene: (cuboids: CuboidData[]) => void;
   activeTool: ToolMode;
   onToolChange: (tool: ToolMode) => void;
+  showAxes: boolean;
+  showOrigin: boolean;
+  onToggleAxes: () => void;
+  onToggleOrigin: () => void;
 }
 
 export function WorkspaceLayout({
@@ -33,6 +37,10 @@ export function WorkspaceLayout({
   onLoadScene,
   activeTool,        // ← now destructured from props
   onToolChange,      // ← now destructured from props
+  showAxes,
+  showOrigin,
+  onToggleAxes,
+  onToggleOrigin,
 }: WorkspaceLayoutProps) {
   // ← useState for activeTool removed, it lives in App.tsx now
   const [activeTab, setActiveTab] = useState<RightPanelTab>('metrics');
@@ -93,7 +101,14 @@ export function WorkspaceLayout({
           onSelect={onSelect}
         />
       </div>
-      <BottomStatusBar objectCount={cuboids.length} activeTool={activeTool} />
+      <BottomStatusBar
+        objectCount={cuboids.length}
+        activeTool={activeTool}
+        showAxes={showAxes}
+        showOrigin={showOrigin}
+        onToggleAxes={onToggleAxes}
+        onToggleOrigin={onToggleOrigin}
+      />
     </div>
   );
 }

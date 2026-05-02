@@ -3,6 +3,7 @@ import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Grid } from '@react-three/drei';
 import { WorkspaceLayout } from './components/workspace/WorkspaceLayout';
 import { Cuboid } from './components/Cuboid';
+import { SceneGuides } from './components/SceneGuides';
 import type { CuboidData, TransformMode } from './types/Cuboid';
 import type { ToolMode } from './types/Workspace';
 import './App.css';
@@ -24,6 +25,8 @@ function App() {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [activeTool, setActiveTool] = useState<ToolMode>('select');
   const [orbitEnabled, setOrbitEnabled] = useState(true);
+  const [showAxes, setShowAxes] = useState(true);
+  const [showOrigin, setShowOrigin] = useState(true);
 
   const mode: TransformMode = activeTool === 'rotate' || activeTool === 'scale' ? activeTool : 'translate';
 
@@ -128,8 +131,8 @@ function App() {
         fadeDistance={30}
         position={[0, -0.01, 0]}
       />
-      
-      
+
+      <SceneGuides showAxes={showAxes} showOrigin={showOrigin} />
 
       {cuboids.map(c => (
         <Cuboid
@@ -164,6 +167,10 @@ function App() {
       onLoadScene={handleLoadScene}
       activeTool={activeTool}
       onToolChange={handleToolChange}
+      showAxes={showAxes}
+      showOrigin={showOrigin}
+      onToggleAxes={() => setShowAxes(prev => !prev)}
+      onToggleOrigin={() => setShowOrigin(prev => !prev)}
     />
   );
 }
