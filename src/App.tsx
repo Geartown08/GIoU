@@ -10,6 +10,12 @@ import './App.css';
 
 let nextId = 1;
 
+const RANDOM_COLORS = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#ffeaa7', '#dda0dd', '#98d8c8', '#f7dc6f'];
+
+function randomInRange(min: number, max: number): number {
+  return parseFloat((Math.random() * (max - min) + min).toFixed(2));
+}
+
 function getNextPosition(count: number): [number, number, number] {
   const angle = (count * 137.5 * Math.PI) / 180;
   const radius = 1.5 + count * 0.4;
@@ -18,6 +24,21 @@ function getNextPosition(count: number): [number, number, number] {
     0,
     parseFloat((Math.sin(angle) * radius).toFixed(2)),
   ];
+}
+
+function createRandomCuboid(id: string): CuboidData {
+  const color = RANDOM_COLORS[Math.floor(Math.random() * RANDOM_COLORS.length)];
+
+  return {
+    id,
+    width: randomInRange(0.5, 2),
+    height: randomInRange(0.5, 2),
+    depth: randomInRange(0.5, 2),
+    color,
+    position: [randomInRange(-3, 3), randomInRange(0, 3), randomInRange(-3, 3)],
+    rotation: [0, 0, 0],
+    scale: [1, 1, 1],
+  };
 }
 
 function App() {
@@ -74,6 +95,10 @@ function App() {
 
     if (tool === 'add') {
       handleAdd({ width: 1, height: 1, depth: 1, color: '#4ecdc4' });
+      setActiveTool('select');
+    } else if (tool === 'random') {
+      const id = String(nextId++);
+      setCuboids(prev => [...prev, createRandomCuboid(id)]);
       setActiveTool('select');
     } else if (tool === 'duplicate' && selectedIds.length > 0) {
       setCuboids(prev => {
