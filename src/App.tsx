@@ -3,11 +3,18 @@ import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Grid } from '@react-three/drei';
 import { WorkspaceLayout } from './components/workspace/WorkspaceLayout';
 import { Cuboid } from './components/Cuboid';
+import { SceneGuides } from './components/SceneGuides';
 import type { CuboidData, TransformMode } from './types/Cuboid';
 import type { ToolMode } from './types/Workspace';
 import './App.css';
 
 let nextId = 1;
+
+const RANDOM_COLORS = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#ffeaa7', '#dda0dd', '#98d8c8', '#f7dc6f'];
+
+function randomInRange(min: number, max: number): number {
+  return parseFloat((Math.random() * (max - min) + min).toFixed(2));
+}
 
 function getNextPosition(count: number): [number, number, number] {
   const angle = (count * 137.5 * Math.PI) / 180;
@@ -19,11 +26,28 @@ function getNextPosition(count: number): [number, number, number] {
   ];
 }
 
+function createRandomCuboid(id: string): CuboidData {
+  const color = RANDOM_COLORS[Math.floor(Math.random() * RANDOM_COLORS.length)];
+
+  return {
+    id,
+    width: randomInRange(0.5, 2),
+    height: randomInRange(0.5, 2),
+    depth: randomInRange(0.5, 2),
+    color,
+    position: [randomInRange(-3, 3), randomInRange(0, 3), randomInRange(-3, 3)],
+    rotation: [0, 0, 0],
+    scale: [1, 1, 1],
+  };
+}
+
 function App() {
   const [cuboids, setCuboids] = useState<CuboidData[]>([]);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [activeTool, setActiveTool] = useState<ToolMode>('select');
   const [orbitEnabled, setOrbitEnabled] = useState(true);
+  const [showAxes, setShowAxes] = useState(true);
+  const [showOrigin, setShowOrigin] = useState(true);
 
   const mode: TransformMode = activeTool === 'rotate' || activeTool === 'scale' ? activeTool : 'translate';
 
@@ -42,10 +66,14 @@ function App() {
 
   const handleSelect = useCallback((selId: string[] | null, id: string | null) => {
     if (id === null || selId === null || selId.length === 0) {
-	id === null ? setSelectedIds([]) : setSelectedIds([id])
-    } else if (selId.includes(id)) {setSelectedIds([id])}
-      else if (selId.length > 1) {setSelectedIds([selId[1], id])}
-      else {setSelectedIds([...selId, id])};
+      setSelectedIds(id === null ? [] : [id]);
+    } else if (selId.includes(id)) {
+      setSelectedIds([id]);
+    } else if (selId.length > 1) {
+      setSelectedIds([selId[1], id]);
+    } else {
+      setSelectedIds([...selId, id]);
+    }
   }, []);
 
   const handleUpdate = useCallback((id: string, updates: Partial<Pick<CuboidData, 'position' | 'rotation' | 'scale'>>) => {
@@ -67,6 +95,10 @@ function App() {
 
     if (tool === 'add') {
       handleAdd({ width: 1, height: 1, depth: 1, color: '#4ecdc4' });
+      setActiveTool('select');
+    } else if (tool === 'random') {
+      const id = String(nextId++);
+      setCuboids(prev => [...prev, createRandomCuboid(id)]);
       setActiveTool('select');
     } else if (tool === 'duplicate' && selectedIds.length > 0) {
       setCuboids(prev => {
@@ -124,8 +156,8 @@ function App() {
         fadeDistance={30}
         position={[0, -0.01, 0]}
       />
-      
-      
+
+      <SceneGuides showAxes={showAxes} showOrigin={showOrigin} />
 
       {cuboids.map(c => (
         <Cuboid
@@ -160,6 +192,10 @@ function App() {
       onLoadScene={handleLoadScene}
       activeTool={activeTool}
       onToolChange={handleToolChange}
+      showAxes={showAxes}
+      showOrigin={showOrigin}
+      onToggleAxes={() => setShowAxes(prev => !prev)}
+      onToggleOrigin={() => setShowOrigin(prev => !prev)}
     />
   );
 }
