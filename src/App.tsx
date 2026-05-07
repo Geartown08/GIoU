@@ -6,6 +6,7 @@ import { Cuboid } from './components/Cuboid';
 import { SceneGuides } from './components/SceneGuides';
 import type { CuboidData, TransformMode } from './types/Cuboid';
 import type { ToolMode } from './types/Workspace';
+import { getOverlappingIds } from './utils/overlapDetection';
 import './App.css';
 
 let nextId = 1;
@@ -48,6 +49,7 @@ function App() {
   const [orbitEnabled, setOrbitEnabled] = useState(true);
   const [showAxes, setShowAxes] = useState(true);
   const [showOrigin, setShowOrigin] = useState(true);
+  const overlappingIds = getOverlappingIds(cuboids);
 
   const mode: TransformMode = activeTool === 'rotate' || activeTool === 'scale' ? activeTool : 'translate';
 
@@ -164,6 +166,7 @@ function App() {
           key={c.id}
           data={c}
           isSelected={selectedIds.includes(c.id)}
+          isOverlapping={overlappingIds.has(c.id)}
           mode={mode}
           onSelect={(id) => handleSelect(selectedIds, id)}
           onUpdate={handleUpdate}
