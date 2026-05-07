@@ -14,7 +14,6 @@ export interface CuboidData {
 export interface CuboidProps {
     data: CuboidData;
     isSelected: boolean;
-    isOverlapping: boolean;
     mode: TransformMode;
     onSelect: (id: string) => void;
     onUpdate: (id: string, updates: Partial<Pick<CuboidData, 'position' | 'rotation' | 'scale'>>) => void;
