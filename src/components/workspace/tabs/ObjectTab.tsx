@@ -8,9 +8,11 @@ interface ObjectTabProps {
   onAdd: (cuboid: Omit<CuboidData, 'id' | 'position' | 'rotation' | 'scale'>) => void;
   onDelete: (id: string) => void;
   onSelect: (id: string | null) => void;
+  onAddShortcutChange: (handler: (() => void) | null) => void;
+  onStatus: (message: string) => void;
 }
 
-export function ObjectTab({ cuboids, selectedId, onAdd, onDelete, onSelect }: ObjectTabProps) {
+export function ObjectTab({ cuboids, selectedId, onAdd, onDelete, onSelect, onAddShortcutChange, onStatus }: ObjectTabProps) {
   const [width, setWidth] = useState('1');
   const [height, setHeight] = useState('1');
   const [depth, setDepth] = useState('1');
@@ -20,6 +22,7 @@ export function ObjectTab({ cuboids, selectedId, onAdd, onDelete, onSelect }: Ob
   const [formError, setFormError] = useState('');
   const pickerRef = useRef<HTMLDivElement>(null);
   const isHexValid = /^#[0-9a-fA-F]{6}$/.test(hexInput);
+  const handleAddRef = useRef<() => void>(() => undefined);
 
   const handleColorChange = (value: string) => {
     setColor(value);
@@ -51,16 +54,30 @@ export function ObjectTab({ cuboids, selectedId, onAdd, onDelete, onSelect }: Ob
     const h = parseFloat(height);
     const d = parseFloat(depth);
     if (!(w > 0 && h > 0 && d > 0)) {
-      setFormError('Width, height and depth must be greater than 0.');
+      const message = 'Width, height and depth must be greater than 0.';
+      setFormError(message);
+      onStatus(message);
       return;
     }
     if (!isHexValid) {
-      setFormError('Enter a valid hex colour, for example #4ecdc4.');
+      const message = 'Enter a valid hex colour, for example #4ecdc4.';
+      setFormError(message);
+      onStatus(message);
       return;
     }
     onAdd({ width: w, height: h, depth: d, color });
     setFormError('');
-  }, [width, height, depth, color, isHexValid, onAdd]);
+  }, [width, height, depth, color, isHexValid, onAdd, onStatus]);
+
+  useEffect(() => {
+    handleAddRef.current = handleAdd;
+  }, [handleAdd]);
+
+  useEffect(() => {
+    const addFromShortcut = () => handleAddRef.current();
+    onAddShortcutChange(addFromShortcut);
+    return () => onAddShortcutChange(null);
+  }, [onAddShortcutChange]);
 
   const selected = cuboids.find(c => selectedId?.includes(c.id)) ?? null;
 
@@ -180,23 +197,30 @@ export function ObjectTab({ cuboids, selectedId, onAdd, onDelete, onSelect }: Ob
         {cuboids.map((c, i) => (
           <div
             key={c.id}
-            role="button"
-            tabIndex={0}
             className={`object-list-item ${selectedId?.includes(c.id) ? 'object-list-item--selected' : ''}`}
-            onClick={() => onSelect(c.id)}
-            onKeyDown={e => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                onSelect(c.id);
-              }
-            }}
           >
-            <span className="object-color-dot" style={{ backgroundColor: c.color }} />
-            <span className="object-list-label">#{i + 1}</span>
-            <span className="object-list-dims">
-              {(c.width * c.scale[0]).toFixed(2)}×{(c.height * c.scale[1]).toFixed(2)}×{(c.depth * c.scale[2]).toFixed(2)}
-            </span>
-            <button className="object-delete-button" onClick={e => { e.stopPropagation(); onDelete(c.id); }}>✕</button>
+            <button
+              type="button"
+              className="object-list-select-button"
+              aria-label={`Select cuboid #${i + 1}, ${(
+                c.width * c.scale[0]
+              ).toFixed(2)} by ${(c.height * c.scale[1]).toFixed(2)} by ${(c.depth * c.scale[2]).toFixed(2)}`}
+              onClick={() => onSelect(c.id)}
+            >
+              <span className="object-color-dot" style={{ backgroundColor: c.color }} />
+              <span className="object-list-label">#{i + 1}</span>
+              <span className="object-list-dims">
+                {(c.width * c.scale[0]).toFixed(2)}×{(c.height * c.scale[1]).toFixed(2)}×{(c.depth * c.scale[2]).toFixed(2)}
+              </span>
+            </button>
+            <button
+              type="button"
+              className="object-delete-button"
+              aria-label={`Delete cuboid #${i + 1}`}
+              onClick={() => onDelete(c.id)}
+            >
+              ✕
+            </button>
           </div>
         ))}
       </div>

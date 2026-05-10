@@ -18,9 +18,21 @@ interface RightSidebarProps {
   onAdd: (cuboid: Omit<CuboidData, 'id' | 'position' | 'rotation' | 'scale'>) => void;
   onDelete: (id: string) => void;
   onSelect: (id: string | null) => void;
+  onObjectAddShortcutChange: (handler: (() => void) | null) => void;
+  onStatus: (message: string) => void;
 }
 
-export function RightSidebar({ activeTab, onTabChange, cuboids, selectedId, onAdd, onDelete, onSelect }: RightSidebarProps) {
+export function RightSidebar({
+  activeTab,
+  onTabChange,
+  cuboids,
+  selectedId,
+  onAdd,
+  onDelete,
+  onSelect,
+  onObjectAddShortcutChange,
+  onStatus,
+}: RightSidebarProps) {
   return (
     <aside className="right-sidebar">
       <div className="sidebar-tabs" role="tablist" aria-label="Workspace panels">
@@ -57,6 +69,8 @@ export function RightSidebar({ activeTab, onTabChange, cuboids, selectedId, onAd
             onAdd={onAdd}
             onDelete={onDelete}
             onSelect={onSelect}
+            onAddShortcutChange={onObjectAddShortcutChange}
+            onStatus={onStatus}
           />
         )}
         {activeTab === 'explain' && <ExplainTab />}

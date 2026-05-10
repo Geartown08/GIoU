@@ -16,7 +16,6 @@ const TOOL_LABELS: Record<ToolMode, string> = {
   translate: 'Move',
   rotate: 'Rotate',
   scale: 'Scale',
-  add: 'Add',
   random: 'Random',
   duplicate: 'Duplicate',
   delete: 'Delete',
