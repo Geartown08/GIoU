@@ -8,32 +8,36 @@ interface MetricsTabProps {
 }
 
 export function MetricsTab({selectedId, cuboids}: MetricsTabProps) {
-  
-    const selectedCuboidData = cuboids.filter(c => selectedId?.includes(c.id) ?? false);
-  
-    const calculations = selectedId && selectedId.length > 1 ? giou3D(ConvertCuboid(selectedCuboidData[0]), ConvertCuboid(selectedCuboidData[1])) : null;
-  
+  const selectedCuboidData = (selectedId ?? [])
+    .map(id => cuboids.find(c => c.id === id))
+    .filter((cuboid): cuboid is CuboidData => Boolean(cuboid));
+
+  const calculations = selectedCuboidData.length === 2
+    ? giou3D(ConvertCuboid(selectedCuboidData[0]), ConvertCuboid(selectedCuboidData[1]))
+    : null;
+
+  const formatMetric = (value: number | undefined) => value === undefined ? '--' : value.toFixed(4);
   
   return (
     <div className="tab-content">
       <h4 className="tab-section-title">IoU / GIoU Metrics</h4>
       <div className="tab-placeholder">
-        <p>Select two cuboids to compute intersection metrics.</p>
+        {!calculations && <p>Select two cuboids with Analyse to compute intersection metrics.</p>}
         <div className="metric-row">
           <span className="metric-label">IoU</span>
-          <span className="metric-value">{calculations?.iou ?? "--"}</span>
+          <span className="metric-value">{formatMetric(calculations?.iou)}</span>
         </div>
         <div className="metric-row">
           <span className="metric-label">GIoU</span>
-          <span className="metric-value">{calculations?.giou ?? "--"}</span>
+          <span className="metric-value">{formatMetric(calculations?.giou)}</span>
         </div>
         <div className="metric-row">
           <span className="metric-label">L_IoU</span>
-          <span className="metric-value">{calculations?.lossIoU ?? "--"}</span>
+          <span className="metric-value">{formatMetric(calculations?.lossIoU)}</span>
         </div>
         <div className="metric-row">
           <span className="metric-label">L_GIoU</span>
-          <span className="metric-value">{calculations?.lossGIoU ?? "--"}</span>
+          <span className="metric-value">{formatMetric(calculations?.lossGIoU)}</span>
         </div>
       </div>
     </div>

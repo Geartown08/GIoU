@@ -23,10 +23,14 @@ interface RightSidebarProps {
 export function RightSidebar({ activeTab, onTabChange, cuboids, selectedId, onAdd, onDelete, onSelect }: RightSidebarProps) {
   return (
     <aside className="right-sidebar">
-      <div className="sidebar-tabs">
+      <div className="sidebar-tabs" role="tablist" aria-label="Workspace panels">
         {TABS.map(tab => (
           <button
             key={tab.key}
+            id={`workspace-tab-${tab.key}`}
+            role="tab"
+            aria-selected={activeTab === tab.key}
+            aria-controls={`workspace-tabpanel-${tab.key}`}
             className={`sidebar-tab ${activeTab === tab.key ? 'sidebar-tab--active' : ''}`}
             onClick={() => onTabChange(tab.key)}
           >
@@ -34,7 +38,12 @@ export function RightSidebar({ activeTab, onTabChange, cuboids, selectedId, onAd
           </button>
         ))}
       </div>
-      <div className="sidebar-tab-body">
+      <div
+        id={`workspace-tabpanel-${activeTab}`}
+        className="sidebar-tab-body"
+        role="tabpanel"
+        aria-labelledby={`workspace-tab-${activeTab}`}
+      >
         {activeTab === 'metrics' && (
 	  <MetricsTab 
 	    cuboids={cuboids}

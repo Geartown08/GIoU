@@ -17,17 +17,21 @@ export function ObjectTab({ cuboids, selectedId, onAdd, onDelete, onSelect }: Ob
   const [color, setColor] = useState('#4ecdc4');
   const [hexInput, setHexInput] = useState('#4ecdc4');
   const [showPicker, setShowPicker] = useState(false);
+  const [formError, setFormError] = useState('');
   const pickerRef = useRef<HTMLDivElement>(null);
+  const isHexValid = /^#[0-9a-fA-F]{6}$/.test(hexInput);
 
   const handleColorChange = (value: string) => {
     setColor(value);
     setHexInput(value);
+    setFormError('');
   };
 
   const handleHexInput = (value: string) => {
     setHexInput(value);
     if (/^#[0-9a-fA-F]{6}$/.test(value)) {
       setColor(value);
+      setFormError('');
     }
   };
 
@@ -46,19 +50,17 @@ export function ObjectTab({ cuboids, selectedId, onAdd, onDelete, onSelect }: Ob
     const w = parseFloat(width);
     const h = parseFloat(height);
     const d = parseFloat(depth);
-    if (w > 0 && h > 0 && d > 0) {
-      onAdd({ width: w, height: h, depth: d, color });
+    if (!(w > 0 && h > 0 && d > 0)) {
+      setFormError('Width, height and depth must be greater than 0.');
+      return;
     }
-  }, [width, height, depth, color, onAdd]);
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
-      if (e.key.toLowerCase() === 'a') handleAdd();
-    };
-    window.addEventListener('keydown', handleKeyDown, { capture: true });
-    return () => window.removeEventListener('keydown', handleKeyDown, { capture: true });
-  }, [handleAdd]);
+    if (!isHexValid) {
+      setFormError('Enter a valid hex colour, for example #4ecdc4.');
+      return;
+    }
+    onAdd({ width: w, height: h, depth: d, color });
+    setFormError('');
+  }, [width, height, depth, color, isHexValid, onAdd]);
 
   const selected = cuboids.find(c => selectedId?.includes(c.id)) ?? null;
 
@@ -79,9 +81,17 @@ export function ObjectTab({ cuboids, selectedId, onAdd, onDelete, onSelect }: Ob
         <div className="object-color-picker-row" ref={pickerRef}>
           {/* Swatch button that toggles the picker */}
           <div
+            role="button"
+            tabIndex={0}
             className="object-color-swatch-button"
             style={{ backgroundColor: color }}
             onClick={() => setShowPicker(p => !p)}
+            onKeyDown={e => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                setShowPicker(p => !p);
+              }
+            }}
             title="Pick a colour"
           />
 
@@ -91,7 +101,8 @@ export function ObjectTab({ cuboids, selectedId, onAdd, onDelete, onSelect }: Ob
             onChange={e => handleHexInput(e.target.value)}
             placeholder="#4ecdc4"
             maxLength={7}
-            className="object-input object-hex-input"
+            className={`object-input object-hex-input ${isHexValid ? '' : 'object-input--invalid'}`}
+            aria-invalid={!isHexValid}
             spellCheck={false}
           />
 
@@ -103,9 +114,17 @@ export function ObjectTab({ cuboids, selectedId, onAdd, onDelete, onSelect }: Ob
                 {['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#ffeaa7', '#dda0dd', '#98d8c8', '#f7dc6f'].map(c => (
                   <div
                     key={c}
+                    role="button"
+                    tabIndex={0}
                     className={`object-preset-swatch ${color === c ? 'object-preset-swatch--active' : ''}`}
                     style={{ backgroundColor: c }}
                     onClick={() => handleColorChange(c)}
+                    onKeyDown={e => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        handleColorChange(c);
+                      }
+                    }}
                     title={c}
                   />
                 ))}
@@ -115,8 +134,9 @@ export function ObjectTab({ cuboids, selectedId, onAdd, onDelete, onSelect }: Ob
         </div>
 
         <button onClick={handleAdd} className="object-add-button">
-          + Add Cuboid <kbd style={{ marginLeft: '6px', opacity: 0.7, fontSize: '0.75em' }}>A</kbd>
+          + Add Cuboid <kbd aria-hidden="true" style={{ marginLeft: '6px', opacity: 0.7, fontSize: '0.75em' }}>A</kbd>
         </button>
+        {formError && <p className="object-form-error" role="alert">{formError}</p>}
       </div>
 
       {/* Selected object properties */}
@@ -160,8 +180,16 @@ export function ObjectTab({ cuboids, selectedId, onAdd, onDelete, onSelect }: Ob
         {cuboids.map((c, i) => (
           <div
             key={c.id}
-            className={`object-list-item ${selectedId === null ? null : selectedId.includes(c.id) ? 'object-list-item--selected' : ''}`}
+            role="button"
+            tabIndex={0}
+            className={`object-list-item ${selectedId?.includes(c.id) ? 'object-list-item--selected' : ''}`}
             onClick={() => onSelect(c.id)}
+            onKeyDown={e => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                onSelect(c.id);
+              }
+            }}
           >
             <span className="object-color-dot" style={{ backgroundColor: c.color }} />
             <span className="object-list-label">#{i + 1}</span>

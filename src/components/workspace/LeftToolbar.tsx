@@ -6,7 +6,7 @@ const TOOLS: ToolDefinition[] = [
   { key: 'translate', label: 'Move',        shortcut: 'W' },
   { key: 'rotate',    label: 'Rotate',      shortcut: 'E' },
   { key: 'scale',     label: 'Scale',       shortcut: 'R' },
-  { key: 'random',    label: 'Random' },
+  { key: 'random',    label: 'Random',      shortcut: 'Q' },
   { key: 'duplicate', label: 'Duplicate',   shortcut: 'D' },
   { key: 'delete',    label: 'Delete',      shortcut: 'X' },
 ];
@@ -28,7 +28,7 @@ export function LeftToolbar({ activeTool, onToolChange }: LeftToolbarProps) {
         >
           <span className="toolbar-button-label">{tool.label}</span>
           {tool.shortcut && (
-            <kbd className="toolbar-button-shortcut">{tool.shortcut}</kbd>
+            <kbd className="toolbar-button-shortcut" aria-hidden="true">{tool.shortcut}</kbd>
           )}
         </button>
       ))}

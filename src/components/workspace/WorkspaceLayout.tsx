@@ -25,6 +25,7 @@ interface WorkspaceLayoutProps {
   showOrigin: boolean;
   onToggleAxes: () => void;
   onToggleOrigin: () => void;
+  statusMessage: string;
 }
 
 export function WorkspaceLayout({
@@ -41,6 +42,7 @@ export function WorkspaceLayout({
   showOrigin,
   onToggleAxes,
   onToggleOrigin,
+  statusMessage,
 }: WorkspaceLayoutProps) {
   // ← useState for activeTool removed, it lives in App.tsx now
   const [activeTab, setActiveTab] = useState<RightPanelTab>('metrics');
@@ -100,6 +102,7 @@ export function WorkspaceLayout({
         showOrigin={showOrigin}
         onToggleAxes={onToggleAxes}
         onToggleOrigin={onToggleOrigin}
+        statusMessage={statusMessage}
       />
     </div>
   );
