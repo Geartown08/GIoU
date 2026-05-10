@@ -137,13 +137,34 @@ export function ObjectTab({
 
         <div className="object-input-row">
           <label className="object-label">W</label>
-          <input type="number" value={width} min="0.1" step="0.1" onChange={e => { clearDimensionError(); setWidth(e.target.value); }} className="object-input" />
+          <input
+            type="number"
+            value={width}
+            min="0.1"
+            step="0.1"
+            onChange={e => { clearDimensionError(); setWidth(e.target.value); }}
+            className="object-input"
+          />
           <label className="object-label">H</label>
-          <input type="number" value={height} min="0.1" step="0.1" onChange={e => { clearDimensionError(); setHeight(e.target.value); }} className="object-input" />
+          <input
+            type="number"
+            value={height}
+            min="0.1"
+            step="0.1"
+            onChange={e => { clearDimensionError(); setHeight(e.target.value); }}
+            className="object-input"
+          />
           {!is2D && (
             <>
               <label className="object-label">D</label>
-              <input type="number" value={depth} min="0.1" step="0.1" onChange={e => { clearDimensionError(); setDepth(e.target.value); }} className="object-input" />
+              <input
+                type="number"
+                value={depth}
+                min="0.1"
+                step="0.1"
+                onChange={e => { clearDimensionError(); setDepth(e.target.value); }}
+                className="object-input"
+              />
             </>
           )}
         </div>
