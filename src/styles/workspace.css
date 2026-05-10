@@ -49,9 +49,10 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: var(--ui-topbar-height);
+  flex-wrap: wrap;
+  height: auto;
   min-height: var(--ui-topbar-height);
-  padding: 0 var(--ui-space-6);
+  padding: var(--ui-space-2) var(--ui-space-6);
   background: #16162a;
   border-bottom: var(--ui-border) solid #2a2a4a;
   gap: var(--ui-space-6);
@@ -69,6 +70,7 @@
 .topbar-actions {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
 }
 
 .topbar-controls {
@@ -78,6 +80,21 @@
 
 .topbar-actions {
   gap: var(--ui-space-1);
+}
+
+.topbar-button:focus-visible,
+.ui-scale-select:focus-visible,
+.toolbar-button:focus-visible,
+.sidebar-tab:focus-visible,
+.status-toggle:focus-visible,
+.object-input:focus-visible,
+.object-add-button:focus-visible,
+.object-color-swatch-button:focus-visible,
+.object-preset-swatch:focus-visible,
+.object-list-item:focus-visible,
+.object-delete-button:focus-visible {
+  outline: calc(2px * var(--ui-scale)) solid rgba(160, 166, 255, 0.9);
+  outline-offset: calc(2px * var(--ui-scale));
 }
 
 .topbar-button,
@@ -322,10 +339,11 @@
 .bottom-bar {
   display: flex;
   align-items: center;
-  height: var(--ui-bottombar-height);
+  flex-wrap: wrap;
+  height: auto;
   min-height: var(--ui-bottombar-height);
-  padding: 0 var(--ui-space-6);
-  gap: var(--ui-space-8);
+  padding: var(--ui-space-2) var(--ui-space-6);
+  gap: var(--ui-space-4) var(--ui-space-8);
   background: #16162a;
   border-top: var(--ui-border) solid #2a2a4a;
   font-size: var(--ui-font-xs);
@@ -341,6 +359,17 @@
 
 .bottom-section--controls {
   gap: var(--ui-space-3);
+  flex-wrap: wrap;
+}
+
+.bottom-section--status {
+  flex: 1;
+  min-width: calc(160px * var(--ui-scale));
+  color: #a8a8c0;
+}
+
+.status-readout {
+  color: #666;
 }
 
 .status-toggle {
@@ -429,6 +458,17 @@
 .object-input:focus {
   outline: none;
   border-color: rgba(100, 108, 255, 0.5);
+}
+
+.object-input--invalid {
+  border-color: rgba(255, 107, 107, 0.8);
+}
+
+.object-form-error {
+  margin: 0;
+  color: #ff9a9a;
+  font-size: var(--ui-font-xs);
+  line-height: 1.4;
 }
 
 .object-color-row {

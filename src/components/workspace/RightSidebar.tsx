@@ -21,9 +21,24 @@ interface RightSidebarProps {
   onRename: (id: string, name: string) => void;
   viewMode: ViewMode;
   onToggleViewMode: () => void;
+  onObjectAddShortcutChange: (handler: (() => void) | null) => void;
+  onStatus: (message: string) => void;
 }
 
-export function RightSidebar({ activeTab, onTabChange, cuboids, selectedId, onAdd, onDelete, onSelect, onRename, viewMode, onToggleViewMode }: RightSidebarProps) {
+export function RightSidebar({
+  activeTab,
+  onTabChange,
+  cuboids,
+  selectedId,
+  onAdd,
+  onDelete,
+  onSelect,
+  onRename,
+  viewMode,
+  onToggleViewMode,
+  onObjectAddShortcutChange,
+  onStatus,
+}: RightSidebarProps) {
   return (
     <aside className="right-sidebar">
             <button
@@ -37,10 +52,14 @@ export function RightSidebar({ activeTab, onTabChange, cuboids, selectedId, onAd
                 <br />
                 <span className={`viewmode-subtitle`}>(Click to switch mode)</span>
             </button>
-      <div className="sidebar-tabs">
+      <div className="sidebar-tabs" role="tablist" aria-label="Workspace panels">
         {TABS.map(tab => (
           <button
             key={tab.key}
+            id={`workspace-tab-${tab.key}`}
+            role="tab"
+            aria-selected={activeTab === tab.key}
+            aria-controls={`workspace-tabpanel-${tab.key}`}
             className={`sidebar-tab ${activeTab === tab.key ? 'sidebar-tab--active' : ''}`}
             onClick={() => onTabChange(tab.key)}
           >
@@ -48,7 +67,12 @@ export function RightSidebar({ activeTab, onTabChange, cuboids, selectedId, onAd
           </button>
         ))}
       </div>
-      <div className="sidebar-tab-body">
+      <div
+        id={`workspace-tabpanel-${activeTab}`}
+        className="sidebar-tab-body"
+        role="tabpanel"
+        aria-labelledby={`workspace-tab-${activeTab}`}
+      >
         {activeTab === 'metrics' && (
           <MetricsTab
             cuboids={cuboids}
@@ -65,6 +89,8 @@ export function RightSidebar({ activeTab, onTabChange, cuboids, selectedId, onAd
             onSelect={onSelect}
             onRename={onRename}
             viewMode={viewMode}
+            onAddShortcutChange={onObjectAddShortcutChange}
+            onStatus={onStatus}
           />
         )}
         {activeTab === 'explain' && <ExplainTab />}

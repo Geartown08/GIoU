@@ -14,6 +14,13 @@ import './App.css';
 let nextId = 1;
 
 const RANDOM_COLORS = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#ffeaa7', '#dda0dd', '#98d8c8', '#f7dc6f'];
+const MODE_STATUS: Record<'select' | 'mselect' | 'translate' | 'rotate' | 'scale', string> = {
+  select: 'Mode: Select',
+  mselect: 'Mode: Analyse',
+  translate: 'Mode: Move',
+  rotate: 'Mode: Rotate',
+  scale: 'Mode: Scale',
+};
 
 function randomInRange(min: number, max: number): number {
   return parseFloat((Math.random() * (max - min) + min).toFixed(2));
@@ -112,8 +119,22 @@ function App() {
   const [showAxes, setShowAxes] = useState(true);
   const [showOrigin, setShowOrigin] = useState(true);
   const [viewMode, setViewMode] = useState<ViewMode>('3d');
+  const [statusMessage, setStatusMessage] = useState('Ready');
+  const objectAddShortcutRef = useRef<(() => void) | null>(null);
+  const selectedIdsRef = useRef<string[]>([]);
+  const activeToolRef = useRef<ToolMode>('select');
 
   const mode: TransformMode = activeTool === 'rotate' || activeTool === 'scale' ? activeTool : 'translate';
+
+  const showStatus = useCallback((message: string) => {
+    setStatusMessage(message);
+  }, []);
+
+  const clearSelection = useCallback((message = 'Selection cleared') => {
+    selectedIdsRef.current = [];
+    setSelectedIds([]);
+    showStatus(message);
+  }, [showStatus]);
 
   const handleAdd = useCallback((data: Omit<CuboidData, 'id' | 'position' | 'rotation' | 'scale'>) => {
     const num = nextId;
@@ -130,24 +151,61 @@ function App() {
         scale: [1, 1, 1],
       },
     ]);
-  }, [viewMode]);
+    showStatus(`Added cuboid #${id}`);
+  }, [showStatus, viewMode]);
+
 
   const handleDelete = useCallback((id: string) => {
     setCuboids(prev => prev.filter(c => c.id !== id));
-    setSelectedIds([]);
-  }, []);
+    selectedIdsRef.current = selectedIdsRef.current.filter(selectedId => selectedId !== id);
+    setSelectedIds(prev => prev.filter(selectedId => selectedId !== id));
+    showStatus(`Deleted cuboid #${id}`);
+  }, [showStatus]);
 
-  const handleSelect = useCallback((selId: string[] | null, id: string | null) => {
-    if (id === null || selId === null || selId.length === 0) {
-      setSelectedIds(id === null ? [] : [id]);
-    } else if (selId.includes(id)) {
-      setSelectedIds([id]);
-    } else if (selId.length > 1) {
-      setSelectedIds([selId[1], id]);
-    } else {
-      setSelectedIds([...selId, id]);
+  const handleDeleteSelected = useCallback(() => {
+    const idsToDelete = selectedIdsRef.current;
+    if (idsToDelete.length === 0) {
+      showStatus('Select a cuboid before deleting');
+      return;
     }
-  }, []);
+
+    const ids = [...idsToDelete];
+    setCuboids(prev => prev.filter(c => !ids.includes(c.id)));
+    selectedIdsRef.current = [];
+    setSelectedIds([]);
+    showStatus(ids.length === 1 ? `Deleted cuboid #${ids[0]}` : `Deleted ${ids.length} cuboids`);
+  }, [showStatus]);
+
+  const handleSelect = useCallback((id: string | null) => {
+    if (id === null) {
+      clearSelection();
+      return;
+    }
+
+    if (activeToolRef.current === 'mselect') {
+      const prev = selectedIdsRef.current;
+      const wasSelected = prev.includes(id);
+      const next = prev.includes(id)
+        ? prev.filter(selectedId => selectedId !== id)
+        : [...prev, id].slice(-2);
+      selectedIdsRef.current = next;
+      setSelectedIds(next);
+      if (next.length === 0) {
+        showStatus('Comparison cleared');
+      } else if (wasSelected) {
+        showStatus(`Removed #${id} from comparison`);
+      } else if (next.length === 1) {
+        showStatus(`Comparison: #${next[0]} (pick one more)`);
+      } else {
+        showStatus(`Comparing #${next[0]} and #${next[1]}`);
+      }
+      return;
+    }
+
+    selectedIdsRef.current = [id];
+    setSelectedIds([id]);
+    showStatus(`Selected cuboid #${id}`);
+  }, [clearSelection, showStatus]);
 
   const handleUpdate = useCallback((id: string, updates: Partial<Pick<CuboidData, 'position' | 'rotation' | 'scale'>>) => {
     setCuboids(prev => prev.map(c => {
@@ -163,8 +221,12 @@ function App() {
   }, [viewMode]);
 
   const handleCanvasClick = useCallback(() => {
-    setSelectedIds([]);
-  }, []);
+    if (activeToolRef.current === 'mselect' && selectedIdsRef.current.length > 0) {
+      showStatus('Press Esc to clear comparison');
+      return;
+    }
+    clearSelection();
+  }, [clearSelection, showStatus]);
 
   const handleRename = useCallback((id: string, name: string) => {
     setCuboids(prev => prev.map(c => c.id === id ? { ...c, name } : c));
@@ -174,16 +236,23 @@ function App() {
     // Back-fill name for scenes saved before the name field existed
     const withNames = loaded.map((c, i) => ({ ...c, name: c.name || `Object ${i + 1}` }));
     setCuboids(withNames);
+    selectedIdsRef.current = [];
     setSelectedIds([]);
     nextId = Math.max(0, ...loaded.map(c => parseInt(c.id))) + 1;
+    showStatus(loaded.length > 0 ? `Loaded ${loaded.length} cuboids` : 'Scene cleared');
+  }, [showStatus]);
+
+  const handleObjectAddShortcutChange = useCallback((handler: (() => void) | null) => {
+    objectAddShortcutRef.current = handler;
   }, []);
 
   const handleToolChange = useCallback((tool: ToolMode) => {
+    const currentSelectedIds = selectedIdsRef.current;
+    activeToolRef.current = tool;
     setActiveTool(tool);
 
-    if (tool === 'add') {
-      handleAdd({ width: 1, height: 1, depth: 1, color: '#4ecdc4', name: '' });
-      setActiveTool('select');
+    if (tool === 'select' || tool === 'mselect' || tool === 'translate' || tool === 'rotate' || tool === 'scale') {
+      showStatus(MODE_STATUS[tool]);
     } else if (tool === 'random') {
       const id = String(nextId++);
       if (viewMode === '2d') {
@@ -202,10 +271,12 @@ function App() {
       } else {
         setCuboids(prev => [...prev, createRandomCuboid(id)]);
       }
+      showStatus(`Added random cuboid #${id}`);
+      activeToolRef.current = 'select';
       setActiveTool('select');
-    } else if (tool === 'duplicate' && selectedIds.length > 0) {
+    } else if (tool === 'duplicate' && currentSelectedIds.length > 0) {
       setCuboids(prev => {
-        const source = prev.find(c => c.id === selectedIds[0]);
+        const source = prev.find(c => c.id === currentSelectedIds[0]);
         if (!source) return prev;
         const newId = String(nextId++);
         const copy = {
@@ -215,26 +286,52 @@ function App() {
             ? [source.position[0] + 0.5, source.position[1] + 0.5, 0] as [number, number, number]
             : [source.position[0] + 0.5, source.position[1], source.position[2] + 0.5] as [number, number, number],
         };
+        selectedIdsRef.current = [newId];
         setSelectedIds([newId]); // select the copy so you can move it immediately
+        showStatus(`Duplicated cuboid #${source.id} as #${newId}`);
         return [...prev, copy];
       });
+      activeToolRef.current = 'translate';
       setActiveTool('translate'); // switch to translate so it's ready to drag
-    } else if (tool === 'delete' && selectedIds.length > 0) {
-      handleDelete(selectedIds[0]);
+    } else if (tool === 'duplicate') {
+      showStatus('Select a cuboid before duplicating');
+      activeToolRef.current = 'select';
+      setActiveTool('select');
+    } else if (tool === 'delete' && currentSelectedIds.length > 0) {
+      handleDeleteSelected();
+      activeToolRef.current = 'select';
+      setActiveTool('select');
+    } else if (tool === 'delete') {
+      showStatus('Select a cuboid before deleting');
+      activeToolRef.current = 'select';
       setActiveTool('select');
     }
-  }, [selectedIds, viewMode, handleAdd, handleDelete]);
+  }, [viewMode, handleDeleteSelected, showStatus]);
+
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
       const key = e.key.toLowerCase();
+      if (key === 'a') {
+        if (objectAddShortcutRef.current) {
+          objectAddShortcutRef.current();
+        } else {
+          showStatus('Open Object tab to add a cuboid with A');
+        }
+        return;
+      }
+      if (key === 'escape') {
+        clearSelection(activeToolRef.current === 'mselect' ? 'Comparison cleared' : 'Selection cleared');
+        return;
+      }
       const map: Record<string, ToolMode> = {
         v: 'select',
         m: 'mselect',
         w: 'translate',
         e: 'rotate',
         r: 'scale',
+        q: 'random',
         d: 'duplicate',
         x: 'delete',
       };
@@ -242,7 +339,7 @@ function App() {
     };
     window.addEventListener('keydown', handleKeyDown, { capture: true });
     return () => window.removeEventListener('keydown', handleKeyDown, { capture: true });
-  }, [handleToolChange]);
+  }, [clearSelection, handleToolChange, showStatus]);
 
   const sceneContent = (
     <Canvas camera={{ position: [4, 4, 8], fov: 50 }} style={{ width: '100%', height: '100%' }}>
@@ -269,7 +366,7 @@ function App() {
           data={c}
           isSelected={selectedIds.includes(c.id)}
           mode={mode}
-          onSelect={(id) => handleSelect(selectedIds, id)}
+          onSelect={handleSelect}
           onUpdate={handleUpdate}
           onDragStart={() => setOrbitEnabled(false)}
           onDragEnd={() => setOrbitEnabled(true)}
@@ -315,8 +412,8 @@ function App() {
       selectedId={selectedIds}
       onAdd={handleAdd}
       onDelete={handleDelete}
-      onSelect={(id) => handleSelect(selectedIds, id)}
       onRename={handleRename}
+      onSelect={handleSelect}
       onLoadScene={handleLoadScene}
       activeTool={activeTool}
       onToolChange={handleToolChange}
@@ -326,6 +423,9 @@ function App() {
       onToggleOrigin={() => setShowOrigin(prev => !prev)}
       viewMode={viewMode}
       onToggleViewMode={() => setViewMode(prev => prev === '3d' ? '2d' : '3d')}
+      statusMessage={statusMessage}
+      onObjectAddShortcutChange={handleObjectAddShortcutChange}
+      onStatus={showStatus}
     />
   );
 }

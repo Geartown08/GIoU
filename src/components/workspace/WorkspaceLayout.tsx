@@ -28,6 +28,9 @@ interface WorkspaceLayoutProps {
   onToggleOrigin: () => void;
   viewMode: ViewMode;
   onToggleViewMode: () => void;
+  statusMessage: string;
+  onObjectAddShortcutChange: (handler: (() => void) | null) => void;
+  onStatus: (message: string) => void;
 }
 
 export function WorkspaceLayout({
@@ -47,6 +50,9 @@ export function WorkspaceLayout({
   onToggleOrigin,
   viewMode,
   onToggleViewMode,
+  statusMessage,
+  onObjectAddShortcutChange,
+  onStatus,
 }: WorkspaceLayoutProps) {
   // ← useState for activeTool removed, it lives in App.tsx now
   const [activeTab, setActiveTab] = useState<RightPanelTab>('metrics');
@@ -100,6 +106,8 @@ export function WorkspaceLayout({
           onRename={onRename}
           viewMode={viewMode}
           onToggleViewMode={onToggleViewMode}
+          onObjectAddShortcutChange={onObjectAddShortcutChange}
+          onStatus={onStatus}
         />
       </div>
       <BottomStatusBar
@@ -111,6 +119,7 @@ export function WorkspaceLayout({
         onToggleOrigin={onToggleOrigin}
         viewMode={viewMode}
         onToggleViewMode={onToggleViewMode}
+        statusMessage={statusMessage}
       />
     </div>
   );
