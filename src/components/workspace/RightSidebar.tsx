@@ -20,14 +20,23 @@ interface RightSidebarProps {
   onSelect: (id: string | null) => void;
   onRename: (id: string, name: string) => void;
   viewMode: ViewMode;
+  onToggleViewMode: () => void;
 }
 
-export function RightSidebar({ activeTab, onTabChange, cuboids, selectedId, onAdd, onDelete, onSelect, onRename, viewMode }: RightSidebarProps) {
+export function RightSidebar({ activeTab, onTabChange, cuboids, selectedId, onAdd, onDelete, onSelect, onRename, viewMode, onToggleViewMode }: RightSidebarProps) {
   return (
     <aside className="right-sidebar">
-        <div className="viewmode-title">
-            <h3>{viewMode.charAt(0) + viewMode.charAt(1).toUpperCase()} MODE</h3>
-        </div>
+            <button
+                type="button"
+                className={`sidebar-view-mode-toggle ${viewMode === '2d' ? 'sidebar-view-mode-toggle--active' : ''}`}
+                aria-pressed={viewMode === '2d'}
+                onClick={onToggleViewMode}
+                title="Toggle between 2D (top-down orthographic) and 3D perspective view"
+            >
+                {viewMode === '2d' ? '2D MODE' : '3D MODE'}
+                <br />
+                <span className={`viewmode-subtitle`}>(Click to switch mode)</span>
+            </button>
       <div className="sidebar-tabs">
         {TABS.map(tab => (
           <button

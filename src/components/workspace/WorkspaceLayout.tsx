@@ -99,6 +99,7 @@ export function WorkspaceLayout({
           onSelect={onSelect}
           onRename={onRename}
           viewMode={viewMode}
+          onToggleViewMode={onToggleViewMode}
         />
       </div>
       <BottomStatusBar
