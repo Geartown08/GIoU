@@ -694,8 +694,27 @@
   border-color: #fff;
 }
 
-.viewmode-title {
+
+
+.sidebar-view-mode-toggle {
   text-align: center;
-  padding: 10px;
-  border-bottom: var(--ui-border) solid #2a2a4a;
+  padding: 15px;
+  background-color: #1a1a2e;
+  border: #1a1a2e var(--ui-border) #2a2a4a #1a1a2e #1a1a2e;
+  box-shadow: none;
+  color: #fff;
+  cursor: pointer;
+  font-size: var(--ui-font-lg);
+}
+.viewmode-title--active{
+  background: rgba(100, 108, 255, 0.2);
+}
+.sidebar-view-mode-toggle--active{
+  background: rgba(100, 108, 255, 0.2);
+  border: rgba(100, 108, 255, 0.2);
+}
+
+.viewmode-subtitle {
+  color: #c0c0d0;
+  font-size: var(--ui-font-xs);
 }
