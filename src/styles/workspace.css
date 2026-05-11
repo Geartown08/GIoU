@@ -366,6 +366,18 @@
   color: #c4c9ff;
 }
 
+.view-mode-toggle {
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  min-width: calc(32px * var(--ui-scale));
+}
+
+.view-mode-toggle.status-toggle--active {
+  background: rgba(78, 205, 196, 0.2);
+  border-color: rgba(78, 205, 196, 0.5);
+  color: #7ef0e8;
+}
+
 /* ---------- Object tab ---------- */
 
 .object-form {
@@ -386,6 +398,21 @@
   color: #999;
   width: calc(14px * var(--ui-scale));
   flex-shrink: 0;
+}
+
+.object-label--wide {
+  width: calc(34px * var(--ui-scale));
+}
+
+.object-name-row {
+  display: flex;
+  align-items: center;
+  gap: var(--ui-space-2);
+}
+
+.object-name-input {
+  flex: 1;
+  width: auto;
 }
 
 .object-input {
@@ -519,16 +546,27 @@
   display: inline-block;
 }
 
-.object-list-label {
+.object-list-name {
   font-size: var(--ui-font-xs);
-  color: #999;
-  width: calc(24px * var(--ui-scale));
+  color: #ccc;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: text;
 }
 
-.object-list-dims {
-  font-size: var(--ui-font-xs);
-  color: #bbb;
+.object-list-name-input {
   flex: 1;
+  min-width: 0;
+  font-size: var(--ui-font-xs);
+  color: #e0e0e0;
+  background: rgba(255, 255, 255, 0.1);
+  border: var(--ui-border) solid rgba(100, 108, 255, 0.5);
+  border-radius: var(--ui-radius-sm);
+  padding: calc(2px * var(--ui-scale)) var(--ui-space-2);
+  outline: none;
+  font-family: inherit;
 }
 
 .object-delete-button {
@@ -654,4 +692,10 @@
 
 .object-preset-swatch--active {
   border-color: #fff;
+}
+
+.viewmode-title {
+  text-align: center;
+  padding: 10px;
+  border-bottom: var(--ui-border) solid #2a2a4a;
 }

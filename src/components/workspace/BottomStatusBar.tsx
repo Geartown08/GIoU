@@ -1,4 +1,4 @@
-import type { ToolMode } from '../../types/Workspace';
+import type { ToolMode, ViewMode } from '../../types/Workspace';
 
 interface BottomStatusBarProps {
   objectCount: number;
@@ -7,6 +7,8 @@ interface BottomStatusBarProps {
   showOrigin: boolean;
   onToggleAxes: () => void;
   onToggleOrigin: () => void;
+  viewMode: ViewMode;
+  onToggleViewMode: () => void;
 }
 
 export function BottomStatusBar({
@@ -16,6 +18,8 @@ export function BottomStatusBar({
   showOrigin,
   onToggleAxes,
   onToggleOrigin,
+  viewMode,
+  onToggleViewMode,
 }: BottomStatusBarProps) {
   return (
     <footer className="bottom-bar">
@@ -46,7 +50,16 @@ export function BottomStatusBar({
         <span>Snap: Off</span>
       </div>
       <div className="bottom-section">
-        Camera: Perspective
+        <button
+          type="button"
+          className={`status-toggle view-mode-toggle ${viewMode === '2d' ? 'status-toggle--active' : ''}`}
+          aria-pressed={viewMode === '2d'}
+          onClick={onToggleViewMode}
+          title="Toggle between 2D (top-down orthographic) and 3D perspective view"
+        >
+          {viewMode === '2d' ? '2D' : '3D'}
+        </button>
+        <span>Camera: {viewMode === '2d' ? 'Orthographic' : 'Perspective'}</span>
       </div>
     </footer>
   );

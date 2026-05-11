@@ -2,6 +2,8 @@ export type ToolMode = 'select' | 'mselect' | 'translate' | 'rotate' | 'scale' |
 
 export type RightPanelTab = 'metrics' | 'object' | 'explain';
 
+export type ViewMode = '2d' | '3d';
+
 export interface ToolDefinition {
   key: ToolMode;
   label: string;

@@ -2,6 +2,7 @@ export type TransformMode = 'translate' | 'rotate' | 'scale';
 
 export interface CuboidData {
     id: string;
+    name: string;
     width: number;
     height: number;
     depth: number;
