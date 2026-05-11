@@ -89,9 +89,15 @@ function CameraRig({ viewMode }: { viewMode: ViewMode }) {
     if (viewMode === '2d' && orthoCam.current) {
       const aspect = size.width / size.height;
       const d = 10;
-      orthoCam.current.left = -d * aspect;
-      orthoCam.current.right = d * aspect;
-      orthoCam.current.updateProjectionMatrix();
+      if (orthoCam.current instanceof OrthographicCamera) {
+        orthoCam.current.left = -d * aspect;
+      }
+      if (orthoCam.current instanceof OrthographicCamera) {
+        orthoCam.current.right = d * aspect;
+      }
+      if (orthoCam.current instanceof OrthographicCamera) {
+        orthoCam.current.updateProjectionMatrix();
+      }
     }
   }, [size, viewMode]);
 
