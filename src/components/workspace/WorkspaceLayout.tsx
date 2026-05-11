@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import type { ToolMode, RightPanelTab } from '../../types/Workspace';
+import type { ToolMode, RightPanelTab, ViewMode } from '../../types/Workspace';
 import type { CuboidData } from '../../types/Cuboid';
 import { TopBar } from './TopBar';
 import { LeftToolbar } from './LeftToolbar';
@@ -18,6 +18,7 @@ interface WorkspaceLayoutProps {
   onAdd: (cuboid: Omit<CuboidData, 'id' | 'position' | 'rotation' | 'scale'>) => void;
   onDelete: (id: string) => void;
   onSelect: (id: string | null) => void;
+  onRename: (id: string, name: string) => void;
   onLoadScene: (cuboids: CuboidData[]) => void;
   activeTool: ToolMode;
   onToolChange: (tool: ToolMode) => void;
@@ -25,6 +26,8 @@ interface WorkspaceLayoutProps {
   showOrigin: boolean;
   onToggleAxes: () => void;
   onToggleOrigin: () => void;
+  viewMode: ViewMode;
+  onToggleViewMode: () => void;
 }
 
 export function WorkspaceLayout({
@@ -34,13 +37,16 @@ export function WorkspaceLayout({
   onAdd,
   onDelete,
   onSelect,
+  onRename,
   onLoadScene,
-  activeTool,        // ← now destructured from props
-  onToolChange,      // ← now destructured from props
+  activeTool,
+  onToolChange,
   showAxes,
   showOrigin,
   onToggleAxes,
   onToggleOrigin,
+  viewMode,
+  onToggleViewMode,
 }: WorkspaceLayoutProps) {
   // ← useState for activeTool removed, it lives in App.tsx now
   const [activeTab, setActiveTab] = useState<RightPanelTab>('metrics');
@@ -91,6 +97,8 @@ export function WorkspaceLayout({
           onAdd={onAdd}
           onDelete={onDelete}
           onSelect={onSelect}
+          onRename={onRename}
+          viewMode={viewMode}
         />
       </div>
       <BottomStatusBar
@@ -100,6 +108,8 @@ export function WorkspaceLayout({
         showOrigin={showOrigin}
         onToggleAxes={onToggleAxes}
         onToggleOrigin={onToggleOrigin}
+        viewMode={viewMode}
+        onToggleViewMode={onToggleViewMode}
       />
     </div>
   );
