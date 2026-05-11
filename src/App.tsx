@@ -6,6 +6,7 @@ import { Cuboid } from './components/Cuboid';
 import { SceneGuides } from './components/SceneGuides';
 import type { CuboidData, TransformMode } from './types/Cuboid';
 import type { ToolMode } from './types/Workspace';
+import { CsgIntersectionLayer } from './components/CsgIntersectionLayer';
 import './App.css';
 
 let nextId = 1;
@@ -171,6 +172,8 @@ function App() {
           onDragEnd={() => setOrbitEnabled(true)}
         />
       ))}
+
+      <CsgIntersectionLayer cuboids={cuboids} />
 
       <mesh onClick={handleCanvasClick} visible={false}>
         <planeGeometry args={[100, 100]} />
