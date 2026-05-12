@@ -4,14 +4,15 @@ Living document tracking issues found during Claude / Codex multi-round code rev
 `fix/button&tab` branch. Use this as the entry point for follow-up sessions: fixed items are
 kept for context; open items are prioritised for next development passes.
 
-Last consolidated: 2026-05-11
+Last consolidated: 2026-05-12
 
 ---
 
 ## 1. Already-fixed issues (this review cycle)
 
-These were identified in earlier review rounds and have **landed on the branch** (commits
-`661a893`, `ad80ba3`). Kept here so future reviewers can see prior decisions.
+These were identified in earlier review rounds and have **landed on the branch**. Original
+pre-rebase commits were `661a893` and `ad80ba3`; after rebasing onto `main` they are represented
+by `b033c8f` and `c620f66`. Kept here so future reviewers can see prior decisions.
 
 | # | Area | Fix summary |
 |---|---|---|
@@ -44,31 +45,55 @@ These were identified in earlier review rounds and have **landed on the branch**
 | F27 | `App` | mselect blank-canvas click no longer clears selection; instead emits `"Press Esc to clear comparison"`. `Esc` clears selection globally. |
 | F28 | `App` (handleToolChange) | Switching to Select / Analyse / Move / Rotate / Scale updates status bar (`Mode: …`). |
 | F29 | `App` | mselect status messages compressed: `Comparison: #N (pick one more)` / `Comparing #A and #B` / `Removed #N from comparison` / `Comparison cleared`. |
+| F30 | `MetricsTab` | Rebase onto 2D mode now uses `giou2DOriented` / `giou3DOriented`; Metrics no longer depends on stale `ConvertCuboid` AABB helpers. |
+| F31 | `MetricsTab` | `formatMetric` now guards with `Number.isFinite`, so degenerate results render `--` instead of `"NaN"`. |
+| F32 | `ObjectTab` | Rebase conflict kept nullable `handleAddRef` (`useRef<(() => void) \| null>(null)`) and null-safe shortcut dispatch. |
 
 ---
 
-## 2. Open issues, prioritised
+## 2. Rebase / conflict-resolution notes
 
-File:line references are accurate as of commit `ad80ba3`. Re-verify before starting work.
+The branch was rebased onto `main` at `512a6e4` (2D IoU / 2D mode toggle work). Conflict
+resolution decisions worth preserving for review:
+
+- `MetricsTab` now keeps the review fixes while using the new view-mode-aware metric path:
+  selection order is preserved through `selectedId.map(id => find(...))`, values are formatted
+  through the finite-number guard, 2D mode calls `giou2DOriented`, and 3D mode calls
+  `giou3DOriented`. This resolves the old Metrics-specific scale/rotation concerns that were
+  attached to `ConvertCuboid`; that legacy helper remains a cleanup item only.
+- `ObjectTab` keeps both sides of the conflict: main's object naming / inline rename / 2D depth
+  hiding behaviour, plus this branch's `A` shortcut trampoline, form validation status feedback,
+  color-picker keyboard handling, and non-nested list row buttons.
+- `RightSidebar` / `WorkspaceLayout` were merged by passing through both feature sets:
+  `viewMode` / `onToggleViewMode` / `onRename` from main and `onObjectAddShortcutChange` /
+  `onStatus` from this branch.
+- `App` keeps main's 2D camera/view-mode flow while preserving the shortcut and selection-state
+  fixes from this branch. `add` remains removed from `ToolMode`; `A` is dispatched through
+  `ObjectTab`'s registered handler.
+- `package-lock.json` modify/delete conflict was resolved by keeping the current `main` lockfile.
+  The conflicting commit only deleted the lockfile; preserving it keeps npm installs
+  reproducible.
+- The rebase rewrote commit hashes. The pre-rebase `ad80ba3` changes are represented by rebased
+  commit `c620f66` in the current branch history.
+
+Post-rebase verification:
+
+- `npm run lint` — passes with 3 existing CSG warnings:
+  `CsgIntersectionHighlight.tsx` cleanup refs and `CsgIntersectionLayer.tsx` missing
+  `cuboids` dependency.
+- `npm run build` — passes with the existing Vite chunk-size warning.
+- Working tree after rebase: only untracked `.claude/` remains, matching open issue P1-3.
+
+---
+
+## 3. Open issues, prioritised
+
+File:line references were originally captured around pre-rebase commit `ad80ba3` and may have
+shifted after rebasing onto `main` at `512a6e4`. Re-verify before starting work.
 
 ### P0 — Correctness / data integrity (fix first)
 
-#### P0-1. `ConvertCuboid` ignores `cuboid.scale`
-- File: [src/utils/cuboidBoxConvert.ts:5](../src/utils/cuboidBoxConvert.ts)
-- ObjectTab displays `width * scale[0]` etc. as the actual size, but the GIoU input uses raw
-  `width/height/depth`. After using the Scale tool the rendered box and the box passed to
-  `giou3D` no longer match — Metrics values are wrong.
-- Fix: multiply half-extents by the corresponding `cuboid.scale` axis. Rename `cuboidScale`
-  → `halfExtents` while you're in there (the current name is confusing alongside `cuboid.scale`).
-
-#### P0-2. `ConvertCuboid` ignores `cuboid.rotation`
-- File: [src/utils/cuboidBoxConvert.ts:5](../src/utils/cuboidBoxConvert.ts)
-- The function returns the un-rotated AABB, so rotated boxes produce mathematically wrong GIoU.
-- Minimum-cost fix: surface a warning in `MetricsTab` when either selected cuboid has any non-zero
-  rotation component (`AABB approximation — rotation not reflected`).
-- Full fix: compute the world AABB of the rotated mesh, or implement OBB IoU. Higher cost.
-
-#### P0-3. `handleLoadScene` produces `NaN` ids on non-numeric input
+#### P0-1. `handleLoadScene` produces `NaN` ids on non-numeric input
 - File: [src/App.tsx:152](../src/App.tsx)
 - `Math.max(0, ...loaded.map(c => parseInt(c.id))) + 1` becomes `NaN` if any id fails to parse,
   and every subsequently created cuboid gets id `"NaN"` → React duplicate keys, broken
@@ -84,10 +109,10 @@ File:line references are accurate as of commit `ad80ba3`. Re-verify before start
   nextId = (numericIds.length ? Math.max(...numericIds) : 0) + 1;
   ```
 
-#### P0-4. `loadScene` does not validate cuboid shape
+#### P0-2. `loadScene` does not validate cuboid shape
 - File: [src/utils/loadScene.ts:20](../src/utils/loadScene.ts)
-- Only checks `Array.isArray(parsed.cuboids)`. Malformed entries propagate into render and
-  `ConvertCuboid`, where missing `position` etc. throw at runtime.
+- Only checks `Array.isArray(parsed.cuboids)`. Malformed entries propagate into render and metric
+  utilities, where missing `position` / `rotation` / `scale` etc. can throw at runtime.
 - Fix: minimal per-item schema check (numeric `width/height/depth`, length-3 numeric arrays for
   `position/rotation/scale`, string `id`, string `color`). Drop invalid entries with `onError`.
 
@@ -155,17 +180,16 @@ File:line references are accurate as of commit `ad80ba3`. Re-verify before start
 
 | # | File / location | Problem | Suggested fix |
 |---|---|---|---|
-| P2-1 | [MetricsTab.tsx:19](../src/components/workspace/tabs/MetricsTab.tsx) | `formatMetric` returns `"NaN"` for degenerate boxes | `Number.isFinite(v) ? v.toFixed(4) : '--'` |
-| P2-2 | [workspace.css:545](../src/styles/workspace.css) | `.object-list-item:hover` highlights the row but only inner buttons are clickable | Move hover to inner button, or use `:has(.object-list-select-button:hover)` |
-| P2-3 | [BottomStatusBar.tsx:41](../src/components/workspace/BottomStatusBar.tsx) | `aria-live="polite"` re-announces on every click in mselect | Suppress duplicate consecutive announcements; consider `role="status"` |
-| P2-4 | [RightSidebar.tsx](../src/components/workspace/RightSidebar.tsx) | Tabs lack roving `tabIndex` and arrow-key navigation | WAI-ARIA tabs pattern: only active tab is `tabIndex=0`, others `-1`, ←/→/Home/End handlers |
-| P2-5 | [ObjectTab.tsx:198](../src/components/workspace/tabs/ObjectTab.tsx) | List rows have no `aria-selected` on the inner select button | Add `aria-selected={selected}` to `.object-list-select-button` |
-| P2-6 | [ObjectTab.tsx](../src/components/workspace/tabs/ObjectTab.tsx) | Esc does not close the colour picker popout | Add Esc handler local to the picker, or close on Esc when `showPicker` is true |
-| P2-7 | [ObjectTab.tsx:56](../src/components/workspace/tabs/ObjectTab.tsx) | `formError` does not clear when user fixes the inputs | Clear on `onChange` of W/H/D when valid |
-| P2-8 | [ObjectTab.tsx:57](../src/components/workspace/tabs/ObjectTab.tsx) | Inline error and status bar play the same string twice | Keep inline only; status gets a short summary (`Add failed: invalid size`) |
-| P2-9 | [App.tsx:65](../src/App.tsx) | Status messages never auto-clear | Operation messages (Added/Deleted/Duplicated) revert to `Ready` or `Mode: …` after 3–5 s |
-| P2-10 | [workspace.css:365](../src/styles/workspace.css) | Long status messages wrap and grow the bottom bar | `text-overflow: ellipsis; white-space: nowrap; overflow: hidden;` + `title={statusMessage}` |
-| P2-11 | [BottomStatusBar.tsx](../src/components/workspace/BottomStatusBar.tsx) | `Snap: Off` / `Grid: On` / `Camera: Perspective` are dead text that look like toggles | Either implement them or remove |
+| P2-1 | [workspace.css:545](../src/styles/workspace.css) | `.object-list-item:hover` highlights the row but only inner buttons are clickable | Move hover to inner button, or use `:has(.object-list-select-button:hover)` |
+| P2-2 | [BottomStatusBar.tsx:41](../src/components/workspace/BottomStatusBar.tsx) | `aria-live="polite"` re-announces on every click in mselect | Suppress duplicate consecutive announcements; consider `role="status"` |
+| P2-3 | [RightSidebar.tsx](../src/components/workspace/RightSidebar.tsx) | Tabs lack roving `tabIndex` and arrow-key navigation | WAI-ARIA tabs pattern: only active tab is `tabIndex=0`, others `-1`, ←/→/Home/End handlers |
+| P2-4 | [ObjectTab.tsx:198](../src/components/workspace/tabs/ObjectTab.tsx) | List rows have no `aria-selected` on the inner select button | Add `aria-selected={selected}` to `.object-list-select-button` |
+| P2-5 | [ObjectTab.tsx](../src/components/workspace/tabs/ObjectTab.tsx) | Esc does not close the colour picker popout | Add Esc handler local to the picker, or close on Esc when `showPicker` is true |
+| P2-6 | [ObjectTab.tsx:56](../src/components/workspace/tabs/ObjectTab.tsx) | `formError` does not clear when user fixes the inputs | Clear on `onChange` of W/H/D when valid |
+| P2-7 | [ObjectTab.tsx:57](../src/components/workspace/tabs/ObjectTab.tsx) | Inline error and status bar can still create duplicate feedback | Keep inline details; status gets only a short summary (`Add failed: invalid size`) |
+| P2-8 | [App.tsx:65](../src/App.tsx) | Status messages never auto-clear | Operation messages (Added/Deleted/Duplicated) revert to `Ready` or `Mode: …` after 3–5 s |
+| P2-9 | [workspace.css:365](../src/styles/workspace.css) | Long status messages wrap and grow the bottom bar | `text-overflow: ellipsis; white-space: nowrap; overflow: hidden;` + `title={statusMessage}` |
+| P2-10 | [BottomStatusBar.tsx](../src/components/workspace/BottomStatusBar.tsx) | `Snap: Off` / `Grid: On` / `Camera: Perspective` are dead text that look like toggles | Either implement them or remove |
 
 ### P3 — Cleanup / maintainability
 
@@ -174,7 +198,7 @@ File:line references are accurate as of commit `ad80ba3`. Re-verify before start
 | P3-1 | [src/components/CuboidPanel.tsx](../src/components/CuboidPanel.tsx) and [types/Cuboid.ts:24](../src/types/Cuboid.ts) | Dead component + dead `CuboidPanelProps` type, ~272 lines drifting from `ObjectTab` | Delete file and type |
 | P3-2 | [App.tsx:14](../src/App.tsx) and [BottomStatusBar.tsx:13](../src/components/workspace/BottomStatusBar.tsx) | `MODE_STATUS` and `TOOL_LABELS` duplicate `ToolMode → label` | Move `TOOL_LABELS` to `types/Workspace.ts` (or new `workspaceLabels.ts`); derive `MODE_STATUS` as `` `Mode: ${TOOL_LABELS[t]}` `` |
 | P3-3 | [App.tsx:11](../src/App.tsx) | Module-level mutable `let nextId = 1` | Move into `useRef`; survives HMR cleanly, easier to test |
-| P3-4 | [ObjectTab.tsx:25](../src/components/workspace/tabs/ObjectTab.tsx) | `useRef<() => void>(() => undefined)` initial value mismatches the type semantics | `useRef<(() => void) | null>(null)` + null-check in trampoline |
+| P3-4 | [src/utils/cuboidBoxConvert.ts](../src/utils/cuboidBoxConvert.ts) | Legacy AABB conversion helpers ignore `scale` / `rotation` and are no longer used by `MetricsTab` after the rebase | Delete if unused, or update before reusing them in any metric path |
 | P3-5 | [saveScene.ts:17](../src/utils/saveScene.ts) | `URL.revokeObjectURL` immediately after `a.click()` may abort download in some browsers | Defer with `setTimeout(() => URL.revokeObjectURL(url), 0)` |
 | P3-6 | [loadScene.ts:38](../src/utils/loadScene.ts) | `<input>` element retained by closure on each open | Set `input.onchange = null` after handler runs, drop reference |
 | P3-7 | [Cuboid.tsx:8](../src/components/Cuboid.tsx) | Mesh stored in `useState` causes an extra render on attach | Use `useRef` + a `forceUpdate` on first attach, or accept the extra render and document |
@@ -183,34 +207,34 @@ File:line references are accurate as of commit `ad80ba3`. Re-verify before start
 
 ---
 
-## 3. Recommended fix order
+## 4. Recommended fix order
 
-1. **Immediate, single small commit** — P0-1 (`ConvertCuboid` × scale), P0-3 (`nextId` NaN /
-   regex), P1-3 (`.gitignore` restore), P1-2 (gizmo gating).
-2. **Next PR** — P0-2 (rotation warning), P0-4 (loadScene schema), P1-1 (New/Open confirm),
-   P1-6 (Esc copy), P2-1 (NaN in formatMetric).
+1. **Immediate, single small commit** — P0-1 (`nextId` NaN / regex), P1-3 (`.gitignore`
+   restore), P1-2 (gizmo gating).
+2. **Next PR** — P0-2 (loadScene schema), P1-1 (New/Open confirm), P1-6 (Esc copy),
+   P2-3 (tab roving focus).
 3. **Polish PR** — P1-4 (position counter), P1-5 (orphan comparison hint), P1-7 (material
    decision + comment), all P2 items.
 4. **Cleanup PR** — P3-1 (delete `CuboidPanel`), P3-2 (merge label maps), P3-3 (`nextId` ref).
 
 ---
 
-## 4. Known non-issues / deferred
+## 5. Known non-issues / deferred
 
 These were raised in review but explicitly **not** treated as defects:
 
 - Vite bundle-size warning (P3-9): pre-existing, unrelated to UX.
 - Local `.idea/`, `.DS_Store` files in working tree: developer-machine artefacts, ignored.
-- Status-message-as-aria-live verbosity: tracked under P2-3 / P2-9 rather than redesigning the
+- Status-message-as-aria-live verbosity: tracked under P2-2 / P2-8 rather than redesigning the
   status channel.
-- OBB IoU implementation: out of scope; AABB approximation acceptable so long as the rotation
-  warning lands (P0-2).
+- OBB IoU implementation: no longer a Metrics blocker after rebasing onto main's
+  `giouOriented` implementation. Legacy AABB helpers are tracked as cleanup under P3-4.
 
 ---
 
-## 5. Verification baseline
+## 6. Verification baseline
 
-At commit `ad80ba3`:
+At pre-rebase commit `ad80ba3`:
 
 - `npm run lint` — passes
 - `npm run build` — passes (single warning: Vite chunk size > 500 kB)
