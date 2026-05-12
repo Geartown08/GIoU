@@ -9,7 +9,19 @@ interface BottomStatusBarProps {
   onToggleOrigin: () => void;
   viewMode: ViewMode;
   onToggleViewMode: () => void;
+  statusMessage: string;
 }
+
+const TOOL_LABELS: Record<ToolMode, string> = {
+  select: 'Select',
+  mselect: 'Analyse',
+  translate: 'Move',
+  rotate: 'Rotate',
+  scale: 'Scale',
+  random: 'Random',
+  duplicate: 'Duplicate',
+  delete: 'Delete',
+};
 
 export function BottomStatusBar({
   objectCount,
@@ -20,6 +32,7 @@ export function BottomStatusBar({
   onToggleOrigin,
   viewMode,
   onToggleViewMode,
+  statusMessage
 }: BottomStatusBarProps) {
   return (
     <footer className="bottom-bar">
@@ -27,10 +40,13 @@ export function BottomStatusBar({
         Objects: {objectCount}
       </div>
       <div className="bottom-section">
-        Tool: {activeTool}
+        Tool: {TOOL_LABELS[activeTool]}
+      </div>
+      <div className="bottom-section bottom-section--status" aria-live="polite">
+        {statusMessage}
       </div>
       <div className="bottom-section bottom-section--controls">
-        <span>Grid: On</span>
+        <span className="status-readout">Grid: On</span>
         <button
           type="button"
           className={`status-toggle ${showAxes ? 'status-toggle--active' : ''}`}
@@ -47,9 +63,9 @@ export function BottomStatusBar({
         >
           Show Origin
         </button>
-        <span>Snap: Off</span>
+        <span className="status-readout">Snap: Off</span>
       </div>
-      <div className="bottom-section">
+      <div className="bottom-section status-readout">
         <button
           type="button"
           className={`status-toggle view-mode-toggle ${viewMode === '2d' ? 'status-toggle--active' : ''}`}

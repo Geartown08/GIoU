@@ -164,7 +164,8 @@ function convexHull3D(pts: Vec3[]): Face[] | null {
   if (n < 4) return null;
 
   // Seed point i0; pick i1 farthest from i0
-  let i0 = 0, i1 = -1, best = 0;
+  const i0 = 0;
+  let i1 = -1, best = 0;
   for (let i = 1; i < n; i++) {
     const d = v3.sub(pts[i], pts[i0]);
     const m = v3.dot(d, d);

@@ -14,8 +14,8 @@ const ARROWS = [
 ] as const;
 
 function DirectionArrow({
-  pos, dir, rot, id,
-}: { pos: [number,number,number]; dir: [number,number,number]; rot: [number,number,number]; id: string }) {
+  pos, dir, rot,
+}: { pos: [number,number,number]; dir: [number,number,number]; rot: [number,number,number] }) {
   const { tweenCamera } = useGizmoContext();
   const [hovered, setHovered] = useState(false);
 

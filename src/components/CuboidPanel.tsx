@@ -20,7 +20,7 @@ export function CuboidPanel({ cuboids, selectedId, mode, onAdd, onDelete, onSele
     const h = parseFloat(height);
     const d = parseFloat(depth);
     if (w > 0 && h > 0 && d > 0) {
-      onAdd({ width: w, height: h, depth: d, color });
+      onAdd({ name: '', width: w, height: h, depth: d, color });
     }
   };
 
