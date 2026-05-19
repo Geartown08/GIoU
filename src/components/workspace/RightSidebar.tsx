@@ -1,5 +1,6 @@
 import type { RightPanelTab, ViewMode } from '../../types/Workspace';
 import type { CuboidData } from '../../types/Cuboid';
+import type { IoUResult } from '../../utils/giou';
 import { MetricsTab } from './tabs/MetricsTab';
 import { ObjectTab } from './tabs/ObjectTab';
 import { ExplainTab } from './tabs/ExplainTab';
@@ -23,6 +24,7 @@ interface RightSidebarProps {
   onToggleViewMode: () => void;
   onObjectAddShortcutChange: (handler: (() => void) | null) => void;
   onStatus: (message: string) => void;
+  analyseMetrics: IoUResult | null;
 }
 
 export function RightSidebar({
@@ -38,6 +40,7 @@ export function RightSidebar({
   onToggleViewMode,
   onObjectAddShortcutChange,
   onStatus,
+  analyseMetrics,
 }: RightSidebarProps) {
   return (
     <aside className="right-sidebar">
@@ -75,8 +78,7 @@ export function RightSidebar({
       >
         {activeTab === 'metrics' && (
           <MetricsTab
-            cuboids={cuboids}
-            selectedId={selectedId}
+            metrics={analyseMetrics}
             viewMode={viewMode}
           />
         )}
