@@ -26,6 +26,11 @@ export interface IoUResult {
   giou: number;
   lossIoU: number;
   lossGIoU: number;
+  // Intermediate quantities — area in 2D, volume in 3D. Surfaced so the
+  // Explain tab can render the full derivation with concrete numbers.
+  intersection: number;
+  union: number;
+  enclosing: number;
 }
 
 // ---- 2D -----------------------------------------------------
@@ -71,7 +76,7 @@ export function giou2D(bp: Box2D, bg: Box2D): IoUResult {
   const lossIoU = 1 - iou;
   const lossGIoU = 1 - giou;
 
-  return { iou, giou, lossIoU, lossGIoU };
+  return { iou, giou, lossIoU, lossGIoU, intersection, union, enclosing: ac };
 }
 
 // ---- 3D -----------------------------------------------------
@@ -125,5 +130,5 @@ export function giou3D(bp: Box3D, bg: Box3D): IoUResult {
   const lossIoU = 1 - iou;
   const lossGIoU = 1 - giou;
 
-  return { iou, giou, lossIoU, lossGIoU };
+  return { iou, giou, lossIoU, lossGIoU, intersection, union, enclosing: ac };
 }

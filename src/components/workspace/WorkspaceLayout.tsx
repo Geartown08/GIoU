@@ -1,11 +1,12 @@
 import React, { useCallback, useState } from 'react';
-import type { ToolMode, RightPanelTab, ViewMode } from '../../types/Workspace';
+import type { ToolMode, RightPanelTab, ViewMode, CalculationData } from '../../types/Workspace';
 import type { CuboidData } from '../../types/Cuboid';
 import { TopBar } from './TopBar';
 import { LeftToolbar } from './LeftToolbar';
 import { ViewportPanel } from './ViewportPanel';
 import { RightSidebar } from './RightSidebar';
 import { BottomStatusBar } from './BottomStatusBar';
+import { AnalysePanel } from './AnalysePanel';
 import { saveScene } from '../../utils/saveScene';
 import { openAndLoadScene } from '../../utils/loadScene';
 import { useUiScale } from '../../hooks/useUiScale';
@@ -31,6 +32,9 @@ interface WorkspaceLayoutProps {
   statusMessage: string;
   onObjectAddShortcutChange: (handler: (() => void) | null) => void;
   onStatus: (message: string) => void;
+  analysePanelOpen: boolean;
+  onAnalysePanelClose: () => void;
+  analyseCalc: CalculationData | null;
 }
 
 export function WorkspaceLayout({
@@ -53,9 +57,12 @@ export function WorkspaceLayout({
   statusMessage,
   onObjectAddShortcutChange,
   onStatus,
+  analysePanelOpen,
+  onAnalysePanelClose,
+  analyseCalc,
 }: WorkspaceLayoutProps) {
   // ← useState for activeTool removed, it lives in App.tsx now
-  const [activeTab, setActiveTab] = useState<RightPanelTab>('metrics');
+  const [activeTab, setActiveTab] = useState<RightPanelTab>('object');
   const { scaleOverride, resolvedScale, setScaleOverride } = useUiScale();
 
   // ← useEffect for keyboard shortcuts removed, it lives in App.tsx now
@@ -94,7 +101,15 @@ export function WorkspaceLayout({
       />
       <div className="workspace-body">
         <LeftToolbar activeTool={activeTool} onToolChange={handleToolChange} />
-        <ViewportPanel>{viewportContent}</ViewportPanel>
+        <div className="workspace-viewport-stack">
+          <ViewportPanel>{viewportContent}</ViewportPanel>
+          <AnalysePanel
+            open={analysePanelOpen}
+            viewMode={viewMode}
+            calc={analyseCalc}
+            onClose={onAnalysePanelClose}
+          />
+        </div>
         <RightSidebar
           activeTab={activeTab}
           onTabChange={setActiveTab}
@@ -108,6 +123,7 @@ export function WorkspaceLayout({
           onToggleViewMode={onToggleViewMode}
           onObjectAddShortcutChange={onObjectAddShortcutChange}
           onStatus={onStatus}
+          analyseCalc={analyseCalc}
         />
       </div>
       <BottomStatusBar

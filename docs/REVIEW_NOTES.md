@@ -4,7 +4,7 @@ Living document tracking issues found during Claude / Codex multi-round code rev
 `fix/button&tab` branch. Use this as the entry point for follow-up sessions: fixed items are
 kept for context; open items are prioritised for next development passes.
 
-Last consolidated: 2026-05-12
+Last consolidated: 2026-05-19
 
 ---
 
@@ -48,6 +48,9 @@ by `b033c8f` and `c620f66`. Kept here so future reviewers can see prior decision
 | F30 | `MetricsTab` | Rebase onto 2D mode now uses `giou2DOriented` / `giou3DOriented`; Metrics no longer depends on stale `ConvertCuboid` AABB helpers. |
 | F31 | `MetricsTab` | `formatMetric` now guards with `Number.isFinite`, so degenerate results render `--` instead of `"NaN"`. |
 | F32 | `ObjectTab` | Rebase conflict kept nullable `handleAddRef` (`useRef<(() => void) \| null>(null)`) and null-safe shortcut dispatch. |
+| F33 | `AnalysePanel` | Added `src/components/workspace/AnalysePanel.tsx` to git so `WorkspaceLayout`'s import resolves on a clean checkout. |
+| F34 | `App` / `MetricsTab` | Hoisted Analyse metrics now return `null` outside `mselect`, so the Metrics tab no longer shows a stale pair after leaving Analyse mode. |
+| F35 | `AnalysePanel` | Closed panel removes the close button from tab order and the close button now participates in the shared focus outline. |
 
 ---
 
@@ -243,3 +246,8 @@ At pre-rebase commit `ad80ba3`:
   locator/click issues and should be re-run before PR.
 
 Re-run all three before opening any PR derived from this list.
+
+At 2026-05-19 after the AnalysePanel review:
+
+- `npm run lint` — passes with the same 3 existing CSG warnings.
+- `npm run build` — passes locally with the existing Vite chunk-size warning.

@@ -1,11 +1,9 @@
-import type { RightPanelTab, ViewMode } from '../../types/Workspace';
+import type { RightPanelTab, ViewMode, CalculationData } from '../../types/Workspace';
 import type { CuboidData } from '../../types/Cuboid';
-import { MetricsTab } from './tabs/MetricsTab';
 import { ObjectTab } from './tabs/ObjectTab';
 import { ExplainTab } from './tabs/ExplainTab';
 
 const TABS: { key: RightPanelTab; label: string }[] = [
-  { key: 'metrics', label: 'Metrics' },
   { key: 'object',  label: 'Object' },
   { key: 'explain', label: 'Explain' },
 ];
@@ -23,6 +21,7 @@ interface RightSidebarProps {
   onToggleViewMode: () => void;
   onObjectAddShortcutChange: (handler: (() => void) | null) => void;
   onStatus: (message: string) => void;
+  analyseCalc: CalculationData | null;
 }
 
 export function RightSidebar({
@@ -38,20 +37,21 @@ export function RightSidebar({
   onToggleViewMode,
   onObjectAddShortcutChange,
   onStatus,
+  analyseCalc,
 }: RightSidebarProps) {
   return (
     <aside className="right-sidebar">
-            <button
-                type="button"
-                className={`sidebar-view-mode-toggle ${viewMode === '2d' ? 'sidebar-view-mode-toggle--active' : ''}`}
-                aria-pressed={viewMode === '2d'}
-                onClick={onToggleViewMode}
-                title="Toggle between 2D (top-down orthographic) and 3D perspective view"
-            >
-                {viewMode === '2d' ? '2D MODE' : '3D MODE'}
-                <br />
-                <span className={`viewmode-subtitle`}>(Click to switch mode)</span>
-            </button>
+      <button
+        type="button"
+        className={`sidebar-view-mode-toggle ${viewMode === '2d' ? 'sidebar-view-mode-toggle--active' : ''}`}
+        aria-pressed={viewMode === '2d'}
+        onClick={onToggleViewMode}
+        title="Toggle between 2D (top-down orthographic) and 3D perspective view"
+      >
+        {viewMode === '2d' ? '2D MODE' : '3D MODE'}
+        <br />
+        <span className="viewmode-subtitle">(Click to switch mode)</span>
+      </button>
       <div className="sidebar-tabs" role="tablist" aria-label="Workspace panels">
         {TABS.map(tab => (
           <button
@@ -73,13 +73,6 @@ export function RightSidebar({
         role="tabpanel"
         aria-labelledby={`workspace-tab-${activeTab}`}
       >
-        {activeTab === 'metrics' && (
-          <MetricsTab
-            cuboids={cuboids}
-            selectedId={selectedId}
-            viewMode={viewMode}
-          />
-        )}
         {activeTab === 'object' && (
           <ObjectTab
             cuboids={cuboids}
@@ -93,7 +86,9 @@ export function RightSidebar({
             onStatus={onStatus}
           />
         )}
-        {activeTab === 'explain' && <ExplainTab />}
+        {activeTab === 'explain' && (
+          <ExplainTab calc={analyseCalc} viewMode={viewMode} />
+        )}
       </div>
     </aside>
   );
