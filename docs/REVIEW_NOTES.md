@@ -4,7 +4,7 @@ Living document tracking issues found during Claude / Codex multi-round code rev
 `fix/button&tab` branch. Use this as the entry point for follow-up sessions: fixed items are
 kept for context; open items are prioritised for next development passes.
 
-Last consolidated: 2026-05-12
+Last consolidated: 2026-05-19
 
 ---
 
@@ -48,6 +48,7 @@ by `b033c8f` and `c620f66`. Kept here so future reviewers can see prior decision
 | F30 | `MetricsTab` | Rebase onto 2D mode now uses `giou2DOriented` / `giou3DOriented`; Metrics no longer depends on stale `ConvertCuboid` AABB helpers. |
 | F31 | `MetricsTab` | `formatMetric` now guards with `Number.isFinite`, so degenerate results render `--` instead of `"NaN"`. |
 | F32 | `ObjectTab` | Rebase conflict kept nullable `handleAddRef` (`useRef<(() => void) \| null>(null)`) and null-safe shortcut dispatch. |
+| F33 | `AnalysePanel` | Added `src/components/workspace/AnalysePanel.tsx` to git so `WorkspaceLayout`'s import resolves on a clean checkout. |
 
 ---
 
@@ -176,6 +177,17 @@ shifted after rebasing onto `main` at `512a6e4`. Re-verify before starting work.
   comment. If no, switch to standard `transparent + opacity ~0.6 + depthWrite=true`, or only
   enable additive in mselect mode.
 
+#### P1-8. Hoisted metrics stay visible after leaving Analyse mode
+- File: [src/App.tsx:150](../src/App.tsx) and [src/components/workspace/tabs/MetricsTab.tsx:13](../src/components/workspace/tabs/MetricsTab.tsx)
+- `analysePanelOpen` is correctly gated by `activeTool === 'mselect'`, but `analyseMetrics`
+  only checks `selectedIds.length === 2`. If the user selects two cuboids in Analyse, then
+  switches to Select / Move / Rotate / Scale, the bottom panel closes while the Metrics tab keeps
+  showing IoU/GIoU for the old pair. This contradicts the tab copy ("Select two cuboids with
+  Analyse") and makes the hoisted result no longer represent the active comparison.
+- Fix: include `activeTool === 'mselect'` in the shared metric guard, or pass `comparisonKey` /
+  active pair into the memo so both MetricsTab and AnalysePanel consume the same Analyse-only
+  comparison state.
+
 ### P2 — Medium priority (consistency / a11y polish)
 
 | # | File / location | Problem | Suggested fix |
@@ -190,6 +202,7 @@ shifted after rebasing onto `main` at `512a6e4`. Re-verify before starting work.
 | P2-8 | [App.tsx:65](../src/App.tsx) | Status messages never auto-clear | Operation messages (Added/Deleted/Duplicated) revert to `Ready` or `Mode: …` after 3–5 s |
 | P2-9 | [workspace.css:365](../src/styles/workspace.css) | Long status messages wrap and grow the bottom bar | `text-overflow: ellipsis; white-space: nowrap; overflow: hidden;` + `title={statusMessage}` |
 | P2-10 | [BottomStatusBar.tsx](../src/components/workspace/BottomStatusBar.tsx) | `Snap: Off` / `Grid: On` / `Camera: Perspective` are dead text that look like toggles | Either implement them or remove |
+| P2-11 | [AnalysePanel.tsx:36](../src/components/workspace/AnalysePanel.tsx) | Closed panel remains mounted with `aria-hidden="true"` but still contains a focusable close button; keyboard users can tab to a visually hidden dialog, and `.analyse-panel-close` is also missing from the shared `:focus-visible` outline list | Render the dialog only while open, or mark the closed subtree inert / remove descendants from tab order; add `.analyse-panel-close:focus-visible` to the common focus rule |
 
 ### P3 — Cleanup / maintainability
 
@@ -212,9 +225,9 @@ shifted after rebasing onto `main` at `512a6e4`. Re-verify before starting work.
 1. **Immediate, single small commit** — P0-1 (`nextId` NaN / regex), P1-3 (`.gitignore`
    restore), P1-2 (gizmo gating).
 2. **Next PR** — P0-2 (loadScene schema), P1-1 (New/Open confirm), P1-6 (Esc copy),
-   P2-3 (tab roving focus).
+   P1-8 (Analyse-only metrics guard), P2-3 (tab roving focus).
 3. **Polish PR** — P1-4 (position counter), P1-5 (orphan comparison hint), P1-7 (material
-   decision + comment), all P2 items.
+   decision + comment), P2-11 (AnalysePanel hidden focus), all P2 items.
 4. **Cleanup PR** — P3-1 (delete `CuboidPanel`), P3-2 (merge label maps), P3-3 (`nextId` ref).
 
 ---
@@ -243,3 +256,8 @@ At pre-rebase commit `ad80ba3`:
   locator/click issues and should be re-run before PR.
 
 Re-run all three before opening any PR derived from this list.
+
+At 2026-05-19 after the AnalysePanel review:
+
+- `npm run lint` — passes with the same 3 existing CSG warnings.
+- `npm run build` — passes locally with the existing Vite chunk-size warning.
