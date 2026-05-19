@@ -92,7 +92,8 @@
 .object-color-swatch-button:focus-visible,
 .object-preset-swatch:focus-visible,
 .object-list-select-button:focus-visible,
-.object-delete-button:focus-visible {
+.object-delete-button:focus-visible,
+.analyse-panel-close:focus-visible {
   outline: calc(2px * var(--ui-scale)) solid rgba(160, 166, 255, 0.9);
   outline-offset: calc(2px * var(--ui-scale));
 }

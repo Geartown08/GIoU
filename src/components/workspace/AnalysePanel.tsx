@@ -64,6 +64,7 @@ export function AnalysePanel({ open, cuboids, selectedIds, viewMode, metrics, on
           className="analyse-panel-close"
           aria-label="Close analyse panel"
           onClick={onClose}
+          tabIndex={open ? 0 : -1}
         >
           ×
         </button>

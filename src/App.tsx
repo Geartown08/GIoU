@@ -148,12 +148,12 @@ function App() {
   // Single source of truth for IoU/GIoU on the current comparison pair — feeds
   // both MetricsTab (right sidebar) and AnalysePanel (bottom pop-up).
   const analyseMetrics = useMemo<IoUResult | null>(() => {
-    if (selectedIds.length !== 2) return null;
+    if (activeTool !== 'mselect' || selectedIds.length !== 2) return null;
     const a = cuboids.find(c => c.id === selectedIds[0]);
     const b = cuboids.find(c => c.id === selectedIds[1]);
     if (!a || !b) return null;
     return viewMode === '2d' ? giou2DOriented(a, b) : giou3DOriented(a, b);
-  }, [cuboids, selectedIds, viewMode]);
+  }, [activeTool, cuboids, selectedIds, viewMode]);
 
   const mode: TransformMode = activeTool === 'rotate' || activeTool === 'scale' ? activeTool : 'translate';
 
