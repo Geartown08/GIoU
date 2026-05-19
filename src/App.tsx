@@ -8,9 +8,9 @@ import { SceneGuides } from './components/SceneGuides';
 import { ViewCubeDirectionArrows } from './components/ViewCubeGizmo';
 import type { CuboidData, TransformMode } from './types/Cuboid';
 import { CsgIntersectionLayer } from './components/CsgIntersectionLayer';
-import type { ToolMode, ViewMode } from './types/Workspace';
+import type { ToolMode, ViewMode, CalculationData } from './types/Workspace';
 import { giou2DOriented, giou3DOriented } from './utils/giouOriented';
-import type { IoUResult } from './utils/giou';
+import { cuboidVolume, cuboidSurfaceArea } from './utils/cuboidBoxConvert';
 import './App.css';
 
 let nextId = 1;
@@ -145,14 +145,23 @@ function App() {
     setAnalyseDismissedKey(comparisonKey);
   }, [comparisonKey]);
 
-  // Single source of truth for IoU/GIoU on the current comparison pair — feeds
-  // both MetricsTab (right sidebar) and AnalysePanel (bottom pop-up).
-  const analyseMetrics = useMemo<IoUResult | null>(() => {
+  // Single source of truth for the current comparison — feeds both the
+  // AnalysePanel pop-up (summary cards) and the Explain tab (derivation).
+  const analyseCalc = useMemo<CalculationData | null>(() => {
     if (activeTool !== 'mselect' || selectedIds.length !== 2) return null;
     const a = cuboids.find(c => c.id === selectedIds[0]);
     const b = cuboids.find(c => c.id === selectedIds[1]);
     if (!a || !b) return null;
-    return viewMode === '2d' ? giou2DOriented(a, b) : giou3DOriented(a, b);
+    const giou = viewMode === '2d' ? giou2DOriented(a, b) : giou3DOriented(a, b);
+    const toItem = (c: CuboidData) => ({
+      id: c.id,
+      name: c.name,
+      color: c.color,
+      volume: cuboidVolume(c),
+      surfaceArea: cuboidSurfaceArea(c),
+      position: c.position,
+    });
+    return { items: [toItem(a), toItem(b)], giou };
   }, [activeTool, cuboids, selectedIds, viewMode]);
 
   const mode: TransformMode = activeTool === 'rotate' || activeTool === 'scale' ? activeTool : 'translate';
@@ -458,7 +467,7 @@ function App() {
       onStatus={showStatus}
       analysePanelOpen={analysePanelOpen}
       onAnalysePanelClose={handleAnalysePanelClose}
-      analyseMetrics={analyseMetrics}
+      analyseCalc={analyseCalc}
     />
   );
 }

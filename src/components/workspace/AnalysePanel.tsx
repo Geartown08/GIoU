@@ -1,14 +1,9 @@
-import { useMemo } from 'react';
-import type { CuboidData } from '../../types/Cuboid';
-import type { ViewMode } from '../../types/Workspace';
-import type { IoUResult } from '../../utils/giou';
+import type { CalculationData, ViewMode } from '../../types/Workspace';
 
 interface AnalysePanelProps {
   open: boolean;
-  cuboids: CuboidData[];
-  selectedIds: string[];
   viewMode: ViewMode;
-  metrics: IoUResult | null;
+  calc: CalculationData | null;
   onClose: () => void;
 }
 
@@ -23,14 +18,9 @@ function formatMetric(value: number | undefined): string {
   return Number.isFinite(value) ? value!.toFixed(4) : '--';
 }
 
-export function AnalysePanel({ open, cuboids, selectedIds, viewMode, metrics, onClose }: AnalysePanelProps) {
-  const pair = useMemo(
-    () =>
-      selectedIds
-        .map(id => cuboids.find(c => c.id === id))
-        .filter((c): c is CuboidData => Boolean(c)),
-    [cuboids, selectedIds],
-  );
+export function AnalysePanel({ open, viewMode, calc, onClose }: AnalysePanelProps) {
+  const pair = calc?.items;
+  const metrics = calc?.giou;
 
   return (
     <section
@@ -45,7 +35,7 @@ export function AnalysePanel({ open, cuboids, selectedIds, viewMode, metrics, on
           <span className="analyse-panel-mode">{viewMode === '2d' ? 'XY projection (2D)' : 'Oriented bounding boxes (3D)'}</span>
         </div>
         <div className="analyse-panel-pair">
-          {pair.length === 2 && (
+          {pair && (
             <>
               <span className="analyse-chip" title={`Object #${pair[0].id}`}>
                 <span className="analyse-chip-dot" style={{ background: pair[0].color }} />

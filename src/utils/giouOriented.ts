@@ -291,7 +291,14 @@ export function giou3DOriented(a: CuboidData, b: CuboidData): IoUResult {
   const iou = union > EPS ? interVol / union : 0;
   const giou = encVol > EPS ? iou - (encVol - union) / encVol : iou;
 
-  return { iou, giou, lossIoU: 1 - iou, lossGIoU: 1 - giou };
+  return {
+    iou, giou,
+    lossIoU: 1 - iou,
+    lossGIoU: 1 - giou,
+    intersection: interVol,
+    union,
+    enclosing: encVol,
+  };
 }
 
 // ---- 2D front-facing (XY projection) ------------------------
@@ -386,5 +393,12 @@ export function giou2DOriented(a: CuboidData, b: CuboidData): IoUResult {
   const iou = union > EPS ? interArea / union : 0;
   const giou = encArea > EPS ? iou - (encArea - union) / encArea : iou;
 
-  return { iou, giou, lossIoU: 1 - iou, lossGIoU: 1 - giou };
+  return {
+    iou, giou,
+    lossIoU: 1 - iou,
+    lossGIoU: 1 - giou,
+    intersection: interArea,
+    union,
+    enclosing: encArea,
+  };
 }

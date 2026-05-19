@@ -16,3 +16,14 @@ export function ConvertCuboid2D(cuboid: CuboidData): Box2D {
   const cy = cuboid.position[1];
   return { x1: cx - halfW, y1: cy - halfH, x2: cx + halfW, y2: cy + halfH };
 }
+
+export function cuboidVolume(c: CuboidData): number {
+  return c.width * c.height * c.depth * c.scale[0] * c.scale[1] * c.scale[2];
+}
+
+export function cuboidSurfaceArea(c: CuboidData): number {
+  const w = c.width  * c.scale[0];
+  const h = c.height * c.scale[1];
+  const d = c.depth  * c.scale[2];
+  return 2 * (w * h + w * d + h * d);
+}

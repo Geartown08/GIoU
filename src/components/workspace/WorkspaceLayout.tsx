@@ -1,7 +1,6 @@
 import React, { useCallback, useState } from 'react';
-import type { ToolMode, RightPanelTab, ViewMode } from '../../types/Workspace';
+import type { ToolMode, RightPanelTab, ViewMode, CalculationData } from '../../types/Workspace';
 import type { CuboidData } from '../../types/Cuboid';
-import type { IoUResult } from '../../utils/giou';
 import { TopBar } from './TopBar';
 import { LeftToolbar } from './LeftToolbar';
 import { ViewportPanel } from './ViewportPanel';
@@ -35,7 +34,7 @@ interface WorkspaceLayoutProps {
   onStatus: (message: string) => void;
   analysePanelOpen: boolean;
   onAnalysePanelClose: () => void;
-  analyseMetrics: IoUResult | null;
+  analyseCalc: CalculationData | null;
 }
 
 export function WorkspaceLayout({
@@ -60,10 +59,10 @@ export function WorkspaceLayout({
   onStatus,
   analysePanelOpen,
   onAnalysePanelClose,
-  analyseMetrics,
+  analyseCalc,
 }: WorkspaceLayoutProps) {
   // ← useState for activeTool removed, it lives in App.tsx now
-  const [activeTab, setActiveTab] = useState<RightPanelTab>('metrics');
+  const [activeTab, setActiveTab] = useState<RightPanelTab>('object');
   const { scaleOverride, resolvedScale, setScaleOverride } = useUiScale();
 
   // ← useEffect for keyboard shortcuts removed, it lives in App.tsx now
@@ -106,10 +105,8 @@ export function WorkspaceLayout({
           <ViewportPanel>{viewportContent}</ViewportPanel>
           <AnalysePanel
             open={analysePanelOpen}
-            cuboids={cuboids}
-            selectedIds={selectedId}
             viewMode={viewMode}
-            metrics={analyseMetrics}
+            calc={analyseCalc}
             onClose={onAnalysePanelClose}
           />
         </div>
@@ -126,7 +123,7 @@ export function WorkspaceLayout({
           onToggleViewMode={onToggleViewMode}
           onObjectAddShortcutChange={onObjectAddShortcutChange}
           onStatus={onStatus}
-          analyseMetrics={analyseMetrics}
+          analyseCalc={analyseCalc}
         />
       </div>
       <BottomStatusBar
