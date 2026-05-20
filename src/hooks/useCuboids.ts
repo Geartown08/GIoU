@@ -75,7 +75,11 @@ export function useCuboids(viewMode: ViewMode, showStatus: (msg: string) => void
     const withNames = loaded.map((c, i) => ({ ...c, name: c.name || `Object ${i + 1}` }));
     setCuboids(withNames);
     selectedIdsRef.current = [];
-    nextId = Math.max(0, ...loaded.map(c => parseInt(c.id))) + 1;
+    const numericIds = loaded
+      .map(c => c.id)
+      .filter(id => /^\d+$/.test(id))
+      .map(id => parseInt(id, 10));
+    nextId = (numericIds.length > 0 ? Math.max(...numericIds) : 0) + 1;
     showStatus(loaded.length > 0 ? `Loaded ${loaded.length} cuboids` : 'Scene cleared');
   }, [showStatus]);
 
