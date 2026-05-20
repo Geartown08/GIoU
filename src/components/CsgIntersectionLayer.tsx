@@ -15,7 +15,7 @@ export function CsgIntersectionLayer({ cuboids }: CsgIntersectionLayerProps) {
       }
     }
     return result;
-  }, [cuboids.length]);
+  }, [cuboids]);
 
   return (
     <>

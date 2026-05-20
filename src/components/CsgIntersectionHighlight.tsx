@@ -46,6 +46,9 @@ export function CsgIntersectionHighlight({ a, b }: CsgIntersectionHighlightProps
   const wireMesh = useRef<Brush | null>(null);
 
   useEffect(() => {
+    const brushACurrent = brushA.current;
+    const brushBCurrent = brushB.current;
+
     return () => {
       if (solidMesh.current) {
         scene.remove(solidMesh.current);
@@ -57,8 +60,8 @@ export function CsgIntersectionHighlight({ a, b }: CsgIntersectionHighlightProps
         wireMesh.current.geometry.dispose();
         wireMesh.current = null;
       }
-      brushA.current.geometry.dispose();
-      brushB.current.geometry.dispose();
+      brushACurrent.geometry.dispose();
+      brushBCurrent.geometry.dispose();
     };
   }, [scene]);
 
