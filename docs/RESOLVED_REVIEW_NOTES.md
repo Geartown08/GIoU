@@ -48,3 +48,5 @@ Archived from `docs/REVIEW_NOTES.md` on 2026-05-20.
 | F35 | `AnalysePanel` | Closed panel removes the close button from tab order and the close button participates in the shared focus outline. |
 | F36 | `useCuboids` | Loaded scene id recovery now ignores malformed ids and only advances `nextId` from fully numeric ids. |
 | F37 | `loadScene` | Scene loading now rejects malformed cuboid data before it can enter render or metric paths. |
+| F38 | `WorkspaceLayout` | New/Open now asks for confirmation before discarding a non-empty scene. |
+| F39 | `CameraRig` | 2D mode no longer repeatedly replaces the canvas camera and crashes with a maximum update depth error. |

@@ -67,12 +67,17 @@ export function WorkspaceLayout({
 
   // ← useEffect for keyboard shortcuts removed, it lives in App.tsx now
 
+  const confirmDiscardScene = useCallback(() => (
+    cuboids.length === 0 || window.confirm('Discard current scene?')
+  ), [cuboids.length]);
+
   const handleTopBarAction = useCallback((action: string) => {
     switch (action) {
       case 'save':
         saveScene(cuboids);
         break;
       case 'open':
+        if (!confirmDiscardScene()) break;
         openAndLoadScene((cuboids) => {
           onLoadScene(cuboids);
         }, (err) => {
@@ -80,12 +85,13 @@ export function WorkspaceLayout({
         });
         break;
       case 'new':
+        if (!confirmDiscardScene()) break;
         onLoadScene([]);
         break;
       default:
         console.log(`[TopBar] unhandled action: ${action}`);
     }
-  }, [cuboids, onLoadScene]);
+  }, [confirmDiscardScene, cuboids, onLoadScene]);
 
   const handleToolChange = useCallback((tool: ToolMode) => {
     onToolChange(tool);  // ← was setActiveTool, now calls up to App.tsx
