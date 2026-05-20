@@ -9,17 +9,6 @@ Resolved historical issues are archived in [RESOLVED_REVIEW_NOTES.md](./RESOLVED
 
 ---
 
-## P0 - Correctness / Data Integrity
-
-### P0-1. Scene loading does not validate cuboid shape
-- File: [src/utils/loadScene.ts](../src/utils/loadScene.ts)
-- `openAndLoadScene` only checks that `parsed.cuboids` is an array. Malformed entries can reach
-  rendering, transform, and metric code without required fields.
-- Impact: missing `position`, `rotation`, `scale`, dimensions, `id`, or `color` can throw at
-  runtime or corrupt scene state.
-- Fix: add a minimal per-cuboid schema check before calling `onLoad`; reject or drop invalid
-  entries and report a useful load error.
-
 ## P1 - Core UX / Usability
 
 ### P1-1. New/Open can silently discard the current scene
@@ -112,7 +101,7 @@ Resolved historical issues are archived in [RESOLVED_REVIEW_NOTES.md](./RESOLVED
 
 ## Recommended Fix Order
 
-1. Immediate correctness pass: P0-1, P1-1, P1-2.
+1. Immediate UX safety pass: P1-1, P1-2.
 2. Core UX pass: P1-3, P1-4, P1-5, P1-6, P1-7.
 3. Accessibility and consistency pass: all P2 items.
 4. Cleanup pass: P3-1 through P3-8.

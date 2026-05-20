@@ -47,3 +47,4 @@ Archived from `docs/REVIEW_NOTES.md` on 2026-05-20.
 | F34 | `App` / `MetricsTab` | Hoisted Analyse metrics return `null` outside `mselect`, preventing stale metric display after leaving Analyse mode. |
 | F35 | `AnalysePanel` | Closed panel removes the close button from tab order and the close button participates in the shared focus outline. |
 | F36 | `useCuboids` | Loaded scene id recovery now ignores malformed ids and only advances `nextId` from fully numeric ids. |
+| F37 | `loadScene` | Scene loading now rejects malformed cuboid data before it can enter render or metric paths. |
