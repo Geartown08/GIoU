@@ -47,10 +47,10 @@ function App() {
     setSelectedIds([]);
   }, [handleLoadSceneCuboids, setSelectedIds]);
 
-  const calculations = useCalculations(cuboids, selectedIds, activeTool, viewMode);
+  const calculations = useCalculations(cuboids, selectedIds, viewMode);
 
   // Stable, order-independent key for the current comparison pair.
-  const comparisonKey = activeTool === 'mselect' && selectedIds.length === 2
+  const comparisonKey = selectedIds.length === 2
     ? [...selectedIds].sort().join('|')
     : null;
 
@@ -66,7 +66,10 @@ function App() {
     setAnalyseDismissedKey(comparisonKey);
   }, [comparisonKey]);
 
-  const mode: TransformMode = activeTool === 'rotate' || activeTool === 'scale' ? activeTool : 'translate';
+  const mode: TransformMode | null =
+    activeTool === 'translate' || activeTool === 'rotate' || activeTool === 'scale'
+      ? activeTool
+      : null;
 
   const handleDeleteSelected = useCallback(() => {
     const ids = [...selectedIdsRef.current];

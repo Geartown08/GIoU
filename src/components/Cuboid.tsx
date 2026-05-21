@@ -29,7 +29,7 @@ export function Cuboid({ data, isSelected, mode, onSelect, onUpdate, onDragStart
 
   return (
     <>
-      {isSelected && mesh && (
+      {isSelected && mesh && mode && (
         <TransformControls
           object={mesh}
           mode={mode}

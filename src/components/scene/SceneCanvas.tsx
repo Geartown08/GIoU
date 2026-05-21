@@ -12,7 +12,7 @@ import type { ViewMode } from '../../types/Workspace';
 interface SceneCanvasProps {
   cuboids: CuboidData[];
   selectedIds: string[];
-  mode: TransformMode;
+  mode: TransformMode | null;
   viewMode: ViewMode;
   showAxes: boolean;
   showOrigin: boolean;
@@ -26,6 +26,7 @@ export function SceneCanvas({
   showAxes, showOrigin, onSelect, onUpdate, onCanvasClick,
 }: SceneCanvasProps) {
   const orbitEnabledRef = useRef(true);
+  const transformMode = selectedIds.length === 1 ? mode : null;
 
   return (
     <Canvas camera={{ position: [4, 4, 8], fov: 50 }} style={{ width: '100%', height: '100%' }}>
@@ -44,7 +45,7 @@ export function SceneCanvas({
         <Cuboid
           key={c.id} data={c}
           isSelected={selectedIds.includes(c.id)}
-          mode={mode} onSelect={onSelect} onUpdate={onUpdate}
+          mode={transformMode} onSelect={onSelect} onUpdate={onUpdate}
           onDragStart={() => { orbitEnabledRef.current = false; }}
           onDragEnd={() => { orbitEnabledRef.current = true; }}
         />

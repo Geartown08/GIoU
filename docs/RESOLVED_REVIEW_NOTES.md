@@ -50,3 +50,5 @@ Archived from `docs/REVIEW_NOTES.md` on 2026-05-20.
 | F37 | `loadScene` | Scene loading now rejects malformed cuboid data before it can enter render or metric paths. |
 | F38 | `WorkspaceLayout` | New/Open now asks for confirmation before discarding a non-empty scene. |
 | F39 | `CameraRig` | 2D mode no longer repeatedly replaces the canvas camera and crashes with a maximum update depth error. |
+| F40 | `App` / `SceneCanvas` / `Cuboid` | Transform controls now render only for Move/Rotate/Scale with exactly one selected cuboid. |
+| F41 | `App` / `useCalculations` | Analyse popup and metrics now keep tracking a selected pair after switching away from the Analyse tool. |
