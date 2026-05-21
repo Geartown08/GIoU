@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
-import { useFrame, useThree } from '@react-three/fiber';
+import { useThree } from '@react-three/fiber';
 import { Brush, Evaluator, INTERSECTION } from 'three-bvh-csg';
-import { BoxGeometry, Clock, DoubleSide, MeshBasicMaterial } from 'three';
+import { Box3, BoxGeometry, DoubleSide, Mesh, MeshBasicMaterial } from 'three';
 import type { CuboidData } from '../types/Cuboid';
 
 interface CsgIntersectionHighlightProps {
@@ -10,7 +10,6 @@ interface CsgIntersectionHighlightProps {
 }
 
 const evaluator = new Evaluator();
-const clock = new Clock();
 
 const highlightMaterial = new MeshBasicMaterial({
   color: '#ff6b00',
@@ -24,7 +23,7 @@ const highlightMaterial = new MeshBasicMaterial({
   toneMapped: false,
 });
 
-const wireframeMaterial = new MeshBasicMaterial({
+export const wireframeMaterial = new MeshBasicMaterial({
   color: '#fff4b8',
   wireframe: true,
   transparent: true,
@@ -40,21 +39,16 @@ const wireframeMaterial = new MeshBasicMaterial({
 export function CsgIntersectionHighlight({ a, b }: CsgIntersectionHighlightProps) {
   const { scene } = useThree();
 
-  const aRef = useRef(a);
-  const bRef = useRef(b);
-  useEffect(() => { aRef.current = a; }, [a]);
-  useEffect(() => { bRef.current = b; }, [b]);
-
   const brushA = useRef(new Brush(new BoxGeometry(1, 1, 1)));
   const brushB = useRef(new Brush(new BoxGeometry(1, 1, 1)));
-
   const solidMesh = useRef<Brush | null>(null);
-  const wireMesh = useRef<Brush | null>(null);
+  const wireMesh = useRef<Mesh | null>(null);
+  const aabbA = useRef(new Box3());
+  const aabbB = useRef(new Box3());
 
   useEffect(() => {
-    const brushACurrent = brushA.current;
-    const brushBCurrent = brushB.current;
-
+    const ba = brushA.current;
+    const bb = brushB.current;
     return () => {
       if (solidMesh.current) {
         scene.remove(solidMesh.current);
@@ -63,18 +57,15 @@ export function CsgIntersectionHighlight({ a, b }: CsgIntersectionHighlightProps
       }
       if (wireMesh.current) {
         scene.remove(wireMesh.current);
-        wireMesh.current.geometry.dispose();
+        // Geometry is shared with solidMesh and already disposed above.
         wireMesh.current = null;
       }
-      brushACurrent.geometry.dispose();
-      brushBCurrent.geometry.dispose();
+      ba.geometry.dispose();
+      bb.geometry.dispose();
     };
   }, [scene]);
 
-  useFrame(() => {
-    const a = aRef.current;
-    const b = bRef.current;
-
+  useEffect(() => {
     brushA.current.position.set(...a.position);
     brushA.current.rotation.set(...a.rotation);
     brushA.current.scale.set(
@@ -93,44 +84,46 @@ export function CsgIntersectionHighlight({ a, b }: CsgIntersectionHighlightProps
     );
     brushB.current.updateMatrixWorld();
 
-    // Pulse wireframe opacity between 0.4 and 1.0
-    const pulse = (Math.sin(clock.getElapsedTime() * 4) + 1) / 2;
-    wireframeMaterial.opacity = 0.4 + pulse * 0.6;
+    if (solidMesh.current) {
+      scene.remove(solidMesh.current);
+      solidMesh.current.geometry.dispose();
+      solidMesh.current = null;
+    }
+    if (wireMesh.current) {
+      scene.remove(wireMesh.current);
+      wireMesh.current = null;
+    }
+
+    // Cheap world-AABB overlap test before paying for the CSG intersection.
+    aabbA.current.setFromObject(brushA.current);
+    aabbB.current.setFromObject(brushB.current);
+    if (!aabbA.current.intersectsBox(aabbB.current)) return;
 
     try {
-      // Remove old meshes
-      if (solidMesh.current) {
-        scene.remove(solidMesh.current);
-        solidMesh.current.geometry.dispose();
-        solidMesh.current = null;
-      }
-      if (wireMesh.current) {
-        scene.remove(wireMesh.current);
-        wireMesh.current.geometry.dispose();
-        wireMesh.current = null;
-      }
-
       const result = evaluator.evaluate(brushA.current, brushB.current, INTERSECTION);
       const count = result.geometry.attributes.position?.count ?? 0;
-
-      if (count > 0) {
-        // Draw as an analysis overlay so solid cuboids cannot occlude the overlap volume.
-        result.material = highlightMaterial;
-        result.renderOrder = 30;
-        scene.add(result);
-        solidMesh.current = result;
-
-        // Wireframe — clone the result brush itself, not just geometry
-        const wire = evaluator.evaluate(brushA.current, brushB.current, INTERSECTION);
-        wire.material = wireframeMaterial;
-        wire.renderOrder = 31;
-        scene.add(wire);
-        wireMesh.current = wire;
+      if (count === 0) {
+        result.geometry.dispose();
+        return;
       }
+
+      result.material = highlightMaterial;
+      result.renderOrder = 30;
+      scene.add(result);
+      solidMesh.current = result;
+
+      // Reuse the same geometry for the pulsing wireframe pass — avoids a
+      // second `evaluator.evaluate` call per pair, which is the dominant cost.
+      const wire = new Mesh(result.geometry, wireframeMaterial);
+      wire.matrixAutoUpdate = false;
+      wire.matrix.copy(result.matrix);
+      wire.renderOrder = 31;
+      scene.add(wire);
+      wireMesh.current = wire;
     } catch {
       // degenerate geometry — ignore
     }
-  });
+  }, [a, b, scene]);
 
   return null;
 }
