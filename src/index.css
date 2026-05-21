@@ -12,8 +12,148 @@ html, body, #root {
   overflow: hidden;
 }
 
+/* ===== Theme tokens =====
+ *
+ * Every UI colour and the global type stack live here as semantic tokens.
+ * Night mode (the original dark sci-fi palette) is the default, applied to
+ * the bare :root so the page still themes correctly before JS runs.
+ * Day mode is opted into via `data-theme="day"` on <html>.
+ */
+:root,
+:root[data-theme="night"] {
+  /* Type */
+  --font-ui:
+    'Inter', 'SF Pro Text', -apple-system, BlinkMacSystemFont,
+    'Segoe UI Variable Text', 'Segoe UI', Roboto, 'Helvetica Neue',
+    Arial, sans-serif;
+  --font-mono:
+    'JetBrains Mono', 'SF Mono', ui-monospace, Menlo, Consolas,
+    'Liberation Mono', monospace;
+
+  /* Surfaces */
+  --color-bg: #1a1a2e;
+  --color-surface: #16162a;
+  --color-surface-raised: rgba(22, 22, 42, 0.96);
+  --color-surface-sunken: #111122;
+  --color-surface-input: rgba(255, 255, 255, 0.04);
+  --color-surface-hover: rgba(255, 255, 255, 0.06);
+  --color-surface-active: rgba(255, 255, 255, 0.10);
+
+  /* Borders */
+  --color-border: #2a2a4a;
+  --color-border-strong: #3a3a6a;
+  --color-border-subtle: rgba(255, 255, 255, 0.06);
+
+  /* Text */
+  --color-text-strong: #f0f1ff;
+  --color-text: #d8dafc;
+  --color-text-secondary: #c0c0d0;
+  --color-text-muted: #a0a3c0;
+  --color-text-faint: #8b8eb8;
+  --color-text-quiet: #5b5e7a;
+  --color-text-mono: #c4c7e0;
+
+  /* Accent (primary indigo) */
+  --color-accent: #646cff;
+  --color-accent-hover: #7a82ff;
+  --color-accent-fg: #b0b8ff;
+  --color-accent-fg-strong: #e3e6ff;
+  --color-accent-bg-1: rgba(100, 108, 255, 0.10);
+  --color-accent-bg-2: rgba(100, 108, 255, 0.22);
+  --color-accent-border: rgba(100, 108, 255, 0.42);
+  --color-on-accent: #ffffff;
+  --color-focus-ring: rgba(160, 166, 255, 0.9);
+
+  /* View-mode accent (teal — 2D toggle) */
+  --color-view-accent: #7ef0e8;
+  --color-view-accent-bg: rgba(78, 205, 196, 0.22);
+  --color-view-accent-border: rgba(78, 205, 196, 0.5);
+
+  /* Danger */
+  --color-danger: #ff6b6b;
+  --color-danger-soft: #ff9a9a;
+  --color-danger-bg: rgba(255, 107, 107, 0.18);
+  --color-danger-border: rgba(255, 107, 107, 0.5);
+
+  /* Swatch rings (drawn on arbitrary user colours) */
+  --color-swatch-ring: rgba(255, 255, 255, 0.18);
+  --color-swatch-ring-hover: rgba(255, 255, 255, 0.4);
+  --color-swatch-ring-active: #ffffff;
+
+  /* Shadows */
+  --color-shadow-strong: rgba(0, 0, 0, 0.55);
+  --color-shadow-medium: rgba(0, 0, 0, 0.5);
+  --color-shadow-soft: rgba(0, 0, 0, 0.4);
+
+  color-scheme: dark;
+}
+
+:root[data-theme="day"] {
+  /* Surfaces */
+  --color-bg: #eef4fb;
+  --color-surface: #fbfcff;
+  --color-surface-raised: rgba(255, 255, 255, 0.97);
+  --color-surface-sunken: #e6eef9;
+  --color-surface-input: #f4f7fc;
+  --color-surface-hover: #edf3fb;
+  --color-surface-active: #e2eaf7;
+
+  /* Borders */
+  --color-border: #d3deed;
+  --color-border-strong: #aebcd2;
+  --color-border-subtle: rgba(32, 48, 76, 0.10);
+
+  /* Text */
+  --color-text-strong: #172033;
+  --color-text: #233047;
+  --color-text-secondary: #3b4a63;
+  --color-text-muted: #58677e;
+  --color-text-faint: #73839a;
+  --color-text-quiet: #9aa8ba;
+  --color-text-mono: #2e3b52;
+
+  /* Accent — saturated enough to carry active tool states on white */
+  --color-accent: #3f5df2;
+  --color-accent-hover: #314bd4;
+  --color-accent-fg: #2f49d0;
+  --color-accent-fg-strong: #2437a3;
+  --color-accent-bg-1: rgba(63, 93, 242, 0.09);
+  --color-accent-bg-2: rgba(63, 93, 242, 0.16);
+  --color-accent-border: rgba(63, 93, 242, 0.34);
+  --color-on-accent: #ffffff;
+  --color-focus-ring: rgba(63, 93, 242, 0.45);
+
+  /* View-mode accent */
+  --color-view-accent: #087f74;
+  --color-view-accent-bg: rgba(8, 127, 116, 0.12);
+  --color-view-accent-border: rgba(8, 127, 116, 0.38);
+
+  /* Danger */
+  --color-danger: #dc2626;
+  --color-danger-soft: #b91c1c;
+  --color-danger-bg: rgba(220, 38, 38, 0.10);
+  --color-danger-border: rgba(220, 38, 38, 0.45);
+
+  /* Swatch rings */
+  --color-swatch-ring: rgba(15, 23, 42, 0.18);
+  --color-swatch-ring-hover: rgba(15, 23, 42, 0.45);
+  --color-swatch-ring-active: #0f172a;
+
+  /* Shadows */
+  --color-shadow-strong: rgba(28, 44, 74, 0.20);
+  --color-shadow-medium: rgba(28, 44, 74, 0.14);
+  --color-shadow-soft: rgba(28, 44, 74, 0.09);
+
+  color-scheme: light;
+}
+
 body {
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family: var(--font-ui);
+  font-size: 14px;
+  line-height: 1.5;
+  background: var(--color-bg);
+  color: var(--color-text);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }

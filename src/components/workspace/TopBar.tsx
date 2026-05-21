@@ -1,4 +1,5 @@
 import type { UiScaleOverride } from '../../hooks/useUiScale';
+import type { Theme } from '../../hooks/useTheme';
 
 const TOP_ACTIONS = ['New', 'Open', 'Save'] as const;
 const UI_SCALE_OPTIONS: { value: UiScaleOverride; label: string }[] = [
@@ -16,9 +17,19 @@ interface TopBarProps {
   uiScale: UiScaleOverride;
   resolvedScale: number;
   onUiScaleChange: (scale: UiScaleOverride) => void;
+  theme: Theme;
+  onToggleTheme: () => void;
 }
 
-export function TopBar({ onAction, uiScale, resolvedScale, onUiScaleChange }: TopBarProps) {
+export function TopBar({
+  onAction,
+  uiScale,
+  resolvedScale,
+  onUiScaleChange,
+  theme,
+  onToggleTheme,
+}: TopBarProps) {
+  const nextThemeLabel = theme === 'night' ? 'Day' : 'Night';
   return (
     <header className="topbar">
       <div className="topbar-title">GIoU Visualiser</div>
@@ -39,6 +50,15 @@ export function TopBar({ onAction, uiScale, resolvedScale, onUiScaleChange }: To
           </select>
         </label>
         <nav className="topbar-actions">
+          <button
+            type="button"
+            className="topbar-button topbar-theme-toggle"
+            onClick={onToggleTheme}
+            aria-label={`Switch to ${nextThemeLabel.toLowerCase()} mode`}
+            title={`Switch to ${nextThemeLabel.toLowerCase()} mode`}
+          >
+            {nextThemeLabel} mode
+          </button>
           {TOP_ACTIONS.map(action => (
             <button
               key={action}

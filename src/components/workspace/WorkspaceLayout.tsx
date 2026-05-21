@@ -10,6 +10,7 @@ import { AnalysePanel } from './AnalysePanel';
 import { saveScene } from '../../utils/saveScene';
 import { openAndLoadScene } from '../../utils/loadScene';
 import { useUiScale } from '../../hooks/useUiScale';
+import { useTheme } from '../../hooks/useTheme';
 import '../../styles/workspace.css';
 
 interface WorkspaceLayoutProps {
@@ -64,6 +65,7 @@ export function WorkspaceLayout({
   // ← useState for activeTool removed, it lives in App.tsx now
   const [activeTab, setActiveTab] = useState<RightPanelTab>('object');
   const { scaleOverride, resolvedScale, setScaleOverride } = useUiScale();
+  const { theme, toggleTheme } = useTheme();
 
   // ← useEffect for keyboard shortcuts removed, it lives in App.tsx now
 
@@ -104,6 +106,8 @@ export function WorkspaceLayout({
         uiScale={scaleOverride}
         resolvedScale={resolvedScale}
         onUiScaleChange={setScaleOverride}
+        theme={theme}
+        onToggleTheme={toggleTheme}
       />
       <div className="workspace-body">
         <LeftToolbar activeTool={activeTool} onToolChange={handleToolChange} />

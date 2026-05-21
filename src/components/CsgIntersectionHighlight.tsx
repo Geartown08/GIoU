@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import { Brush, Evaluator, INTERSECTION } from 'three-bvh-csg';
-import { BoxGeometry, MeshBasicMaterial, Clock } from 'three';
+import { BoxGeometry, Clock, DoubleSide, MeshBasicMaterial } from 'three';
 import type { CuboidData } from '../types/Cuboid';
 
 interface CsgIntersectionHighlightProps {
@@ -13,22 +13,28 @@ const evaluator = new Evaluator();
 const clock = new Clock();
 
 const highlightMaterial = new MeshBasicMaterial({
-  color: '#ff3300',
+  color: '#ff6b00',
   transparent: true,
-  opacity: 0.45,
+  opacity: 0.68,
+  depthTest: false,
   depthWrite: false,
+  side: DoubleSide,
   polygonOffset: true,
   polygonOffsetFactor: -1,
+  toneMapped: false,
 });
 
 const wireframeMaterial = new MeshBasicMaterial({
-  color: '#ffffff',
+  color: '#fff4b8',
   wireframe: true,
   transparent: true,
   opacity: 1.0,
+  depthTest: false,
   depthWrite: false,
+  side: DoubleSide,
   polygonOffset: true,
   polygonOffsetFactor: -2,
+  toneMapped: false,
 });
 
 export function CsgIntersectionHighlight({ a, b }: CsgIntersectionHighlightProps) {
@@ -108,14 +114,16 @@ export function CsgIntersectionHighlight({ a, b }: CsgIntersectionHighlightProps
       const count = result.geometry.attributes.position?.count ?? 0;
 
       if (count > 0) {
-        // Solid layer — exactly as the working version, just different material
+        // Draw as an analysis overlay so solid cuboids cannot occlude the overlap volume.
         result.material = highlightMaterial;
+        result.renderOrder = 30;
         scene.add(result);
         solidMesh.current = result;
 
         // Wireframe — clone the result brush itself, not just geometry
         const wire = evaluator.evaluate(brushA.current, brushB.current, INTERSECTION);
         wire.material = wireframeMaterial;
+        wire.renderOrder = 31;
         scene.add(wire);
         wireMesh.current = wire;
       }

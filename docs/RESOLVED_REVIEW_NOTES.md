@@ -52,3 +52,8 @@ Archived from `docs/REVIEW_NOTES.md` on 2026-05-20.
 | F39 | `CameraRig` | 2D mode no longer repeatedly replaces the canvas camera and crashes with a maximum update depth error. |
 | F40 | `App` / `SceneCanvas` / `Cuboid` | Transform controls now render only for Move/Rotate/Scale with exactly one selected cuboid. |
 | F41 | `App` / `useCalculations` | Analyse popup and metrics now keep tracking a selected pair after switching away from the Analyse tool. |
+| F42 | `useCuboids` | Add Cuboid placement now uses a monotonic counter so deletions do not recycle previous spawn positions. |
+| F43 | `Cuboid` | Cuboid materials now use standard transparent rendering instead of additive blending, keeping colours cleaner in day mode. |
+| F44 | `CsgIntersectionHighlight` | Intersection highlights now render as a high-priority overlay so overlap volumes remain visible through solid cuboids. |
+| F45 | `SceneGuides` | Day mode axes now use theme-aware high-contrast shafts, arrowheads, labels, and origin styling. |
+| F46 | `Cuboid` | Selected cuboids now show a theme-aware highlight shell and high-contrast outline so scene selection is easier to identify. |
