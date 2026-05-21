@@ -1,4 +1,6 @@
 import type { CalculationData, ViewMode } from '../../types/Workspace';
+import { MathFormula } from './MathFormula';
+import { getMetricFormulas } from '../../utils/metricFormula';
 
 interface AnalysePanelProps {
   open: boolean;
@@ -7,20 +9,9 @@ interface AnalysePanelProps {
   onClose: () => void;
 }
 
-const METRICS: { key: 'iou' | 'giou' | 'lossIoU' | 'lossGIoU'; label: string; desc: string }[] = [
-  { key: 'iou',      label: 'IoU',    desc: 'Intersection over Union — overlap ratio.' },
-  { key: 'giou',     label: 'GIoU',   desc: 'Generalised IoU — adds enclosing-region penalty.' },
-  { key: 'lossIoU',  label: 'L_IoU',  desc: 'IoU loss (1 − IoU).' },
-  { key: 'lossGIoU', label: 'L_GIoU', desc: 'GIoU loss (1 − GIoU).' },
-];
-
-function formatMetric(value: number | undefined): string {
-  return Number.isFinite(value) ? value!.toFixed(4) : '--';
-}
-
 export function AnalysePanel({ open, viewMode, calc, onClose }: AnalysePanelProps) {
   const pair = calc?.items;
-  const metrics = calc?.giou;
+  const formulas = getMetricFormulas(calc?.giou);
 
   return (
     <section
@@ -60,10 +51,16 @@ export function AnalysePanel({ open, viewMode, calc, onClose }: AnalysePanelProp
         </button>
       </header>
       <div className="analyse-panel-metrics">
-        {METRICS.map(({ key, label, desc }) => (
+        {formulas.map(({ key, label, desc, symbolic, substitution, value, isNegative }) => (
           <div key={key} className="analyse-metric">
             <div className="analyse-metric-key">{label}</div>
-            <div className="analyse-metric-value">{formatMetric(metrics?.[key])}</div>
+            <div className={isNegative ? 'analyse-metric-value calc-negative' : 'analyse-metric-value'}>
+              {value}
+            </div>
+            <MathFormula tex={symbolic} displayMode className="analyse-metric-formula" />
+            {substitution && (
+              <MathFormula tex={substitution} displayMode className="analyse-metric-substitution" />
+            )}
             <div className="analyse-metric-desc">{desc}</div>
           </div>
         ))}

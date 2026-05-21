@@ -38,9 +38,18 @@ function App() {
   // useCuboids only touches selectedIdsRef; wrap so the useSelection state
   // stays in sync when cuboids are removed or replaced.
   const handleDelete = useCallback((id: string) => {
+    const previousSelectedIds = selectedIdsRef.current;
+    const nextSelectedIds = previousSelectedIds.filter(s => s !== id);
     handleDeleteCuboid(id);
-    setSelectedIds(prev => prev.filter(s => s !== id));
-  }, [handleDeleteCuboid, setSelectedIds]);
+    setSelectedIds(nextSelectedIds);
+    if (
+      activeToolRef.current === 'mselect' &&
+      previousSelectedIds.length === 2 &&
+      nextSelectedIds.length === 1
+    ) {
+      showStatus(`Comparison: #${nextSelectedIds[0]} (pick one more)`);
+    }
+  }, [handleDeleteCuboid, selectedIdsRef, setSelectedIds, showStatus]);
 
   const handleLoadScene = useCallback((loaded: CuboidData[]) => {
     handleLoadSceneCuboids(loaded);

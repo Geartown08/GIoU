@@ -57,3 +57,6 @@ Archived from `docs/REVIEW_NOTES.md` on 2026-05-20.
 | F44 | `CsgIntersectionHighlight` | Intersection highlights now render as a high-priority overlay so overlap volumes remain visible through solid cuboids. |
 | F45 | `SceneGuides` | Day mode axes now use theme-aware high-contrast shafts, arrowheads, labels, and origin styling. |
 | F46 | `Cuboid` | Selected cuboids now show a theme-aware highlight shell and high-contrast outline so scene selection is easier to identify. |
+| F47 | `index.css` / `workspace.css` / `useTheme` | Global readability issue resolved with semantic theme tokens, a persisted day/night toggle, a more legible font stack, and day-mode workspace styling. |
+| F48 | `App` | Deleting one cuboid from a two-item Analyse comparison now keeps the remaining selection and prompts `Comparison: #id (pick one more)`. |
+| F49 | `ExplainTab` / `AnalysePanel` | Formula rendering now uses KaTeX with shared metric formulas, symbolic expressions, numeric substitution, and final values for IoU, GIoU, and loss metrics. |

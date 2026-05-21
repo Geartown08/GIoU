@@ -3,7 +3,7 @@
 Open issues found during code review of the workspace UI. This document is intentionally limited
 to unresolved work so follow-up sessions can start from the current priority list.
 
-Last consolidated: 2026-05-20
+Last consolidated: 2026-05-21
 
 Resolved historical issues are archived in [RESOLVED_REVIEW_NOTES.md](./RESOLVED_REVIEW_NOTES.md).
 
@@ -11,32 +11,7 @@ Resolved historical issues are archived in [RESOLVED_REVIEW_NOTES.md](./RESOLVED
 
 ## P1 - Core UX / Usability
 
-### P1-1. Deleting one compared cuboid leaves weak Analyse feedback
-- Files: [src/App.tsx](../src/App.tsx), [src/hooks/useCuboids.ts](../src/hooks/useCuboids.ts)
-- Deleting one item from a two-cuboid Analyse selection only reports the deletion. The remaining
-  half-comparison is left selected, while metrics disappear because a full pair no longer exists.
-- Impact: users see metrics vanish without a clear next action.
-- Fix: after deleting in Analyse mode, if one selected cuboid remains, report
-  `Comparison: #id (pick one more)` and keep the status aligned with the remaining selection.
-
-### P1-2. Global font and colour system reduces readability
-- Files: [src/index.css](../src/index.css), [src/styles/workspace.css](../src/styles/workspace.css)
-- The UI uses a compact system font stack and many hard-coded dark sci-fi colours.
-- Impact: the style has a technical mood, but long-form labels, formulas, status text, and sidebar
-  controls are harder to read; users also have no light/day mode.
-- Fix: introduce semantic theme tokens, keep the current palette as night mode, add a day mode,
-  and use a more readable UI font stack. Theme state can be exposed through a `data-theme`
-  attribute or equivalent root class.
-
-### P1-3. Explain and Analyse formulas are not clear enough
-- Files: [src/components/workspace/tabs/ExplainTab.tsx](../src/components/workspace/tabs/ExplainTab.tsx),
-  [src/components/workspace/AnalysePanel.tsx](../src/components/workspace/AnalysePanel.tsx)
-- Explain currently renders formulas as plain monospace text; Analyse shows metric descriptions
-  but not clear mathematical expressions.
-- Impact: users cannot easily connect IoU, GIoU, loss values, and the numeric derivation.
-- Fix: add KaTeX-based formula rendering and reuse it in both Explain and Analyse. Show the
-  symbolic formula, the numeric substitution, and the final result for `IoU`, `GIoU`, `L_IoU`,
-  and `L_GIoU`.
+No open P1 issues.
 
 ## P2 - Accessibility / Consistency Polish
 
@@ -67,8 +42,6 @@ Resolved historical issues are archived in [RESOLVED_REVIEW_NOTES.md](./RESOLVED
 
 ## Recommended Fix Order
 
-1. Immediate UX safety pass: P1-1.
-2. Core UX pass: P1-2, P1-3.
-3. Accessibility and consistency pass: all P2 items.
-4. Cleanup pass: P3-1 through P3-8.
-5. Performance pass: P3-9 only when bundle size becomes an explicit target.
+1. Accessibility and consistency pass: all P2 items.
+2. Cleanup pass: P3-1 through P3-8.
+3. Performance pass: P3-9 only when bundle size becomes an explicit target.

@@ -404,13 +404,36 @@
 }
 
 .formula {
-  font-family: var(--font-mono);
   font-size: var(--ui-font-sm);
   color: var(--color-accent-fg);
   padding: var(--ui-space-3) var(--ui-space-4);
   background: var(--color-accent-bg-1);
   border-radius: var(--ui-radius-sm);
   line-height: 1.5;
+}
+
+.math-formula {
+  color: inherit;
+}
+
+.math-formula .katex {
+  font-size: 1em;
+}
+
+.math-formula .katex-display {
+  margin: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: calc(1px * var(--ui-scale)) 0;
+}
+
+.math-formula--block {
+  display: block;
+  min-width: 0;
+}
+
+.math-formula--inline {
+  display: inline-block;
 }
 
 /* ---------- Bottom status bar ---------- */
@@ -1035,14 +1058,14 @@
 
 .analyse-panel-metrics {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(calc(160px * var(--ui-scale)), 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(calc(190px * var(--ui-scale)), 1fr));
   gap: var(--ui-space-5);
 }
 
 .analyse-metric {
   display: flex;
   flex-direction: column;
-  gap: calc(2px * var(--ui-scale));
+  gap: var(--ui-space-2);
   padding: var(--ui-space-4) var(--ui-space-5);
   background: var(--color-accent-bg-1);
   border: var(--ui-border) solid var(--color-accent-border);
@@ -1062,6 +1085,25 @@
   font-size: var(--ui-font-xl);
   color: var(--color-accent-fg-strong);
   letter-spacing: 0.4px;
+}
+
+.analyse-metric-formula,
+.analyse-metric-substitution {
+  padding: var(--ui-space-2) var(--ui-space-3);
+  border-radius: var(--ui-radius-sm);
+  line-height: 1.4;
+}
+
+.analyse-metric-formula {
+  color: var(--color-text-secondary);
+  background: var(--color-surface-input);
+  font-size: var(--ui-font-xs);
+}
+
+.analyse-metric-substitution {
+  color: var(--color-text-strong);
+  background: var(--color-surface-hover);
+  font-size: var(--ui-font-xs);
 }
 
 .analyse-metric-desc {
@@ -1146,6 +1188,46 @@
   padding: calc(2px * var(--ui-scale)) 0;
   font-size: var(--ui-font-xs);
   line-height: 1.5;
+}
+
+.calc-formula-step {
+  display: grid;
+  grid-template-columns: minmax(88px, max-content) minmax(0, 1fr) max-content;
+  gap: var(--ui-space-3);
+  align-items: center;
+  padding: var(--ui-space-2) 0;
+  font-size: var(--ui-font-xs);
+  line-height: 1.5;
+}
+
+.calc-formula-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ui-space-2);
+  min-width: 0;
+}
+
+.calc-formula-symbolic,
+.calc-formula-substitution {
+  padding: var(--ui-space-2) var(--ui-space-3);
+  border-radius: var(--ui-radius-sm);
+}
+
+.calc-formula-symbolic {
+  color: var(--color-text-secondary);
+  background: var(--color-surface-input);
+}
+
+.calc-formula-substitution {
+  color: var(--color-text-strong);
+  background: var(--color-surface-hover);
+}
+
+.calc-formula-result {
+  color: var(--color-text-strong);
+  font-family: var(--font-mono);
+  font-size: var(--ui-font-sm);
+  text-align: right;
 }
 
 .calc-label {
