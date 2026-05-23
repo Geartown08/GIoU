@@ -3,11 +3,17 @@
 Open issues found during code review of the workspace UI. This document is intentionally limited
 to unresolved work so follow-up sessions can start from the current priority list.
 
-Last consolidated: 2026-05-21
+Last consolidated: 2026-05-23
 
 Resolved historical issues are archived in [RESOLVED_REVIEW_NOTES.md](./RESOLVED_REVIEW_NOTES.md).
 
 ---
+
+## P0 - Critical Performance
+
+| # | File / location | Problem | Suggested fix |
+|---|---|---|---|
+| P0-1 | [App.tsx](../src/App.tsx), [useCalculations.ts](../src/hooks/useCalcutlations.ts), [CsgIntersectionLayer.tsx](../src/components/CsgIntersectionLayer.tsx), [CsgIntersectionHighlight.tsx](../src/components/CsgIntersectionHighlight.tsx), [Cuboid.tsx](../src/components/Cuboid.tsx) | After enabling Analyse, the 3D viewport becomes noticeably sluggish and frame rate drops. This is highest risk because Analyse is now expected to stay open while objects are transformed in real time. | Profile the Analyse-on path first. Check whether live `TransformControls.onObjectChange`, oriented GIoU recalculation, KaTeX panel updates, and CSG intersection rendering are all firing too often. Throttle/debounce expensive metric updates during drag if needed, memoize stable panel/formula work, and restrict CSG/intersection work to visible or relevant pairs. |
 
 ## P1 - Correctness / Performance
 
@@ -44,6 +50,7 @@ No open P1 issues.
 
 ## Recommended Fix Order
 
-1. Accessibility and consistency pass: all P2 items.
-2. Cleanup pass: P3-1 through P3-10.
-3. Performance pass: P3-11 only when bundle size becomes an explicit target.
+1. Fix P0-1 Analyse-on 3D viewport performance before further UX polish.
+2. Accessibility and consistency pass: all P2 items.
+3. Cleanup pass: P3-1 through P3-10.
+4. Performance pass: P3-11 only when bundle size becomes an explicit target.

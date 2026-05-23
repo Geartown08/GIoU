@@ -18,9 +18,32 @@ const SELECTION_STYLE = {
   },
 } as const;
 
-export function Cuboid({ data, isSelected, mode, onSelect, onUpdate, onDragStart, onDragEnd }: CuboidProps) {
+const ANALYSE_STYLE = {
+  night: {
+    edge: '#67e8f9',
+    shell: '#22d3ee',
+    shellOpacity: 0.1,
+  },
+  day: {
+    edge: '#0891b2',
+    shell: '#06b6d4',
+    shellOpacity: 0.08,
+  },
+} as const;
+
+export function Cuboid({
+  data,
+  isSelected,
+  isAnalysed,
+  mode,
+  onSelect,
+  onUpdate,
+  onDragStart,
+  onDragEnd,
+}: CuboidProps) {
   const { theme } = useTheme();
   const selectionStyle = SELECTION_STYLE[theme];
+  const analyseStyle = ANALYSE_STYLE[theme];
   const [mesh, setMesh] = useState<Mesh | null>(null);
   const setMeshRef = useCallback((node: Mesh | null) => {
     setMesh(node);
@@ -31,8 +54,7 @@ export function Cuboid({ data, isSelected, mode, onSelect, onUpdate, onDragStart
     onSelect(data.id);
   };
 
-  const handleMouseUp = () => {
-    onDragEnd();
+  const syncTransform = useCallback(() => {
     if (mesh) {
       const { position, rotation, scale } = mesh;
       onUpdate(data.id, {
@@ -41,6 +63,11 @@ export function Cuboid({ data, isSelected, mode, onSelect, onUpdate, onDragStart
         scale: [scale.x, scale.y, scale.z],
       });
     }
+  }, [data.id, mesh, onUpdate]);
+
+  const handleMouseUp = () => {
+    onDragEnd();
+    syncTransform();
   };
 
   return (
@@ -50,6 +77,7 @@ export function Cuboid({ data, isSelected, mode, onSelect, onUpdate, onDragStart
           object={mesh}
           mode={mode}
           onMouseDown={onDragStart}
+          onObjectChange={syncTransform}
           onMouseUp={handleMouseUp}
         />
       )}
@@ -65,12 +93,42 @@ export function Cuboid({ data, isSelected, mode, onSelect, onUpdate, onDragStart
           color={data.color}
           emissive={isSelected ? data.color : '#000000'}
           transparent={true}
-          opacity={isSelected ? 0.78 : 0.62}
+          opacity={isSelected ? 0.78 : isAnalysed ? 0.72 : 0.62}
           depthWrite={true}
           emissiveIntensity={isSelected ? 0.18 : 0}
           roughness={0.56}
           metalness={0.04}
         />
+        {isAnalysed && (
+          <>
+            {!isSelected && (
+              <mesh
+                scale={1.014}
+                renderOrder={16}
+                raycast={() => null}
+              >
+                <boxGeometry args={[data.width, data.height, data.depth]} />
+                <meshBasicMaterial
+                  color={analyseStyle.shell}
+                  transparent
+                  opacity={analyseStyle.shellOpacity}
+                  depthWrite={false}
+                  toneMapped={false}
+                />
+              </mesh>
+            )}
+            <Edges
+              scale={1.055}
+              threshold={1}
+              color={analyseStyle.edge}
+              lineWidth={2.1}
+              renderOrder={17}
+              depthTest={false}
+              toneMapped={false}
+              raycast={() => null}
+            />
+          </>
+        )}
         {isSelected && (
           <>
             <mesh

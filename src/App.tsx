@@ -26,37 +26,54 @@ function App() {
   const showStatus = useCallback((msg: string) => setStatusMessage(msg), []);
 
   const {
-    cuboids, setCuboids, selectedIdsRef,
+    cuboids, setCuboids,
     handleAdd, handleDelete: handleDeleteCuboid, handleUpdate, handleRename,
     handleLoadScene: handleLoadSceneCuboids,
     nextId,
   } = useCuboids(viewMode, showStatus);
 
-  const { selectedIds, setSelectedIds, clearSelection, handleSelect } =
-    useSelection(activeToolRef, selectedIdsRef, showStatus);
+  const {
+    activeSelectedIds,
+    analyseSelectedIds,
+    activeSelectedIdsRef,
+    analyseSelectedIdsRef,
+    setActiveSelectedIds,
+    setAnalyseSelectedIds,
+    clearSelection,
+    handleSelect,
+  } = useSelection(activeToolRef, showStatus);
 
-  // useCuboids only touches selectedIdsRef; wrap so the useSelection state
-  // stays in sync when cuboids are removed or replaced.
+  // Keep both selection tracks consistent when cuboids are removed.
   const handleDelete = useCallback((id: string) => {
-    const previousSelectedIds = selectedIdsRef.current;
-    const nextSelectedIds = previousSelectedIds.filter(s => s !== id);
+    const previousAnalyseIds = analyseSelectedIdsRef.current;
+    const nextAnalyseIds = previousAnalyseIds.filter(s => s !== id);
+    const nextActiveIds = activeSelectedIdsRef.current.filter(s => s !== id);
     handleDeleteCuboid(id);
-    setSelectedIds(nextSelectedIds);
+    setActiveSelectedIds(nextActiveIds);
+    setAnalyseSelectedIds(nextAnalyseIds);
     if (
       activeToolRef.current === 'mselect' &&
-      previousSelectedIds.length === 2 &&
-      nextSelectedIds.length === 1
+      previousAnalyseIds.length === 2 &&
+      nextAnalyseIds.length === 1
     ) {
-      showStatus(`Comparison: #${nextSelectedIds[0]} (pick one more)`);
+      showStatus(`Comparison: #${nextAnalyseIds[0]} (pick one more)`);
     }
-  }, [handleDeleteCuboid, selectedIdsRef, setSelectedIds, showStatus]);
+  }, [
+    activeSelectedIdsRef,
+    analyseSelectedIdsRef,
+    handleDeleteCuboid,
+    setActiveSelectedIds,
+    setAnalyseSelectedIds,
+    showStatus,
+  ]);
 
   const handleLoadScene = useCallback((loaded: CuboidData[]) => {
     handleLoadSceneCuboids(loaded);
-    setSelectedIds([]);
-  }, [handleLoadSceneCuboids, setSelectedIds]);
+    setActiveSelectedIds([]);
+    setAnalyseSelectedIds([]);
+  }, [handleLoadSceneCuboids, setActiveSelectedIds, setAnalyseSelectedIds]);
 
-  const calculations = useCalculations(cuboids, selectedIds, viewMode);
+  const calculations = useCalculations(cuboids, analyseSelectedIds, viewMode);
 
   const handleAnalysePanelClose = useCallback(() => {
     setAnalysePanelOpen(false);
@@ -68,29 +85,31 @@ function App() {
       : null;
 
   const handleDeleteSelected = useCallback(() => {
-    const ids = [...selectedIdsRef.current];
+    const ids = [...activeSelectedIdsRef.current];
     if (ids.length === 0) { showStatus('Select a cuboid before deleting'); return; }
     setCuboids(prev => prev.filter(c => !ids.includes(c.id)));
-    selectedIdsRef.current = [];
-    setSelectedIds([]);
+    setActiveSelectedIds([]);
+    setAnalyseSelectedIds(prev => prev.filter(id => !ids.includes(id)));
     showStatus(ids.length === 1 ? `Deleted cuboid #${ids[0]}` : `Deleted ${ids.length} cuboids`);
-  }, [showStatus, setCuboids, selectedIdsRef, setSelectedIds]);
+  }, [activeSelectedIdsRef, showStatus, setCuboids, setActiveSelectedIds, setAnalyseSelectedIds]);
 
   const handleToolChange = useCallback((tool: ToolMode) => {
-    const currentSelectedIds = selectedIdsRef.current;
+    const currentActiveSelectedIds = activeSelectedIdsRef.current;
+    const currentAnalyseSelectedIds = analyseSelectedIdsRef.current;
 
     if (tool === 'mselect') {
+      const wasAnalyseTool = activeToolRef.current === 'mselect';
       activeToolRef.current = 'mselect';
       setActiveTool('mselect');
-      const nextPanelOpen = !analysePanelOpen;
+      const nextPanelOpen = wasAnalyseTool ? !analysePanelOpen : true;
       setAnalysePanelOpen(nextPanelOpen);
 
       if (!nextPanelOpen) {
         showStatus('Analyse panel hidden');
-      } else if (currentSelectedIds.length === 2) {
-        showStatus(`Comparing #${currentSelectedIds[0]} and #${currentSelectedIds[1]}`);
-      } else if (currentSelectedIds.length === 1) {
-        showStatus(`Comparison: #${currentSelectedIds[0]} (pick one more)`);
+      } else if (currentAnalyseSelectedIds.length === 2) {
+        showStatus(`Comparing #${currentAnalyseSelectedIds[0]} and #${currentAnalyseSelectedIds[1]}`);
+      } else if (currentAnalyseSelectedIds.length === 1) {
+        showStatus(`Comparison: #${currentAnalyseSelectedIds[0]} (pick one more)`);
       } else {
         showStatus(MODE_STATUS.mselect);
       }
@@ -107,9 +126,9 @@ function App() {
       setCuboids(prev => [...prev, createRandomCuboid(id)]);
       showStatus(`Added random cuboid #${id}`);
       activeToolRef.current = 'select'; setActiveTool('select');
-    } else if (tool === 'duplicate' && currentSelectedIds.length > 0) {
+    } else if (tool === 'duplicate' && currentActiveSelectedIds.length > 0) {
       setCuboids(prev => {
-        const source = prev.find(c => c.id === currentSelectedIds[0]);
+        const source = prev.find(c => c.id === currentActiveSelectedIds[0]);
         if (!source) return prev;
         const newId = nextId();
         const copy: CuboidData = {
@@ -119,8 +138,7 @@ function App() {
             ? [source.position[0] + 0.5, source.position[1] + 0.5, 0]
             : [source.position[0] + 0.5, source.position[1], source.position[2] + 0.5],
         };
-        selectedIdsRef.current = [newId];
-        setSelectedIds([newId]);
+        setActiveSelectedIds([newId]);
         showStatus(`Duplicated cuboid #${source.id} as #${newId}`);
         return [...prev, copy];
       });
@@ -128,21 +146,31 @@ function App() {
     } else if (tool === 'duplicate') {
       showStatus('Select a cuboid before duplicating');
       activeToolRef.current = 'select'; setActiveTool('select');
-    } else if (tool === 'delete' && currentSelectedIds.length > 0) {
+    } else if (tool === 'delete' && currentActiveSelectedIds.length > 0) {
       handleDeleteSelected();
       activeToolRef.current = 'select'; setActiveTool('select');
     } else if (tool === 'delete') {
       showStatus('Select a cuboid before deleting');
       activeToolRef.current = 'select'; setActiveTool('select');
     }
-  }, [analysePanelOpen, viewMode, handleDeleteSelected, showStatus, nextId, setCuboids, selectedIdsRef, setSelectedIds]);
+  }, [
+    activeSelectedIdsRef,
+    analysePanelOpen,
+    analyseSelectedIdsRef,
+    viewMode,
+    handleDeleteSelected,
+    showStatus,
+    nextId,
+    setCuboids,
+    setActiveSelectedIds,
+  ]);
 
   const handleCanvasClick = useCallback(() => {
-    if (activeToolRef.current === 'mselect' && selectedIdsRef.current.length > 0) {
+    if (activeToolRef.current === 'mselect' && analyseSelectedIdsRef.current.length > 0) {
       showStatus('Press Esc to clear comparison'); return;
     }
     clearSelection();
-  }, [clearSelection, showStatus, selectedIdsRef]);
+  }, [analyseSelectedIdsRef, clearSelection, showStatus]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -166,7 +194,11 @@ function App() {
 
   const sceneContent = (
     <SceneCanvas
-      cuboids={cuboids} selectedIds={selectedIds} mode={mode} viewMode={viewMode}
+      cuboids={cuboids}
+      activeSelectedIds={activeSelectedIds}
+      analyseSelectedIds={analyseSelectedIds}
+      mode={mode}
+      viewMode={viewMode}
       showAxes={showAxes} showOrigin={showOrigin}
       onSelect={handleSelect} onUpdate={handleUpdate} onCanvasClick={handleCanvasClick}
     />
@@ -175,7 +207,9 @@ function App() {
   return (
     <WorkspaceLayout
       viewportContent={sceneContent}
-      cuboids={cuboids} selectedId={selectedIds}
+      cuboids={cuboids}
+      activeSelectedIds={activeSelectedIds}
+      analyseSelectedIds={analyseSelectedIds}
       onAdd={handleAdd} onDelete={handleDelete} onRename={handleRename}
       onSelect={handleSelect} onLoadScene={handleLoadScene}
       activeTool={activeTool} onToolChange={handleToolChange}

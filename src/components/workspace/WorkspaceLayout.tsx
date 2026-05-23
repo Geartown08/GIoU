@@ -16,7 +16,8 @@ import '../../styles/workspace.css';
 interface WorkspaceLayoutProps {
   viewportContent?: React.ReactNode;
   cuboids: CuboidData[];
-  selectedId: string[];
+  activeSelectedIds: string[];
+  analyseSelectedIds: string[];
   onAdd: (cuboid: Omit<CuboidData, 'id' | 'position' | 'rotation' | 'scale'>) => void;
   onDelete: (id: string) => void;
   onSelect: (id: string | null) => void;
@@ -41,7 +42,8 @@ interface WorkspaceLayoutProps {
 export function WorkspaceLayout({
   viewportContent,
   cuboids,
-  selectedId,
+  activeSelectedIds,
+  analyseSelectedIds,
   onAdd,
   onDelete,
   onSelect,
@@ -66,7 +68,7 @@ export function WorkspaceLayout({
   const [activeTab, setActiveTab] = useState<RightPanelTab>('object');
   const { scaleOverride, resolvedScale, setScaleOverride } = useUiScale();
   const { theme, toggleTheme } = useTheme();
-  const selectedCuboids = selectedId
+  const analyseSelectedCuboids = analyseSelectedIds
     .map(id => cuboids.find(c => c.id === id))
     .filter((cuboid): cuboid is CuboidData => Boolean(cuboid));
 
@@ -115,12 +117,12 @@ export function WorkspaceLayout({
       <div className="workspace-body">
         <LeftToolbar activeTool={activeTool} onToolChange={handleToolChange} />
         <div className="workspace-viewport-stack">
-          <ViewportPanel>{viewportContent}</ViewportPanel>
+          <ViewportPanel>{viewportContent as React.ReactNode}</ViewportPanel>
           <AnalysePanel
             open={analysePanelOpen}
             viewMode={viewMode}
             calc={analyseCalc}
-            selectedCuboids={selectedCuboids}
+            selectedCuboids={analyseSelectedCuboids}
             cuboidCount={cuboids.length}
             onClose={onAnalysePanelClose}
           />
@@ -129,7 +131,7 @@ export function WorkspaceLayout({
           activeTab={activeTab}
           onTabChange={setActiveTab}
           cuboids={cuboids}
-          selectedId={selectedId}
+          selectedId={activeSelectedIds}
           onAdd={onAdd}
           onDelete={onDelete}
           onSelect={onSelect}
