@@ -1,6 +1,7 @@
 import { useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { CsgIntersectionHighlight, wireframeMaterial } from './CsgIntersectionHighlight';
+import { CsgIntersectionHighlight } from './CsgIntersectionHighlight';
+import { wireframeMaterial } from './CsgIntersectionMaterials';
 import type { CuboidData } from '../types/Cuboid';
 
 interface CsgIntersectionLayerProps {

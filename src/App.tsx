@@ -19,7 +19,7 @@ function App() {
   const [showOrigin, setShowOrigin]   = useState(true);
   const [viewMode, setViewMode]       = useState<ViewMode>('3d');
   const [statusMessage, setStatusMessage] = useState('Ready');
-  const [analyseDismissedKey, setAnalyseDismissedKey] = useState<string | null>(null);
+  const [analysePanelOpen, setAnalysePanelOpen] = useState(false);
   const activeToolRef = useRef<ToolMode>('select');
   const objectAddShortcutRef = useRef<(() => void) | null>(null);
 
@@ -58,22 +58,9 @@ function App() {
 
   const calculations = useCalculations(cuboids, selectedIds, viewMode);
 
-  // Stable, order-independent key for the current comparison pair.
-  const comparisonKey = selectedIds.length === 2
-    ? [...selectedIds].sort().join('|')
-    : null;
-
-  // Drop a stale dismissal as soon as the active pair changes. Set during render —
-  // React's recommended pattern for "adjust state on prop change."
-  if (analyseDismissedKey !== null && analyseDismissedKey !== comparisonKey) {
-    setAnalyseDismissedKey(null);
-  }
-
-  const analysePanelOpen = comparisonKey !== null && comparisonKey !== analyseDismissedKey;
-
   const handleAnalysePanelClose = useCallback(() => {
-    setAnalyseDismissedKey(comparisonKey);
-  }, [comparisonKey]);
+    setAnalysePanelOpen(false);
+  }, []);
 
   const mode: TransformMode | null =
     activeTool === 'translate' || activeTool === 'rotate' || activeTool === 'scale'
@@ -91,6 +78,25 @@ function App() {
 
   const handleToolChange = useCallback((tool: ToolMode) => {
     const currentSelectedIds = selectedIdsRef.current;
+
+    if (tool === 'mselect') {
+      activeToolRef.current = 'mselect';
+      setActiveTool('mselect');
+      const nextPanelOpen = !analysePanelOpen;
+      setAnalysePanelOpen(nextPanelOpen);
+
+      if (!nextPanelOpen) {
+        showStatus('Analyse panel hidden');
+      } else if (currentSelectedIds.length === 2) {
+        showStatus(`Comparing #${currentSelectedIds[0]} and #${currentSelectedIds[1]}`);
+      } else if (currentSelectedIds.length === 1) {
+        showStatus(`Comparison: #${currentSelectedIds[0]} (pick one more)`);
+      } else {
+        showStatus(MODE_STATUS.mselect);
+      }
+      return;
+    }
+
     activeToolRef.current = tool;
     setActiveTool(tool);
 
@@ -129,7 +135,7 @@ function App() {
       showStatus('Select a cuboid before deleting');
       activeToolRef.current = 'select'; setActiveTool('select');
     }
-  }, [viewMode, handleDeleteSelected, showStatus, nextId, setCuboids, selectedIdsRef, setSelectedIds]);
+  }, [analysePanelOpen, viewMode, handleDeleteSelected, showStatus, nextId, setCuboids, selectedIdsRef, setSelectedIds]);
 
   const handleCanvasClick = useCallback(() => {
     if (activeToolRef.current === 'mselect' && selectedIdsRef.current.length > 0) {

@@ -3,6 +3,7 @@ import { useThree } from '@react-three/fiber';
 import { Brush, Evaluator, INTERSECTION } from 'three-bvh-csg';
 import { Box3, BoxGeometry, DoubleSide, Mesh, MeshBasicMaterial } from 'three';
 import type { CuboidData } from '../types/Cuboid';
+import { wireframeMaterial } from './CsgIntersectionMaterials';
 
 interface CsgIntersectionHighlightProps {
   a: CuboidData;
@@ -20,19 +21,6 @@ const highlightMaterial = new MeshBasicMaterial({
   side: DoubleSide,
   polygonOffset: true,
   polygonOffsetFactor: -1,
-  toneMapped: false,
-});
-
-export const wireframeMaterial = new MeshBasicMaterial({
-  color: '#fff4b8',
-  wireframe: true,
-  transparent: true,
-  opacity: 1.0,
-  depthTest: false,
-  depthWrite: false,
-  side: DoubleSide,
-  polygonOffset: true,
-  polygonOffsetFactor: -2,
   toneMapped: false,
 });
 

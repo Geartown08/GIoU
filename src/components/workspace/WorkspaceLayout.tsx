@@ -66,6 +66,9 @@ export function WorkspaceLayout({
   const [activeTab, setActiveTab] = useState<RightPanelTab>('object');
   const { scaleOverride, resolvedScale, setScaleOverride } = useUiScale();
   const { theme, toggleTheme } = useTheme();
+  const selectedCuboids = selectedId
+    .map(id => cuboids.find(c => c.id === id))
+    .filter((cuboid): cuboid is CuboidData => Boolean(cuboid));
 
   // ← useEffect for keyboard shortcuts removed, it lives in App.tsx now
 
@@ -117,6 +120,8 @@ export function WorkspaceLayout({
             open={analysePanelOpen}
             viewMode={viewMode}
             calc={analyseCalc}
+            selectedCuboids={selectedCuboids}
+            cuboidCount={cuboids.length}
             onClose={onAnalysePanelClose}
           />
         </div>

@@ -61,3 +61,5 @@ Archived from `docs/REVIEW_NOTES.md` on 2026-05-20.
 | F48 | `App` | Deleting one cuboid from a two-item Analyse comparison now keeps the remaining selection and prompts `Comparison: #id (pick one more)`. |
 | F49 | `ExplainTab` / `AnalysePanel` | Formula rendering now uses KaTeX with shared metric formulas, symbolic expressions, numeric substitution, and final values for IoU, GIoU, and loss metrics. |
 | F50 | `CsgIntersectionHighlight` / `CsgIntersectionLayer` | CSG overlap evaluation moved off `useFrame`: each pair runs at most once per prop change, with a world-AABB early-out and a shared geometry between the solid and pulsing wireframe (one CSG eval per pair instead of two per frame). Wireframe opacity pulse hoisted to the layer so it only runs once per frame total. |
+| F51 | `App` | Analyse toolbar button now toggles the popup panel open and closed while preserving the current analysed pair until the selection changes. |
+| F52 | `App` / `AnalysePanel` | Analyse is now a direct popup toggle in every selection state; the popup shows explicit empty, single-selection, and comparison states instead of only appearing for completed pairs. |
