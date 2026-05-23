@@ -36,6 +36,7 @@ interface WorkspaceLayoutProps {
   analysePanelOpen: boolean;
   onAnalysePanelClose: () => void;
   analyseCalc: CalculationData | null;
+  onUpdate: (id: string, updates: Partial<CuboidData>) => void;
 }
 
 export function WorkspaceLayout({
@@ -61,6 +62,7 @@ export function WorkspaceLayout({
   analysePanelOpen,
   onAnalysePanelClose,
   analyseCalc,
+  onUpdate
 }: WorkspaceLayoutProps) {
   // ← useState for activeTool removed, it lives in App.tsx now
   const [activeTab, setActiveTab] = useState<RightPanelTab>('object');
@@ -75,6 +77,7 @@ export function WorkspaceLayout({
   const confirmDiscardScene = useCallback(() => (
     cuboids.length === 0 || window.confirm('Discard current scene?')
   ), [cuboids.length]);
+
 
   const handleTopBarAction = useCallback((action: string) => {
     switch (action) {
@@ -139,6 +142,7 @@ export function WorkspaceLayout({
           onObjectAddShortcutChange={onObjectAddShortcutChange}
           onStatus={onStatus}
           analyseCalc={analyseCalc}
+          onUpdate={onUpdate}
         />
       </div>
       <BottomStatusBar
