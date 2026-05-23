@@ -115,7 +115,7 @@ export function WorkspaceLayout({
       <div className="workspace-body">
         <LeftToolbar activeTool={activeTool} onToolChange={handleToolChange} />
         <div className="workspace-viewport-stack">
-          <ViewportPanel>{viewportContent}</ViewportPanel>
+          <ViewportPanel>{viewportContent as React.ReactNode}</ViewportPanel>
           <AnalysePanel
             open={analysePanelOpen}
             viewMode={viewMode}
