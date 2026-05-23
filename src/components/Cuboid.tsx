@@ -1,10 +1,26 @@
 import { useCallback, useState } from 'react';
-import { AdditiveBlending, Mesh } from 'three';
+import { Mesh } from 'three';
 import type { ThreeEvent } from '@react-three/fiber';
-import { TransformControls } from '@react-three/drei';
+import { Edges, TransformControls } from '@react-three/drei';
+import { useTheme } from '../hooks/useTheme';
 import type { CuboidProps } from '../types/Cuboid.ts';
 
+const SELECTION_STYLE = {
+  night: {
+    edge: '#fff4a8',
+    shell: '#facc15',
+    shellOpacity: 0.18,
+  },
+  day: {
+    edge: '#f59e0b',
+    shell: '#fbbf24',
+    shellOpacity: 0.2,
+  },
+} as const;
+
 export function Cuboid({ data, isSelected, mode, onSelect, onUpdate, onDragStart, onDragEnd }: CuboidProps) {
+  const { theme } = useTheme();
+  const selectionStyle = SELECTION_STYLE[theme];
   const [mesh, setMesh] = useState<Mesh | null>(null);
   const setMeshRef = useCallback((node: Mesh | null) => {
     setMesh(node);
@@ -29,7 +45,7 @@ export function Cuboid({ data, isSelected, mode, onSelect, onUpdate, onDragStart
 
   return (
     <>
-      {isSelected && mesh && (
+      {isSelected && mesh && mode && (
         <TransformControls
           object={mesh}
           mode={mode}
@@ -46,14 +62,43 @@ export function Cuboid({ data, isSelected, mode, onSelect, onUpdate, onDragStart
       >
         <boxGeometry args={[data.width, data.height, data.depth]} />
         <meshStandardMaterial
-          color={isSelected ? '#ffffff' : data.color}
+          color={data.color}
           emissive={isSelected ? data.color : '#000000'}
           transparent={true}
-          blending={AdditiveBlending}
-          opacity={1}
-          depthWrite={false}
-          emissiveIntensity={isSelected ? 0.4 : 0}
+          opacity={isSelected ? 0.78 : 0.62}
+          depthWrite={true}
+          emissiveIntensity={isSelected ? 0.18 : 0}
+          roughness={0.56}
+          metalness={0.04}
         />
+        {isSelected && (
+          <>
+            <mesh
+              scale={1.018}
+              renderOrder={18}
+              raycast={() => null}
+            >
+              <boxGeometry args={[data.width, data.height, data.depth]} />
+              <meshBasicMaterial
+                color={selectionStyle.shell}
+                transparent
+                opacity={selectionStyle.shellOpacity}
+                depthWrite={false}
+                toneMapped={false}
+              />
+            </mesh>
+            <Edges
+              scale={1.035}
+              threshold={1}
+              color={selectionStyle.edge}
+              lineWidth={3.2}
+              renderOrder={19}
+              depthTest={false}
+              toneMapped={false}
+              raycast={() => null}
+            />
+          </>
+        )}
       </mesh>
     </>
   );

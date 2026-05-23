@@ -1,6 +1,37 @@
 import type { CuboidData } from '../types/Cuboid.ts';
 import type { SceneFile } from '../types/Scenefile.ts';
 
+function isFiniteNumber(value: unknown): value is number {
+    return typeof value === 'number' && Number.isFinite(value);
+}
+
+function isVector3(value: unknown): value is [number, number, number] {
+    return Array.isArray(value) && value.length === 3 && value.every(isFiniteNumber);
+}
+
+function isCuboidData(value: unknown): value is CuboidData {
+    if (!value || typeof value !== 'object') return false;
+
+    const cuboid = value as Record<string, unknown>;
+    const hasValidName = cuboid.name === undefined || typeof cuboid.name === 'string';
+
+    return (
+        typeof cuboid.id === 'string' &&
+        hasValidName &&
+        isFiniteNumber(cuboid.width) &&
+        isFiniteNumber(cuboid.height) &&
+        isFiniteNumber(cuboid.depth) &&
+        typeof cuboid.color === 'string' &&
+        isVector3(cuboid.position) &&
+        isVector3(cuboid.rotation) &&
+        isVector3(cuboid.scale)
+    );
+}
+
+function validateCuboids(cuboids: unknown[]): CuboidData[] | null {
+    return cuboids.every(isCuboidData) ? cuboids : null;
+}
+
 export function loadScene(
     file: File,
     onLoad: (cuboids: CuboidData[]) => void,
@@ -22,7 +53,13 @@ export function loadScene(
                 return;
             }
 
-            onLoad(parsed.cuboids);
+            const cuboids = validateCuboids(parsed.cuboids);
+            if (!cuboids) {
+                onError?.('Invalid scene file: malformed cuboid data');
+                return;
+            }
+
+            onLoad(cuboids);
         } catch {
             onError?.('Failed to parse scene file');
         }

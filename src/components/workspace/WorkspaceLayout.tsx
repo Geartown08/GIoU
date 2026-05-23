@@ -10,6 +10,7 @@ import { AnalysePanel } from './AnalysePanel';
 import { saveScene } from '../../utils/saveScene';
 import { openAndLoadScene } from '../../utils/loadScene';
 import { useUiScale } from '../../hooks/useUiScale';
+import { useTheme } from '../../hooks/useTheme';
 import '../../styles/workspace.css';
 
 interface WorkspaceLayoutProps {
@@ -64,8 +65,16 @@ export function WorkspaceLayout({
   // ← useState for activeTool removed, it lives in App.tsx now
   const [activeTab, setActiveTab] = useState<RightPanelTab>('object');
   const { scaleOverride, resolvedScale, setScaleOverride } = useUiScale();
+  const { theme, toggleTheme } = useTheme();
+  const selectedCuboids = selectedId
+    .map(id => cuboids.find(c => c.id === id))
+    .filter((cuboid): cuboid is CuboidData => Boolean(cuboid));
 
   // ← useEffect for keyboard shortcuts removed, it lives in App.tsx now
+
+  const confirmDiscardScene = useCallback(() => (
+    cuboids.length === 0 || window.confirm('Discard current scene?')
+  ), [cuboids.length]);
 
   const handleTopBarAction = useCallback((action: string) => {
     switch (action) {
@@ -73,6 +82,7 @@ export function WorkspaceLayout({
         saveScene(cuboids);
         break;
       case 'open':
+        if (!confirmDiscardScene()) break;
         openAndLoadScene((cuboids) => {
           onLoadScene(cuboids);
         }, (err) => {
@@ -80,12 +90,13 @@ export function WorkspaceLayout({
         });
         break;
       case 'new':
+        if (!confirmDiscardScene()) break;
         onLoadScene([]);
         break;
       default:
         console.log(`[TopBar] unhandled action: ${action}`);
     }
-  }, [cuboids, onLoadScene]);
+  }, [confirmDiscardScene, cuboids, onLoadScene]);
 
   const handleToolChange = useCallback((tool: ToolMode) => {
     onToolChange(tool);  // ← was setActiveTool, now calls up to App.tsx
@@ -98,6 +109,8 @@ export function WorkspaceLayout({
         uiScale={scaleOverride}
         resolvedScale={resolvedScale}
         onUiScaleChange={setScaleOverride}
+        theme={theme}
+        onToggleTheme={toggleTheme}
       />
       <div className="workspace-body">
         <LeftToolbar activeTool={activeTool} onToolChange={handleToolChange} />
@@ -107,6 +120,8 @@ export function WorkspaceLayout({
             open={analysePanelOpen}
             viewMode={viewMode}
             calc={analyseCalc}
+            selectedCuboids={selectedCuboids}
+            cuboidCount={cuboids.length}
             onClose={onAnalysePanelClose}
           />
         </div>

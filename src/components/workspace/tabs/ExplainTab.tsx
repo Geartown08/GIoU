@@ -1,4 +1,6 @@
 import type { CalculationData, ViewMode } from '../../../types/Workspace';
+import { MathFormula } from '../MathFormula';
+import { formatLatexNumber, getMetricFormulas } from '../../../utils/metricFormula';
 
 interface ExplainTabProps {
   calc: CalculationData | null;
@@ -20,14 +22,35 @@ function CalcRow({ label, expr, result, resultClass = 'calc-value' }: {
   );
 }
 
+function CalcFormulaStep({ label, symbolic, substitution, result, resultClass = 'calc-formula-result' }: {
+  label: string;
+  symbolic: string;
+  substitution?: string | null;
+  result?: string;
+  resultClass?: string;
+}) {
+  return (
+    <div className="calc-formula-step">
+      <span className="calc-label">{label}</span>
+      <div className="calc-formula-body">
+        <MathFormula tex={symbolic} displayMode className="calc-formula-symbolic" />
+        {substitution && (
+          <MathFormula tex={substitution} displayMode className="calc-formula-substitution" />
+        )}
+      </div>
+      {result && <span className={resultClass}>{result}</span>}
+    </div>
+  );
+}
+
 const fmt = (n: number) => n.toFixed(4);
 const fmtPos = (p: [number, number, number]) => `(${p.map(v => v.toFixed(2)).join(', ')})`;
 
 function Derivation({ calc, viewMode }: { calc: CalculationData; viewMode: ViewMode }) {
   const [a, b] = calc.items;
   const g = calc.giou;
-  const measureNoun = viewMode === '2d' ? 'A' : 'V'; // area in 2D, volume in 3D
   const measureName = viewMode === '2d' ? 'Area' : 'Volume';
+  const metricFormulas = getMetricFormulas(g);
 
   return (
     <div className="calc-derivation">
@@ -50,38 +73,38 @@ function Derivation({ calc, viewMode }: { calc: CalculationData; viewMode: ViewM
 
       <div className="calc-group">
         <div className="calc-group-title">{measureName}s</div>
-        <CalcRow
-          label="∩"
-          expr={`= ${fmt(g.intersection)}`}
-          result=""
+        <CalcFormulaStep
+          label="Intersection"
+          symbolic={'|A\\cap B|'}
+          substitution={`|A\\cap B|=${formatLatexNumber(g.intersection)}`}
+          result={fmt(g.intersection)}
         />
-        <CalcRow
-          label="∪"
-          expr={`${measureNoun}_a + ${measureNoun}_b − ∩ = ${fmt(a.volume)} + ${fmt(b.volume)} − ${fmt(g.intersection)}`}
+        <CalcFormulaStep
+          label="Union"
+          symbolic={'|A\\cup B|=|A|+|B|-|A\\cap B|'}
+          substitution={`|A\\cup B|=${formatLatexNumber(a.volume)}+${formatLatexNumber(b.volume)}-${formatLatexNumber(g.intersection)}`}
           result={fmt(g.union)}
         />
-        <CalcRow
-          label="C (enclosing)"
-          expr=""
+        <CalcFormulaStep
+          label="Enclosing"
+          symbolic="|C|"
+          substitution={`|C|=${formatLatexNumber(g.enclosing)}`}
           result={fmt(g.enclosing)}
         />
       </div>
 
       <div className="calc-group">
         <div className="calc-group-title">Scores</div>
-        <CalcRow
-          label="IoU"
-          expr={`∩ / ∪ = ${fmt(g.intersection)} / ${fmt(g.union)}`}
-          result={fmt(g.iou)}
-        />
-        <CalcRow
-          label="GIoU"
-          expr={`IoU − (C − ∪) / C = ${fmt(g.iou)} − (${fmt(g.enclosing)} − ${fmt(g.union)}) / ${fmt(g.enclosing)}`}
-          result={fmt(g.giou)}
-          resultClass={g.giou < 0 ? 'calc-value calc-negative' : 'calc-value'}
-        />
-        <CalcRow label="L_IoU"  expr={`1 − IoU = 1 − ${fmt(g.iou)}`}  result={fmt(g.lossIoU)} />
-        <CalcRow label="L_GIoU" expr={`1 − GIoU = 1 − ${fmt(g.giou)}`} result={fmt(g.lossGIoU)} />
+        {metricFormulas.map(formula => (
+          <CalcFormulaStep
+            key={formula.key}
+            label={formula.label}
+            symbolic={formula.symbolic}
+            substitution={formula.substitution}
+            result={formula.value}
+            resultClass={formula.isNegative ? 'calc-formula-result calc-negative' : 'calc-formula-result'}
+          />
+        ))}
       </div>
     </div>
   );
@@ -99,9 +122,11 @@ export function ExplainTab({ calc, viewMode }: ExplainTabProps) {
           enclosing box of two bounding boxes.
         </p>
         <h5>Formula</h5>
-        <p className="formula">
-          GIoU = IoU &minus; (|C \ (A &cup; B)|) / |C|
-        </p>
+        <MathFormula
+          tex={'\\operatorname{GIoU}=\\operatorname{IoU}-\\frac{|C|-|A\\cup B|}{|C|}'}
+          displayMode
+          className="formula"
+        />
         <p className="tab-hint">
           Where C is the smallest enclosing box, A and B are the two bounding boxes.
         </p>

@@ -13,7 +13,7 @@ export function useSelection(
     selectedIdsRef.current = [];
     setSelectedIds([]);
     showStatus(message);
-  }, [showStatus]);
+  }, [selectedIdsRef, showStatus]);
 
   const handleSelect = useCallback((id: string | null) => {
     if (id === null) { clearSelection(); return; }
@@ -34,7 +34,7 @@ export function useSelection(
     selectedIdsRef.current = [id];
     setSelectedIds([id]);
     showStatus(`Selected cuboid #${id}`);
-  }, [clearSelection, showStatus]);
+  }, [activeToolRef, clearSelection, selectedIdsRef, showStatus]);
 
   return { selectedIds, setSelectedIds, clearSelection, handleSelect };
 }

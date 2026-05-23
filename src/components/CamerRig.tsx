@@ -20,6 +20,8 @@ export function CameraRig({ viewMode }: CameraRigProps) {
 
   useEffect(() => {
     if (viewMode === '2d') {
+      if (orthoCam.current) return;
+
       savedPerspCam.current = camera;
 
       const aspect = size.width / size.height;

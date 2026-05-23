@@ -1,26 +1,58 @@
+import { Fragment } from 'react';
 import type { CalculationData, ViewMode } from '../../types/Workspace';
+import type { CuboidData } from '../../types/Cuboid';
+import { MathFormula } from './MathFormula';
+import { getMetricFormulas } from '../../utils/metricFormula';
 
 interface AnalysePanelProps {
   open: boolean;
   viewMode: ViewMode;
   calc: CalculationData | null;
+  selectedCuboids: CuboidData[];
+  cuboidCount: number;
   onClose: () => void;
 }
 
-const METRICS: { key: 'iou' | 'giou' | 'lossIoU' | 'lossGIoU'; label: string; desc: string }[] = [
-  { key: 'iou',      label: 'IoU',    desc: 'Intersection over Union — overlap ratio.' },
-  { key: 'giou',     label: 'GIoU',   desc: 'Generalised IoU — adds enclosing-region penalty.' },
-  { key: 'lossIoU',  label: 'L_IoU',  desc: 'IoU loss (1 − IoU).' },
-  { key: 'lossGIoU', label: 'L_GIoU', desc: 'GIoU loss (1 − GIoU).' },
-];
+function getEmptyState(selectedCuboids: CuboidData[], cuboidCount: number) {
+  if (cuboidCount === 0) {
+    return {
+      title: 'No cuboids in the scene',
+      body: 'Add two cuboids, then select them in Analyse mode to compare IoU and GIoU.',
+    };
+  }
 
-function formatMetric(value: number | undefined): string {
-  return Number.isFinite(value) ? value!.toFixed(4) : '--';
+  if (selectedCuboids.length === 0) {
+    return {
+      title: 'No cuboids selected',
+      body: 'Select two cuboids to compare their overlap metrics.',
+    };
+  }
+
+  if (selectedCuboids.length === 1) {
+    return {
+      title: 'One cuboid selected',
+      body: `Select one more cuboid to compare with ${selectedCuboids[0].name}.`,
+    };
+  }
+
+  return {
+    title: 'Waiting for a valid pair',
+    body: 'Select two valid cuboids to calculate the comparison metrics.',
+  };
 }
 
-export function AnalysePanel({ open, viewMode, calc, onClose }: AnalysePanelProps) {
+export function AnalysePanel({
+  open,
+  viewMode,
+  calc,
+  selectedCuboids,
+  cuboidCount,
+  onClose,
+}: AnalysePanelProps) {
   const pair = calc?.items;
-  const metrics = calc?.giou;
+  const formulas = calc ? getMetricFormulas(calc.giou) : [];
+  const chipItems = pair ?? selectedCuboids.slice(0, 2);
+  const emptyState = calc ? null : getEmptyState(selectedCuboids, cuboidCount);
 
   return (
     <section
@@ -35,17 +67,19 @@ export function AnalysePanel({ open, viewMode, calc, onClose }: AnalysePanelProp
           <span className="analyse-panel-mode">{viewMode === '2d' ? 'XY projection (2D)' : 'Oriented bounding boxes (3D)'}</span>
         </div>
         <div className="analyse-panel-pair">
-          {pair && (
+          {chipItems.length > 0 && (
             <>
-              <span className="analyse-chip" title={`Object #${pair[0].id}`}>
-                <span className="analyse-chip-dot" style={{ background: pair[0].color }} />
-                <span className="analyse-chip-name">{pair[0].name}</span>
-              </span>
-              <span className="analyse-panel-vs" aria-hidden="true">vs</span>
-              <span className="analyse-chip" title={`Object #${pair[1].id}`}>
-                <span className="analyse-chip-dot" style={{ background: pair[1].color }} />
-                <span className="analyse-chip-name">{pair[1].name}</span>
-              </span>
+              {chipItems.map((item, index) => (
+                <Fragment key={item.id}>
+                  {index > 0 && (
+                    <span className="analyse-panel-vs" aria-hidden="true">vs</span>
+                  )}
+                  <span className="analyse-chip" title={`Object #${item.id}`}>
+                    <span className="analyse-chip-dot" style={{ background: item.color }} />
+                    <span className="analyse-chip-name">{item.name}</span>
+                  </span>
+                </Fragment>
+              ))}
             </>
           )}
         </div>
@@ -59,15 +93,28 @@ export function AnalysePanel({ open, viewMode, calc, onClose }: AnalysePanelProp
           ×
         </button>
       </header>
-      <div className="analyse-panel-metrics">
-        {METRICS.map(({ key, label, desc }) => (
-          <div key={key} className="analyse-metric">
-            <div className="analyse-metric-key">{label}</div>
-            <div className="analyse-metric-value">{formatMetric(metrics?.[key])}</div>
-            <div className="analyse-metric-desc">{desc}</div>
-          </div>
-        ))}
-      </div>
+      {emptyState ? (
+        <div className="analyse-panel-empty" role="status" aria-live="polite">
+          <div className="analyse-panel-empty-title">{emptyState.title}</div>
+          <p>{emptyState.body}</p>
+        </div>
+      ) : (
+        <div className="analyse-panel-metrics">
+          {formulas.map(({ key, label, desc, symbolic, substitution, value, isNegative }) => (
+            <div key={key} className="analyse-metric">
+              <div className="analyse-metric-key">{label}</div>
+              <div className={isNegative ? 'analyse-metric-value calc-negative' : 'analyse-metric-value'}>
+                {value}
+              </div>
+              <MathFormula tex={symbolic} displayMode className="analyse-metric-formula" />
+              {substitution && (
+                <MathFormula tex={substitution} displayMode className="analyse-metric-substitution" />
+              )}
+              <div className="analyse-metric-desc">{desc}</div>
+            </div>
+          ))}
+        </div>
+      )}
     </section>
   );
 }
