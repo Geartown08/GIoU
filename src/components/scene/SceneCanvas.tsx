@@ -31,7 +31,8 @@ const SCENE_THEME = {
 
 interface SceneCanvasProps {
   cuboids: CuboidData[];
-  selectedIds: string[];
+  activeSelectedIds: string[];
+  analyseSelectedIds: string[];
   mode: TransformMode | null;
   viewMode: ViewMode;
   showAxes: boolean;
@@ -42,11 +43,11 @@ interface SceneCanvasProps {
 }
 
 export function SceneCanvas({
-  cuboids, selectedIds, mode, viewMode,
+  cuboids, activeSelectedIds, analyseSelectedIds, mode, viewMode,
   showAxes, showOrigin, onSelect, onUpdate, onCanvasClick,
 }: SceneCanvasProps) {
   const orbitEnabledRef = useRef(true);
-  const transformMode = selectedIds.length === 1 ? mode : null;
+  const transformMode = activeSelectedIds.length === 1 ? mode : null;
   const { theme } = useTheme();
   const sceneColors = SCENE_THEME[theme];
 
@@ -66,7 +67,8 @@ export function SceneCanvas({
       {cuboids.map(c => (
         <Cuboid
           key={c.id} data={c}
-          isSelected={selectedIds.includes(c.id)}
+          isSelected={activeSelectedIds.includes(c.id)}
+          isAnalysed={analyseSelectedIds.includes(c.id)}
           mode={transformMode} onSelect={onSelect} onUpdate={onUpdate}
           onDragStart={() => { orbitEnabledRef.current = false; }}
           onDragEnd={() => { orbitEnabledRef.current = true; }}
