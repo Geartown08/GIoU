@@ -1280,3 +1280,45 @@
   text-align: center;
   line-height: 1.5;
 }
+
+.object-prop-row .object-input::-webkit-outer-spin-button,
+.object-prop-row .object-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.object-prop-row .object-input {
+  appearance: textfield;
+  width: calc(52px * var(--ui-scale));
+  padding: var(--ui-space-1) var(--ui-space-2);
+  font-size: var(--ui-font-xs);
+  font-family: var(--font-mono);
+  min-width: 0;
+}
+
+.object-prop-row {
+  display: grid;
+  grid-template-columns: 32px 10px 1fr 10px 1fr 10px 1fr;
+  align-items: center;
+  gap: var(--ui-space-1) var(--ui-space-2);
+  padding: calc(3px * var(--ui-scale)) 0;
+  border-bottom: var(--ui-border) solid var(--color-border-subtle);
+}
+
+.object-prop-axis {
+  font-size: var(--ui-font-xs);
+  color: var(--color-text-faint);
+  font-weight: 600;
+  font-family: var(--font-mono);
+  flex-shrink: 0;
+}
+
+.object-prop-row .object-color-swatch-button {
+  grid-column: 2 / 4;
+}
+
+.object-prop-row .object-hex-input {
+  grid-column: 4 / -1;
+  width: 100%;
+}
+
