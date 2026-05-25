@@ -14,10 +14,10 @@ const MODE_STATUS: Record<'select' | 'mselect' | 'translate' | 'rotate' | 'scale
 };
 
 function App() {
-  const [activeTool, setActiveTool]   = useState<ToolMode>('select');
-  const [showAxes, setShowAxes]       = useState(true);
-  const [showOrigin, setShowOrigin]   = useState(true);
-  const [viewMode, setViewMode]       = useState<ViewMode>('3d');
+  const [activeTool, setActiveTool] = useState<ToolMode>('select');
+  const [showAxes, setShowAxes] = useState(true);
+  const [showOrigin, setShowOrigin] = useState(true);
+  const [viewMode, setViewMode] = useState<ViewMode>('3d');
   const [statusMessage, setStatusMessage] = useState('Ready');
   const [analysePanelOpen, setAnalysePanelOpen] = useState(false);
   const activeToolRef = useRef<ToolMode>('select');
@@ -119,7 +119,7 @@ function App() {
     activeToolRef.current = tool;
     setActiveTool(tool);
 
-    if (['select','mselect','translate','rotate','scale'].includes(tool)) {
+    if (['select', 'mselect', 'translate', 'rotate', 'scale'].includes(tool)) {
       showStatus(MODE_STATUS[tool as keyof typeof MODE_STATUS]);
     } else if (tool === 'random') {
       const id = nextId();
@@ -185,7 +185,7 @@ function App() {
         clearSelection(activeToolRef.current === 'mselect' ? 'Comparison cleared' : 'Selection cleared');
         return;
       }
-      const map: Record<string, ToolMode> = { v:'select', m:'mselect', w:'translate', e:'rotate', r:'scale', q:'random', d:'duplicate', x:'delete' };
+      const map: Record<string, ToolMode> = { v: 'select', m: 'mselect', w: 'translate', e: 'rotate', r: 'scale', q: 'random', d: 'duplicate', x: 'delete' };
       if (map[key]) handleToolChange(map[key]);
     };
     window.addEventListener('keydown', handleKeyDown, { capture: true });
@@ -224,6 +224,7 @@ function App() {
       analysePanelOpen={analysePanelOpen}
       onAnalysePanelClose={handleAnalysePanelClose}
       analyseCalc={calculations}
+      onUpdate={handleUpdate}
     />
   );
 }

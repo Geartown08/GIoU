@@ -22,6 +22,7 @@ interface RightSidebarProps {
   onObjectAddShortcutChange: (handler: (() => void) | null) => void;
   onStatus: (message: string) => void;
   analyseCalc: CalculationData | null;
+  onUpdate: (id: string, updates: Partial<CuboidData>) => void;
 }
 
 export function RightSidebar({
@@ -38,6 +39,7 @@ export function RightSidebar({
   onObjectAddShortcutChange,
   onStatus,
   analyseCalc,
+  onUpdate,
 }: RightSidebarProps) {
   return (
     <aside className="right-sidebar">
@@ -84,6 +86,7 @@ export function RightSidebar({
             viewMode={viewMode}
             onAddShortcutChange={onObjectAddShortcutChange}
             onStatus={onStatus}
+            onUpdate={onUpdate}
           />
         )}
         {activeTab === 'explain' && (
