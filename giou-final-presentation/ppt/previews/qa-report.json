@@ -1,5 +1,5 @@
 {
-  "count": 16,
+  "count": 17,
   "messages": [],
   "checks": [
     {
@@ -14,72 +14,77 @@
     },
     {
       "index": 3,
-      "layout": "S22",
-      "bad": []
-    },
-    {
-      "index": 4,
-      "layout": "S19",
-      "bad": []
-    },
-    {
-      "index": 5,
-      "layout": "S13",
-      "bad": []
-    },
-    {
-      "index": 6,
-      "layout": "S11",
-      "bad": []
-    },
-    {
-      "index": 7,
-      "layout": "S22",
-      "bad": []
-    },
-    {
-      "index": 8,
       "layout": "S08",
       "bad": []
     },
     {
-      "index": 9,
-      "layout": "S18",
-      "bad": []
-    },
-    {
-      "index": 10,
-      "layout": "S15",
-      "bad": []
-    },
-    {
-      "index": 11,
+      "index": 4,
       "layout": "S22",
       "bad": []
     },
     {
+      "index": 5,
+      "layout": "S19",
+      "bad": []
+    },
+    {
+      "index": 6,
+      "layout": "S13",
+      "bad": []
+    },
+    {
+      "index": 7,
+      "layout": "S11",
+      "bad": []
+    },
+    {
+      "index": 8,
+      "layout": "S22",
+      "bad": []
+    },
+    {
+      "index": 9,
+      "layout": "S08",
+      "bad": []
+    },
+    {
+      "index": 10,
+      "layout": "S18",
+      "bad": []
+    },
+    {
+      "index": 11,
+      "layout": "S15",
+      "bad": []
+    },
+    {
       "index": 12,
-      "layout": "S16",
+      "layout": "S22",
       "bad": []
     },
     {
       "index": 13,
-      "layout": "S10",
+      "layout": "S16",
       "bad": []
     },
     {
       "index": 14,
-      "layout": "S20",
+      "layout": "S10",
       "bad": []
     },
     {
       "index": 15,
-      "layout": "S14",
+      "layout": "S20",
       "bad": []
     },
     {
       "index": 16,
-      "layout": "S21",
+      "layout": "S14",
+      "bad": []
+    },
+    {
+      "index": 17,
+      "layout": "SWISS-CLOSING-ASCII",
       "bad": []
     }
   ]

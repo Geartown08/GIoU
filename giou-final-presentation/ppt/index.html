@@ -1233,7 +1233,7 @@
     <canvas class="ascii-bg" aria-hidden="true"></canvas>
     <div class="chrome-min">
       <div class="l">CS-17 · GIoU Final Presentation</div>
-      <div class="r">FIT3162 · 01 / 16</div>
+      <div class="r">FIT3162 · 01 / 17</div>
     </div>
     <div style="flex:1;padding:0;display:grid;grid-template-rows:auto 1fr auto;gap:2.6vh">
       <div data-anim="kicker" class="t-meta" style="color:rgba(255,255,255,.78);letter-spacing:.22em">PROJECT 17 · INTERACTIVE COMPUTER GRAPHICS TOOL</div>
@@ -1251,7 +1251,7 @@
 
 <section class="slide grey" data-layout="S16" data-animate="field-notes">
   <div class="canvas-card">
-    <div class="chrome-min"><div class="l">Presentation Structure</div><div class="r">02 / 16</div></div>
+    <div class="chrome-min"><div class="l">Presentation Structure</div><div class="r">02 / 17</div></div>
     <div style="flex:1;padding:0;display:grid;grid-template-rows:auto 1fr auto;gap:3.6vh">
       <div data-anim="head" style="display:flex;flex-direction:column;gap:1.4vh">
         <div class="t-meta">SPEAKER OWNERSHIP · CONTINUOUS DEMO PATH</div>
@@ -1266,7 +1266,7 @@
         <div class="card-fill" style="padding:2.4vh 1.7vw;display:flex;flex-direction:column;gap:1.2vh;border-top:2px solid var(--accent)">
           <div class="t-meta">TIM · USER NEEDS + DEMO 2</div>
           <h3 class="h-md" style="font-size:max(24px,1.9vw)">Use-case proof</h3>
-          <p class="t-body-sm">Use cases, background research, use-case testing approach, 2D/3D mode status, Analyse workflow and metric explanation.</p>
+          <p class="t-body-sm">Use cases, background research, use-case testing approach, 2D/3D modes, Analyse workflow and metric explanation.</p>
         </div>
         <div class="card-fill" style="padding:2.4vh 1.7vw;display:flex;flex-direction:column;gap:1.2vh">
           <div class="t-meta">RYAN · DEMO 3 + CONCLUSION</div>
@@ -1286,9 +1286,45 @@
   </div>
 </section>
 
+<section class="slide" data-layout="S08" data-animate="duo-mirror">
+  <div class="canvas-card">
+    <div class="chrome-min"><div class="l">Intro · Metric Background</div><div class="r">03 / 17</div></div>
+    <div style="flex:1;padding:0;display:grid;grid-template-rows:auto 1fr auto;gap:3.4vh">
+      <div data-anim="head" style="display:flex;flex-direction:column;gap:1.4vh">
+        <div class="t-meta">BEFORE THE DEMO · TERMINOLOGY</div>
+        <h2 class="h-xl" style="font-size:min(6.1vw,10.8vh)">What are IoU and GIoU?</h2>
+      </div>
+      <div class="duo-compare" data-anim="compare">
+        <div class="col">
+          <div class="col-tag"><span class="num">IoU</span><span>Intersection over Union</span></div>
+          <h3 class="col-ttl">How much do two boxes overlap?</h3>
+          <p class="col-desc">IoU compares the shared area or volume against the total combined area or volume of two objects.</p>
+          <ul class="col-list">
+            <li>High IoU means strong overlap.</li>
+            <li>Zero IoU means no overlap.</li>
+            <li>Useful, but silent when boxes are separate.</li>
+          </ul>
+        </div>
+        <div class="vrule"></div>
+        <div class="col accent">
+          <div class="col-tag"><span class="num">GIoU</span><span>Generalised IoU</span></div>
+          <h3 class="col-ttl">How good is the spatial match?</h3>
+          <p class="col-desc">GIoU extends IoU by adding a penalty based on the smallest enclosing box, so it remains meaningful even when objects do not overlap.</p>
+          <ul class="col-list">
+            <li>Considers overlap and enclosure.</li>
+            <li>Changes even in non-overlap cases.</li>
+            <li>Better for teaching spatial metric behaviour.</li>
+          </ul>
+        </div>
+      </div>
+      <div data-anim="foot" class="t-body" style="border-top:1px solid var(--grey-2);padding-top:2vh">In this presentation, the key learning loop is: move or resize cuboids → observe IoU/GIoU change → inspect the explanation in Analyse.</div>
+    </div>
+  </div>
+</section>
+
 <section class="slide" data-layout="S22" data-animate="image-hero">
   <div class="canvas-card">
-    <div class="chrome-min tight"><div class="l">Nate · Project Topic</div><div class="r">03 / 16</div></div>
+    <div class="chrome-min tight"><div class="l">Nate · Project Topic</div><div class="r">04 / 17</div></div>
     <div data-anim="img" class="frame-img r-21x9 pos-face" style="background:var(--grey-1);border-top:2px solid var(--accent)">
       <img src="images/source-ppt/image5.png" data-image-slot="s22-hero-21x9" alt="GIoU tool screenshot showing cuboids and 3D axes">
     </div>
@@ -1311,7 +1347,7 @@
 
 <section class="slide grey" data-layout="S19" data-animate="four-cards">
   <div class="canvas-card">
-    <div class="chrome-min"><div class="l">Nate · Project Main Goals</div><div class="r">04 / 16</div></div>
+    <div class="chrome-min"><div class="l">Nate · Project Main Goals</div><div class="r">05 / 17</div></div>
     <div style="flex:1;padding:0;display:grid;grid-template-rows:auto 1fr;gap:4vh">
       <div data-anim="head" style="display:flex;flex-direction:column;gap:1.4vh">
         <div class="t-meta">MAIN OUTCOMES</div>
@@ -1330,7 +1366,7 @@
 
 <section class="slide" data-layout="S13" data-animate="three-forces">
   <div class="canvas-card">
-    <div class="chrome-min"><div class="l">Nate · Target User Groups</div><div class="r">05 / 16</div></div>
+    <div class="chrome-min"><div class="l">Nate · Target User Groups</div><div class="r">06 / 17</div></div>
     <div style="flex:1;padding:0;display:grid;grid-template-columns:38% 62%;gap:2.6vw;align-items:stretch">
       <div data-anim="hero" class="card-accent" style="padding:3vh 2vw;display:flex;flex-direction:column;justify-content:space-between">
         <div class="t-meta" style="color:var(--accent-on)">TARGET USERS</div>
@@ -1348,7 +1384,7 @@
 
 <section class="slide grey" data-layout="S11" data-animate="timeline-walk">
   <div class="canvas-card">
-    <div class="chrome-min"><div class="l">Demo Roadmap</div><div class="r">06 / 16</div></div>
+    <div class="chrome-min"><div class="l">Demo Roadmap</div><div class="r">07 / 17</div></div>
     <div style="flex:1;padding:0;display:grid;grid-template-rows:auto 1fr auto;gap:4vh">
       <div data-anim="head" style="display:flex;flex-direction:column;gap:1.4vh">
         <div class="t-meta">SOFTWARE DEMO · NATE → TIM → RYAN</div>
@@ -1357,7 +1393,7 @@
       <div class="timeline-h" data-anim="timeline">
         <div class="tl-row">
           <div class="th-node up accent"><span class="dot"></span><div class="label"><div class="yr">NATE</div><div class="name">Object creation</div><div class="desc">Add, randomise, select, move, rotate, scale.</div></div></div>
-          <div class="th-node down"><span class="dot"></span><div class="label"><div class="yr">TIM</div><div class="name">Mode + Analyse</div><div class="desc">2D/3D status, selected pair, formula, live metric.</div></div></div>
+          <div class="th-node down"><span class="dot"></span><div class="label"><div class="yr">TIM</div><div class="name">Mode + Analyse</div><div class="desc">2D/3D views, selected pair, formula, live metric.</div></div></div>
           <div class="th-node up"><span class="dot"></span><div class="label"><div class="yr">RYAN</div><div class="name">Persistence</div><div class="desc">Save/load locally and show extra workflow support.</div></div></div>
           <div class="th-node down"><span class="dot"></span><div class="label"><div class="yr">CLOSE</div><div class="name">Status</div><div class="desc">Achieved, remaining, issues and lessons.</div></div></div>
         </div>
@@ -1369,7 +1405,7 @@
 
 <section class="slide" data-layout="S22" data-animate="image-hero">
   <div class="canvas-card">
-    <div class="chrome-min tight"><div class="l">Nate Demo · Object Creation and Manipulation</div><div class="r">07 / 16</div></div>
+    <div class="chrome-min tight"><div class="l">Nate Demo · Object Creation and Manipulation</div><div class="r">08 / 17</div></div>
     <div data-anim="img" class="frame-img r-21x9 pos-face" style="background:var(--grey-1);border-top:2px solid var(--accent)">
       <img src="images/source-ppt/image5.png" data-image-slot="s22-hero-21x9" alt="3D cuboids with axes">
     </div>
@@ -1381,7 +1417,7 @@
       <div class="image-hero-stats">
         <div><div style="height:1px;background:var(--accent);margin-bottom:1.2vh"></div><div class="t-meta">RTM</div><div class="kpi-hero accent" style="font-size:min(5vw,8vh)">R2</div><p class="t-body-sm">Create and manipulate cuboids.</p></div>
         <div><div style="height:1px;background:var(--grey-2);margin-bottom:1.2vh"></div><div class="t-meta">SUPPORT</div><div class="kpi-hero" style="font-size:min(5vw,8vh)">R4</div><p class="t-body-sm">Random cuboid generation.</p></div>
-        <div><div style="height:1px;background:var(--grey-2);margin-bottom:1.2vh"></div><div class="t-meta">UI SIGNAL</div><div class="kpi-hero" style="font-size:min(5vw,8vh)">R8</div><p class="t-body-sm">Status feedback and clearer controls.</p></div>
+        <div><div style="height:1px;background:var(--grey-2);margin-bottom:1.2vh"></div><div class="t-meta">UI SIGNAL</div><div class="kpi-hero" style="font-size:min(5vw,8vh)">UX</div><p class="t-body-sm">Status feedback and clearer controls.</p></div>
       </div>
     </div>
   </div>
@@ -1389,7 +1425,7 @@
 
 <section class="slide grey" data-layout="S08" data-animate="duo-mirror">
   <div class="canvas-card">
-    <div class="chrome-min"><div class="l">Tim · Project Use Cases</div><div class="r">08 / 16</div></div>
+    <div class="chrome-min"><div class="l">Tim · Project Use Cases</div><div class="r">09 / 17</div></div>
     <div style="flex:1;padding:0;display:grid;grid-template-rows:auto 1fr;gap:3.6vh">
       <div data-anim="head" style="display:flex;flex-direction:column;gap:1.4vh">
         <div class="t-meta">USER NEEDS · 2+ USE CASES</div>
@@ -1416,7 +1452,7 @@
 
 <section class="slide" data-layout="S18" data-animate="why-now">
   <div class="canvas-card">
-    <div class="chrome-min"><div class="l">Tim · User Requirements Consultation</div><div class="r">09 / 16</div></div>
+    <div class="chrome-min"><div class="l">Tim · User Requirements Consultation</div><div class="r">10 / 17</div></div>
     <div style="flex:1;padding:0;display:grid;grid-template-rows:auto 1fr auto;gap:3.6vh">
       <div data-anim="head" style="display:flex;flex-direction:column;gap:1.4vh">
         <div class="t-meta">BACKGROUND RESEARCH · REQUIREMENT BASIS</div>
@@ -1434,7 +1470,7 @@
 
 <section class="slide grey" data-layout="S15" data-animate="matrix-fill">
   <div class="canvas-card">
-    <div class="chrome-min"><div class="l">Tim · Use-Case Testing Approach</div><div class="r">10 / 16</div></div>
+    <div class="chrome-min"><div class="l">Tim · Use-Case Testing Approach</div><div class="r">11 / 17</div></div>
     <div style="flex:1;padding:0;display:grid;grid-template-rows:auto 1fr auto;gap:3.2vh">
       <div data-anim="head" style="display:flex;flex-direction:column;gap:1.4vh">
         <div class="t-meta">HOW WE CONFIRM THE TOOL MEETS USER NEEDS</div>
@@ -1456,7 +1492,7 @@
 
 <section class="slide" data-layout="S22" data-animate="image-hero">
   <div class="canvas-card">
-    <div class="chrome-min tight"><div class="l">Tim Demo · 2D/3D Mode + Analyse</div><div class="r">11 / 16</div></div>
+    <div class="chrome-min tight"><div class="l">Tim Demo · 2D/3D Mode + Analyse</div><div class="r">12 / 17</div></div>
     <div data-anim="img" class="frame-img r-21x9" style="background:var(--grey-1);border-top:2px solid var(--accent);display:grid;place-items:center">
       <div class="t-meta" style="color:var(--text-helper)">SCREENSHOT PLACEHOLDER · 2D / 3D MODE + ANALYSE PANEL</div>
       <img src="images/source-ppt/image5.png" data-image-slot="s22-hero-21x9" alt="" style="opacity:.08;position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
@@ -1465,9 +1501,9 @@
       <div><div class="t-meta" style="margin-bottom:1vh">DEMO 2 · TIM</div><h2 class="h-md" style="font-size:max(28px,2.8vw)">Analyse selected objects and explain the metric.</h2></div>
     </div>
     <div data-anim="kpi" style="display:grid;grid-template-rows:auto auto;gap:2vh;margin-top:2.6vh">
-      <p class="t-body">Show 3D mode as the stable primary workflow, demonstrate the current 2D mode status honestly, then open Analyse to show pair selection, formula explanation, numeric result and live update.</p>
+      <p class="t-body">Switch between 2D and 3D views, then open Analyse to show pair selection, formula explanation, numeric result and live update.</p>
       <div class="image-hero-stats">
-        <div><div style="height:1px;background:var(--accent);margin-bottom:1.2vh"></div><div class="t-meta">MODE</div><div class="kpi-hero accent" style="font-size:min(5vw,8vh)">2D/3D</div><p class="t-body-sm">Demonstrate mode switch/status and visual support.</p></div>
+        <div><div style="height:1px;background:var(--accent);margin-bottom:1.2vh"></div><div class="t-meta">MODE</div><div class="kpi-hero accent" style="font-size:min(5vw,8vh)">2D/3D</div><p class="t-body-sm">Demonstrate mode switch and visual support.</p></div>
         <div><div style="height:1px;background:var(--grey-2);margin-bottom:1.2vh"></div><div class="t-meta">ANALYSE</div><div class="kpi-hero" style="font-size:min(5vw,8vh)">R1</div><p class="t-body-sm">IoU/GIoU calculation path.</p></div>
         <div><div style="height:1px;background:var(--grey-2);margin-bottom:1.2vh"></div><div class="t-meta">EXPLAIN</div><div class="kpi-hero" style="font-size:min(5vw,8vh)">R3/R7</div><p class="t-body-sm">Calculation display and live metric update.</p></div>
       </div>
@@ -1477,7 +1513,7 @@
 
 <section class="slide grey" data-layout="S16" data-animate="field-notes">
   <div class="canvas-card">
-    <div class="chrome-min"><div class="l">Ryan Demo · Save / Load and Extra Features</div><div class="r">12 / 16</div></div>
+    <div class="chrome-min"><div class="l">Ryan Demo · Save / Load and Extra Features</div><div class="r">13 / 17</div></div>
     <div style="flex:1;padding:0;display:grid;grid-template-rows:auto 1fr;gap:3.4vh">
       <div data-anim="head" style="display:flex;flex-direction:column;gap:1.4vh">
         <div class="t-meta">DEMO 3 · RYAN</div>
@@ -1497,20 +1533,20 @@
     <div class="split-half">
       <div class="half b-accent" style="padding:5.6vh 3.6vw 4.4vh;justify-content:space-between;position:relative;overflow:hidden">
         <canvas class="ascii-bg" aria-hidden="true"></canvas>
-        <div class="chrome-min" style="margin-bottom:0;position:relative;z-index:1"><div class="l">Final Status</div><div class="r">13 / 16</div></div>
+        <div class="chrome-min" style="margin-bottom:0;position:relative;z-index:1"><div class="l">Final Status</div><div class="r">14 / 17</div></div>
         <div data-anim="manifesto" style="display:flex;flex-direction:column;gap:2vh;position:relative;z-index:1">
           <div class="t-meta" style="color:rgba(255,255,255,.78);letter-spacing:.22em">RYAN · ACHIEVED / REMAINING / ISSUES</div>
-          <h2 style="font-family:var(--sans),var(--sans-zh);font-size:min(7.6vw,13vh);line-height:.94;letter-spacing:-.025em;font-weight:200;color:#fff">Core goals<br/>achieved.<br/><span style="font-style:italic;font-weight:300">2D gap remains.</span></h2>
-          <p style="font-size:max(18px,1.08vw);line-height:1.55;color:rgba(255,255,255,.82);font-weight:400;max-width:39ch">The main cuboid, metric, UI and persistence workflows are substantially delivered; 2D mode is the major unresolved in-scope gap.</p>
+          <h2 style="font-family:var(--sans),var(--sans-zh);font-size:min(7.6vw,13vh);line-height:.94;letter-spacing:-.025em;font-weight:200;color:#fff">Core goals<br/>achieved.<br/><span style="font-style:italic;font-weight:300">R8/N7 remain.</span></h2>
+          <p style="font-size:max(18px,1.08vw);line-height:1.55;color:rgba(255,255,255,.82);font-weight:400;max-width:39ch">The main cuboid, metric, UI and persistence workflows are delivered; only the user-authentication-related R8 and N7 items are not fully closed.</p>
         </div>
         <div data-anim="signature" class="t-meta" style="color:rgba(255,255,255,.62);border-top:1px solid rgba(255,255,255,.22);padding-top:2vh;position:relative;z-index:1">Honest scope closure</div>
       </div>
       <div class="half" style="padding:5.6vh 3.6vw 4.4vh;justify-content:space-between">
-        <div class="chrome-min"><div class="l">STATUS SUMMARY</div><div class="r">ACHIEVED / QA / GAP</div></div>
+        <div class="chrome-min"><div class="l">STATUS SUMMARY</div><div class="r">ACHIEVED / REMAINING / OPEN ISSUES</div></div>
         <div data-anim="rules" style="display:grid;grid-template-columns:1fr;gap:1px;background:var(--grey-2)">
-          <div class="card-fill" style="padding:1.8vh 1.5vw"><div class="t-meta">ACHIEVED / SUBSTANTIALLY ACHIEVED</div><p class="t-body-sm">3D cuboid creation and manipulation, IoU/GIoU workflow, metrics display, random generation, save/load, viewport, toolbar, object panel and metrics panel.</p></div>
-          <div class="card-fill" style="padding:1.8vh 1.5vw"><div class="t-meta">FINAL POLISH / QA HARDENING</div><p class="t-body-sm">Scale and rotation consistency, scene loading validation, transform gizmo behaviour, error handling and status-message polish.</p></div>
-          <div class="card-fill" style="padding:1.8vh 1.5vw;border-top:2px solid var(--accent)"><div class="t-meta">REMAINING IN-SCOPE GAP</div><p class="t-body-sm">2D mode is not fully resolved yet, so it should be presented as a known limitation rather than hidden.</p></div>
+          <div class="card-fill" style="padding:1.8vh 1.5vw"><div class="t-meta">ACHIEVED / SUBSTANTIALLY ACHIEVED</div><p class="t-body-sm">3D cuboid creation and manipulation, IoU/GIoU workflow, metrics display, random generation, 2D/3D views, save/load, viewport, toolbar, object panel and metrics panel.</p></div>
+          <div class="card-fill" style="padding:1.8vh 1.5vw"><div class="t-meta">REMAINING SCOPE</div><p class="t-body-sm">R8 and N7 are not fully closed. These are the user-authentication-related RTM items, not the core visualisation workflow.</p></div>
+          <div class="card-fill" style="padding:1.8vh 1.5vw;border-top:2px solid var(--accent)"><div class="t-meta">CURRENT OPEN ISSUES</div><p class="t-body-sm">Open work is mostly performance, accessibility polish, and maintainability cleanup.</p></div>
         </div>
         <div data-anim="foot" class="t-meta" style="color:var(--text-helper)">Conclusion message: core delivery achieved, remaining work bounded.</div>
       </div>
@@ -1520,23 +1556,23 @@
 
 <section class="slide grey" data-layout="S20" data-animate="stacked-ledger">
   <div class="canvas-card">
-    <div class="chrome-min"><div class="l">Ryan · Teamwork Lesson</div><div class="r">14 / 16</div></div>
+    <div class="chrome-min"><div class="l">Ryan · Teamwork Lesson</div><div class="r">15 / 17</div></div>
     <div style="flex:1;padding:0;display:grid;grid-template-rows:auto 1fr;gap:3.4vh">
       <div data-anim="head" style="display:flex;flex-direction:column;gap:1.4vh">
         <div class="t-meta">SPECIFIC EVIDENCE / ANECDOTE</div>
-        <h2 class="h-xl" style="font-size:min(5.8vw,10.2vh)">Clear ownership mattered most when the team changed.</h2>
+        <h2 class="h-xl" style="font-size:min(5.8vw,10.2vh)">Traceable review notes improved collaboration.</h2>
       </div>
       <div data-anim="ledger" style="display:grid;grid-template-columns:55% 45%;gap:2.2vw;align-items:start">
         <div style="display:grid;grid-template-columns:1fr;gap:1px;background:var(--grey-2)">
-          <div class="card-fill" style="padding:2.1vh 1.6vw;display:grid;grid-template-columns:auto 1fr;gap:1.8vw;align-items:center"><div class="kpi-hero accent" style="font-size:min(6vw,9.5vh)">2</div><div><div class="t-meta">ACTIVE MEMBERS LAST YEAR</div><p class="t-body-sm">The project previously dropped to only two active members, forcing stronger shared awareness.</p></div></div>
-          <div class="card-fill" style="padding:2.1vh 1.6vw;display:grid;grid-template-columns:auto 1fr;gap:1.8vw;align-items:center"><div class="kpi-hero" style="font-size:min(6vw,9.5vh)">1</div><div><div class="t-meta">COMMUNICATION LOST THIS YEAR</div><p class="t-body-sm">The remaining team had to stay informed and support each other to avoid delays.</p></div></div>
-          <div class="card-fill" style="padding:2.1vh 1.6vw;display:grid;grid-template-columns:auto 1fr;gap:1.8vw;align-items:center;border-top:2px solid var(--accent)"><div class="kpi-hero accent" style="font-size:min(6vw,9.5vh)">29</div><div><div class="t-meta">ISSUES FIXED THIS REVIEW CYCLE</div><p class="t-body-sm">Review findings were converted into implementation items across UI, accessibility, state and interactions.</p></div></div>
+          <div class="card-fill" style="padding:2.1vh 1.6vw;display:grid;grid-template-columns:auto 1fr;gap:1.8vw;align-items:center"><div class="kpi-hero accent" style="font-size:min(6vw,9.5vh)">50+</div><div><div class="t-meta">RESOLVED REVIEW NOTES</div><p class="t-body-sm">Archived fixes gave the team a shared implementation record rather than informal memory.</p></div></div>
+          <div class="card-fill" style="padding:2.1vh 1.6vw;display:grid;grid-template-columns:auto 1fr;gap:1.8vw;align-items:center"><div class="kpi-hero" style="font-size:min(6vw,9.5vh)">8</div><div><div class="t-meta">AREAS COVERED</div><p class="t-body-sm">Metrics, ObjectTab, App state, Analyse, scene loading, accessibility, rendering and performance.</p></div></div>
+          <div class="card-fill" style="padding:2.1vh 1.6vw;display:grid;grid-template-columns:auto 1fr;gap:1.8vw;align-items:center;border-top:2px solid var(--accent)"><div class="kpi-hero accent" style="font-size:min(6vw,9.5vh)">1</div><div><div class="t-meta">TEAMWORK LESSON</div><p class="t-body-sm">Clear ownership plus traceable review notes produced better collaboration.</p></div></div>
         </div>
         <div class="card-fill" style="padding:2.4vh 1.8vw;display:flex;flex-direction:column;gap:1.4vh">
           <div class="t-meta">KEY MESSAGE</div>
-          <p class="t-body">Effective teamwork depended on understanding each other’s responsibilities and being prepared to support one another when needed.</p>
+          <p class="t-body">The strongest teamwork lesson was that issue tracking became a coordination tool: we did not just find problems; we converted them into fixed, archived and remaining work.</p>
           <div class="t-meta" style="margin-top:1vh">EXAMPLES FIXED</div>
-          <p class="t-body-sm">MetricsTab display behaviour, Analyse mode selection logic, Add Cuboid validation, keyboard shortcuts, accessibility roles and labels, responsive bars, clearer comparison status messages.</p>
+          <p class="t-body-sm">MetricsTab display behaviour, ObjectTab controls, App state, Analyse pair selection, scene loading, accessibility markup, rendering stability and performance-focused review items.</p>
         </div>
       </div>
     </div>
@@ -1545,47 +1581,48 @@
 
 <section class="slide" data-layout="S14" data-animate="loop-form">
   <div class="canvas-card">
-    <div class="chrome-min"><div class="l">Ryan · Project Management Lesson</div><div class="r">15 / 16</div></div>
+    <div class="chrome-min"><div class="l">Ryan · Project Management Lesson</div><div class="r">16 / 17</div></div>
     <div style="flex:1;padding:0;display:grid;grid-template-columns:42% 58%;gap:3vw;align-items:start">
       <div data-anim="left" style="display:flex;flex-direction:column;gap:2vh">
-        <div class="t-meta">RTM + REVIEW NOTES AS CONTROL SYSTEM</div>
-        <h2 class="h-xl" style="font-size:min(5.6vw,9.8vh)">Not every issue deserved the same priority.</h2>
+        <div class="t-meta">RTM + GANTT + RISK REGISTER + REVIEW NOTES</div>
+        <h2 class="h-xl" style="font-size:min(5.6vw,9.8vh)">Agile worked when it had concrete artefacts.</h2>
         <div class="card-fill" style="padding:2.2vh 1.6vw;border-top:2px solid var(--accent)">
           <div class="t-meta">KEY MESSAGE</div>
-          <p class="t-body">Effective project management meant using the RTM and review notes to control scope and prioritise risk.</p>
+          <p class="t-body">Effective project management meant using the RTM, Gantt chart, risk register and review notes as one control system.</p>
         </div>
         <div class="card-fill" style="padding:2.2vh 1.6vw">
-          <div class="t-meta">WHY AGILE FIT</div>
-          <p class="t-body-sm">The work involved uncertainty across 3D graphics, geometric calculation and interactive UI integration.</p>
+          <div class="t-meta">ISSUES ENCOUNTERED</div>
+          <p class="t-body-sm">Remaining work is bounded: R8/N7 plus performance, accessibility polish and maintainability cleanup.</p>
         </div>
       </div>
       <div data-anim="loop" style="display:grid;grid-template-rows:repeat(5,auto);gap:1px;background:var(--grey-2);align-self:stretch">
-        <div class="card-fill" style="padding:2.1vh 1.7vw;display:grid;grid-template-columns:auto 1fr;gap:1.4vw"><div class="kpi-thin-sm accent">RTM</div><div><div class="t-meta">CHECKLIST</div><p class="t-body-sm">Clarified required features and urgent tasks.</p></div></div>
-        <div class="card-fill" style="padding:2.1vh 1.7vw;display:grid;grid-template-columns:auto 1fr;gap:1.4vw"><div class="kpi-thin-sm">P0</div><div><div class="t-meta">CORRECTNESS / DATA INTEGRITY</div><p class="t-body-sm">Highest severity when data or core correctness is at risk.</p></div></div>
-        <div class="card-fill" style="padding:2.1vh 1.7vw;display:grid;grid-template-columns:auto 1fr;gap:1.4vw"><div class="kpi-thin-sm">P1</div><div><div class="t-meta">HIGH-PRIORITY UX / DATA RISK</div><p class="t-body-sm">Important risk without blocking all delivery.</p></div></div>
-        <div class="card-fill" style="padding:2.1vh 1.7vw;display:grid;grid-template-columns:auto 1fr;gap:1.4vw"><div class="kpi-thin-sm">P2/P3</div><div><div class="t-meta">POLISH / CLEANUP</div><p class="t-body-sm">Managed as refinement instead of being confused with core requirements.</p></div></div>
-        <div class="card-fill" style="padding:2.1vh 1.7vw;display:grid;grid-template-columns:auto 1fr;gap:1.4vw;border-top:2px solid var(--accent)"><div class="kpi-thin-sm accent">2D</div><div><div class="t-meta">MAJOR UNRESOLVED SCOPE ITEM</div><p class="t-body-sm">The team kept this visible rather than claiming the project was flawless.</p></div></div>
+        <div class="card-fill" style="padding:2.1vh 1.7vw;display:grid;grid-template-columns:auto 1fr;gap:1.4vw"><div class="kpi-thin-sm accent">RTM</div><div><div class="t-meta">SCOPE</div><p class="t-body-sm">Defined what must be delivered and which requirements the demo should prove.</p></div></div>
+        <div class="card-fill" style="padding:2.1vh 1.7vw;display:grid;grid-template-columns:auto 1fr;gap:1.4vw"><div class="kpi-thin-sm">GANTT</div><div><div class="t-meta">SCHEDULE</div><p class="t-body-sm">Tracked milestone timing and helped the team manage delivery pressure.</p></div></div>
+        <div class="card-fill" style="padding:2.1vh 1.7vw;display:grid;grid-template-columns:auto 1fr;gap:1.4vw"><div class="kpi-thin-sm">RISK</div><div><div class="t-meta">UNCERTAINTY</div><p class="t-body-sm">Recorded risks, owners and mitigations for technical and capacity issues.</p></div></div>
+        <div class="card-fill" style="padding:2.1vh 1.7vw;display:grid;grid-template-columns:auto 1fr;gap:1.4vw"><div class="kpi-thin-sm">NOTES</div><div><div class="t-meta">QUALITY</div><p class="t-body-sm">Converted review findings into prioritised implementation work.</p></div></div>
+        <div class="card-fill" style="padding:2.1vh 1.7vw;display:grid;grid-template-columns:auto 1fr;gap:1.4vw;border-top:2px solid var(--accent)"><div class="kpi-thin-sm accent">OPEN</div><div><div class="t-meta">BOUNDED REMAINING WORK</div><p class="t-body-sm">R8/N7 not fully closed; current open issues are mostly performance, accessibility and maintainability refinement.</p></div></div>
       </div>
     </div>
   </div>
 </section>
 
-<section class="slide grey" data-layout="S21" data-animate="tech-spec">
+<section class="slide accent" data-layout="SWISS-CLOSING-ASCII" data-animate="hero">
   <div class="canvas-card">
-    <div class="chrome-min"><div class="l">Appendix · RTM Demonstration Map</div><div class="r">16 / 16</div></div>
-    <div style="flex:1;padding:0;display:grid;grid-template-rows:auto 1fr auto;gap:3.2vh">
-      <div data-anim="head" style="display:flex;flex-direction:column;gap:1.4vh">
-        <div class="t-meta">Q&A SUPPORT · REQUIREMENT EVIDENCE</div>
-        <h2 class="h-xl" style="font-size:min(5.8vw,10.2vh)">Each demo segment maps back to user-facing requirements.</h2>
+    <canvas class="ascii-bg" aria-hidden="true"></canvas>
+    <div class="chrome-min">
+      <div class="l">GIoU Visualisation Tool · Closing</div>
+      <div class="r">17 / 17</div>
+    </div>
+    <div style="flex:1;padding:0;display:grid;grid-template-rows:auto 1fr auto;gap:2.6vh">
+      <div data-anim="kicker" class="t-meta" style="color:rgba(255,255,255,.78);letter-spacing:.22em">THANK YOU</div>
+      <h2 data-anim="title" style="align-self:center;font-family:var(--sans),var(--sans-zh);font-weight:200;font-size:min(10.4vw,18vh);line-height:.94;letter-spacing:-.025em;color:#fff">Questions<br/><span style="font-style:italic;font-weight:300">welcome.</span></h2>
+      <div data-anim="bottom" style="display:grid;grid-template-rows:auto auto;gap:1.6vh;border-top:1px solid rgba(255,255,255,.22);padding-top:2vh">
+        <div class="lead" style="max-width:58ch;color:rgba(255,255,255,.86);font-weight:300">We are happy to discuss the demo workflow, RTM coverage, remaining R8/N7 scope, and project management evidence.</div>
+        <div style="display:flex;justify-content:space-between;align-items:end;gap:2vw">
+          <div class="t-meta" style="color:rgba(255,255,255,.62)">Nate · Tim · Ryan</div>
+          <div class="t-meta" style="color:rgba(255,255,255,.62)">Final presentation · Q&A</div>
+        </div>
       </div>
-      <div data-anim="spec" style="display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--grey-2);align-self:start">
-        <div class="card-fill" style="padding:1.8vh 1.1vw"><div class="t-meta">R2 · NATE</div><p class="t-body-sm">Create/manipulate cuboids: add, select, move, rotate, scale.</p></div>
-        <div class="card-fill" style="padding:1.8vh 1.1vw"><div class="t-meta">R1 · TIM</div><p class="t-body-sm">IoU/GIoU calculation through Analyse selected pair.</p></div>
-        <div class="card-fill" style="padding:1.8vh 1.1vw"><div class="t-meta">R3/R7 · TIM</div><p class="t-body-sm">Display results and show live update during transformation.</p></div>
-        <div class="card-fill" style="padding:1.8vh 1.1vw"><div class="t-meta">R6 · RYAN</div><p class="t-body-sm">Save/load scene workflow with restored object data.</p></div>
-        <div class="card-fill" style="padding:1.8vh 1.1vw;border-top:2px solid var(--accent)"><div class="t-meta">GAP · RYAN</div><p class="t-body-sm">2D mode remains unresolved and is disclosed as remaining scope.</p></div>
-      </div>
-      <div data-anim="hero" class="t-meta" style="color:var(--accent)">Thank you. We are ready for questions.</div>
     </div>
   </div>
 </section>
