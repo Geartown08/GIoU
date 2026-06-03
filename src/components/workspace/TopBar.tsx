@@ -1,9 +1,12 @@
 import type { UiScaleOverride } from '../../hooks/useUiScale';
 import type { Theme } from '../../hooks/useTheme';
 
-const TOP_ACTIONS = ['New', 'Open', 'Save'] as const;
+const TOP_ACTIONS = ['New', 'Example', 'Open', 'Save'] as const;
 const UI_SCALE_OPTIONS: { value: UiScaleOverride; label: string }[] = [
   { value: 'auto', label: 'Auto' },
+  { value: '0.25', label: '25%' },
+  { value: '0.5', label: '50%' },
+  { value: '0.75', label: '75%' },
   { value: '1', label: '100%' },
   { value: '1.1', label: '110%' },
   { value: '1.15', label: '115%' },
@@ -19,6 +22,7 @@ interface TopBarProps {
   onUiScaleChange: (scale: UiScaleOverride) => void;
   theme: Theme;
   onToggleTheme: () => void;
+  onHelp: () => void;
 }
 
 export function TopBar({
@@ -28,6 +32,7 @@ export function TopBar({
   onUiScaleChange,
   theme,
   onToggleTheme,
+  onHelp,
 }: TopBarProps) {
   const nextThemeLabel = theme === 'night' ? 'Day' : 'Night';
   return (
@@ -68,6 +73,15 @@ export function TopBar({
               {action}
             </button>
           ))}
+          <button
+            type="button"
+            className="topbar-button"
+            onClick={onHelp}
+            aria-label="Open help"
+            title="Open help"
+          >
+            Help
+          </button>
         </nav>
       </div>
     </header>

@@ -7,8 +7,10 @@ import { ViewportPanel } from './ViewportPanel';
 import { RightSidebar } from './RightSidebar';
 import { BottomStatusBar } from './BottomStatusBar';
 import { AnalysePanel } from './AnalysePanel';
+import { HelpDialog } from './HelpDialog';
 import { saveScene } from '../../utils/saveScene';
 import { openAndLoadScene } from '../../utils/loadScene';
+import { createDefaultScene } from '../../utils/defaultScene';
 import { useUiScale } from '../../hooks/useUiScale';
 import { useTheme } from '../../hooks/useTheme';
 import '../../styles/workspace.css';
@@ -38,6 +40,9 @@ interface WorkspaceLayoutProps {
   onAnalysePanelClose: () => void;
   analyseCalc: CalculationData | null;
   onUpdate: (id: string, updates: Partial<CuboidData>) => void;
+  helpOpen: boolean;
+  onHelpOpen: () => void;
+  onHelpClose: () => void;
 }
 
 export function WorkspaceLayout({
@@ -64,7 +69,10 @@ export function WorkspaceLayout({
   analysePanelOpen,
   onAnalysePanelClose,
   analyseCalc,
-  onUpdate
+  onUpdate,
+  helpOpen,
+  onHelpOpen,
+  onHelpClose,
 }: WorkspaceLayoutProps) {
   // ← useState for activeTool removed, it lives in App.tsx now
   const [activeTab, setActiveTab] = useState<RightPanelTab>('object');
@@ -98,6 +106,10 @@ export function WorkspaceLayout({
         if (!confirmDiscardScene()) break;
         onLoadScene([]);
         break;
+      case 'example':
+        if (!confirmDiscardScene()) break;
+        onLoadScene(createDefaultScene());
+        break;
       default:
         console.log(`[TopBar] unhandled action: ${action}`);
     }
@@ -116,6 +128,7 @@ export function WorkspaceLayout({
         onUiScaleChange={setScaleOverride}
         theme={theme}
         onToggleTheme={toggleTheme}
+        onHelp={onHelpOpen}
       />
       <div className="workspace-body">
         <LeftToolbar activeTool={activeTool} onToolChange={handleToolChange} />
@@ -158,6 +171,7 @@ export function WorkspaceLayout({
         onToggleViewMode={onToggleViewMode}
         statusMessage={statusMessage}
       />
+      <HelpDialog open={helpOpen} onClose={onHelpClose} />
     </div>
   );
 }

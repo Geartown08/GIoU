@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
 
-export type UiScaleOverride = 'auto' | '1' | '1.1' | '1.15' | '1.25' | '1.5' | '1.75';
+export type UiScaleOverride = 'auto' | '0.25' | '0.5' | '0.75' | '1' | '1.1' | '1.15' | '1.25' | '1.5' | '1.75';
 
 const STORAGE_KEY = 'workspace-ui-scale';
-const VALID_OVERRIDES: UiScaleOverride[] = ['auto', '1', '1.1', '1.15', '1.25', '1.5', '1.75'];
+const VALID_OVERRIDES: UiScaleOverride[] = ['auto', '0.25', '0.5', '0.75', '1', '1.1', '1.15', '1.25', '1.5', '1.75'];
 
 function getStoredOverride(): UiScaleOverride {
   const stored = window.localStorage.getItem(STORAGE_KEY);

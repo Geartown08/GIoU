@@ -4,6 +4,7 @@ import { SceneCanvas } from './components/scene/SceneCanvas';
 import { useCuboids, createRandomCuboid } from './hooks/useCuboids';
 import { useSelection } from './hooks/useSelection';
 import { useCalculations } from './hooks/useCalcutlations';
+import { useHelpDialog } from './hooks/useHelpDialog';
 import type { CuboidData, TransformMode } from './types/Cuboid';
 import type { ToolMode, ViewMode } from './types/Workspace';
 import './App.css';
@@ -24,6 +25,10 @@ function App() {
   const objectAddShortcutRef = useRef<(() => void) | null>(null);
 
   const showStatus = useCallback((msg: string) => setStatusMessage(msg), []);
+
+  const { helpOpen, openHelp, closeHelp } = useHelpDialog();
+  const helpOpenRef = useRef<boolean>(helpOpen);
+  useEffect(() => { helpOpenRef.current = helpOpen; }, [helpOpen]);
 
   const {
     cuboids, setCuboids,
@@ -175,6 +180,9 @@ function App() {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+      // While the Help dialog is open, leave keyboard shortcuts (including Esc)
+      // to the native <dialog>, so users don't accidentally edit the scene.
+      if (helpOpenRef.current) return;
       const key = e.key.toLowerCase();
       if (key === 'a') {
         if (objectAddShortcutRef.current) objectAddShortcutRef.current();
@@ -225,6 +233,9 @@ function App() {
       onAnalysePanelClose={handleAnalysePanelClose}
       analyseCalc={calculations}
       onUpdate={handleUpdate}
+      helpOpen={helpOpen}
+      onHelpOpen={openHelp}
+      onHelpClose={closeHelp}
     />
   );
 }

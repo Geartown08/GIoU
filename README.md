@@ -18,7 +18,8 @@ React Three Fiber, and Drei. There is no backend service.
   controls.
 - **Independent Analyse workflow** - the analysed pair is separate from the
   active transform selection, so the Analyse popup can stay open while another
-  cuboid is moved, rotated, or scaled.
+  cuboid is moved, rotated, or scaled. Click two cuboids one after another in
+  Analyse mode; no Shift or Ctrl key is required.
 - **Live IoU/GIoU metrics** - 2D and 3D oriented bounding-box metrics update
   from the selected Analyse pair.
 - **Formula rendering** - Analyse and Explain views use KaTeX for clearer
@@ -29,6 +30,12 @@ React Three Fiber, and Drei. There is no backend service.
   scale presets.
 - **Scene files** - save and load scenes as JSON.
 - **View aids** - grid, coordinate axes, origin marker, and a view cube gizmo.
+- **First-run guide** - a Quick Start dialog opens on first visit; reopen it any
+  time from the **Help** button in the top bar.
+- **Default example scene** - click **Example** in the top bar to load two
+  overlapping cuboids (`Reference Box` and `Prediction Box`) so
+  IoU/GIoU/Explain and the intersection highlight are easy to try. The app
+  still starts with an empty scene, and the example does not auto-enter Analyse.
 
 ## Known Priority Issue
 
