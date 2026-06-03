@@ -1,7 +1,6 @@
 import { useState, useCallback, useRef } from 'react';
 import type { CuboidData } from '../types/Cuboid';
 import type { ViewMode } from '../types/Workspace';
-import { createDefaultScene, DEFAULT_SCENE_CUBOID_COUNT } from '../utils/defaultScene';
 
 let nextId = 1;
 
@@ -35,9 +34,9 @@ export function createRandomCuboid(id: string): CuboidData {
 }
 
 export function useCuboids(viewMode: ViewMode, showStatus: (msg: string) => void) {
-  const [cuboids, setCuboids] = useState<CuboidData[]>(createDefaultScene);
+  const [cuboids, setCuboids] = useState<CuboidData[]>([]);
   const selectedIdsRef = useRef<string[]>([]);
-  const positionCounterRef = useRef(DEFAULT_SCENE_CUBOID_COUNT);
+  const positionCounterRef = useRef(0);
 
   const handleAdd = useCallback((data: Omit<CuboidData, 'id' | 'position' | 'rotation' | 'scale'>) => {
     const num = nextId;

@@ -74,7 +74,7 @@ export function HelpDialog({ open, onClose }: HelpDialogProps) {
           <section className="help-section">
             <h3 className="help-section-title">Quick Start</h3>
             <ol className="help-list">
-              <li>Start with the loaded example, add cuboids from the Object panel, or use Random (Q).</li>
+              <li>Click Example in the top bar to load the demo scene, add cuboids from the Object panel, or use Random (Q).</li>
               <li>Click Analyse or press M.</li>
               <li>Click two cuboids one after another. No Shift or Ctrl key is required.</li>
               <li>Read the live IoU and GIoU metrics in the Analyse popup.</li>
