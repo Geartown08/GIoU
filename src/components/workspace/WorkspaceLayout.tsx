@@ -10,6 +10,7 @@ import { AnalysePanel } from './AnalysePanel';
 import { HelpDialog } from './HelpDialog';
 import { saveScene } from '../../utils/saveScene';
 import { openAndLoadScene } from '../../utils/loadScene';
+import { createDefaultScene } from '../../utils/defaultScene';
 import { useUiScale } from '../../hooks/useUiScale';
 import { useTheme } from '../../hooks/useTheme';
 import '../../styles/workspace.css';
@@ -104,6 +105,10 @@ export function WorkspaceLayout({
       case 'new':
         if (!confirmDiscardScene()) break;
         onLoadScene([]);
+        break;
+      case 'example':
+        if (!confirmDiscardScene()) break;
+        onLoadScene(createDefaultScene());
         break;
       default:
         console.log(`[TopBar] unhandled action: ${action}`);

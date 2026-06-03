@@ -32,6 +32,11 @@ React Three Fiber, and Drei. There is no backend service.
 - **View aids** - grid, coordinate axes, origin marker, and a view cube gizmo.
 - **First-run guide** - a Quick Start dialog opens on first visit; reopen it any
   time from the **Help** button in the top bar.
+- **Default example scene** - the app boots with two overlapping cuboids
+  (`Reference Box` and `Prediction Box`) so IoU/GIoU/Explain and the
+  intersection highlight are immediately usable. Click **Example** in the top
+  bar at any time to restore them. The example does not auto-enter Analyse -
+  click `Analyse` (or press `M`) and pick the two cuboids in turn.
 
 ## Known Priority Issue
 

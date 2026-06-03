@@ -1,7 +1,7 @@
 import type { UiScaleOverride } from '../../hooks/useUiScale';
 import type { Theme } from '../../hooks/useTheme';
 
-const TOP_ACTIONS = ['New', 'Open', 'Save'] as const;
+const TOP_ACTIONS = ['New', 'Example', 'Open', 'Save'] as const;
 const UI_SCALE_OPTIONS: { value: UiScaleOverride; label: string }[] = [
   { value: 'auto', label: 'Auto' },
   { value: '0.25', label: '25%' },
