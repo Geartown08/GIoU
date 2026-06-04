@@ -123,50 +123,36 @@ pair.
 
 ```text
 src/
-  App.tsx                          Root state and workspace orchestration
-  main.tsx                         React entry point
-  index.css                        Global CSS variables and base styles
-  styles/
-    workspace.css                  Workspace layout, theme, and control styles
-  components/
-    Cuboid.tsx                     Cuboid mesh, selection outlines, transform controls
-    CsgIntersectionLayer.tsx       Builds overlap-highlight pairs
-    CsgIntersectionHighlight.tsx   CSG intersection mesh generation
-    CsgIntersectionMaterials.ts    Shared intersection materials
-    SceneGuides.tsx                Axes and origin marker
-    ViewCubeGizmo.tsx              View cube direction arrows
-    CamerRig.tsx                   Camera mode switching helper
-    scene/
-      SceneCanvas.tsx              React Three Fiber canvas scene
-    workspace/
-      WorkspaceLayout.tsx          App shell layout
-      TopBar.tsx                   Theme, UI scale, New/Open/Save
-      LeftToolbar.tsx              Tool buttons and shortcuts
-      ViewportPanel.tsx            Canvas container
-      RightSidebar.tsx             Object and Explain tabs
-      AnalysePanel.tsx             Floating Analyse popup
-      MathFormula.tsx              KaTeX rendering wrapper
-      BottomStatusBar.tsx          Status and view controls
-      tabs/
-        ObjectTab.tsx              Cuboid creation, list, rename, delete
-        ExplainTab.tsx             GIoU explanation and derivation
-  hooks/
-    useCuboids.ts                  Cuboid collection, add/delete/update/load
-    useSelection.ts                Active selection and Analyse pair selection
-    useCalcutlations.ts            Analyse metric derivation hook
-    useTheme.ts                    Day/night theme persistence
-    useUiScale.ts                  UI scale persistence and resolution
-  types/
-    Cuboid.ts                      Cuboid and transform types
-    Workspace.ts                   Tool, view, and calculation types
-    Scenefile.ts                   Scene file schema
-  utils/
-    giou.ts                        Shared IoU/GIoU types and legacy AABB helpers
-    giouOriented.ts                Oriented 2D/3D IoU/GIoU implementation
-    cuboidBoxConvert.ts            Volume/surface and conversion helpers
-    metricFormula.ts               Formula text and formatting helpers
-    saveScene.ts                   JSON scene export
-    loadScene.ts                   JSON scene import and validation
+├── App.tsx                          # Root component — canvas and cuboid state
+├── components/
+│   ├── Cuboid.tsx                   # Single cuboid mesh with transform controls
+│   ├── CsgIntersectionLayer.tsx     # Manages intersection highlight pairs
+│   ├── CsgIntersectionHighlight.tsx # CSG-based overlap visualisation
+│   ├── SceneGuides.tsx              # Axes and origin markers
+│   ├── ViewCubeGizmo.tsx            # Orientation cube (top-right corner)
+│   └── workspace/
+│       ├── WorkspaceLayout.tsx      # Five-panel layout shell
+│       ├── TopBar.tsx               # File menu (New / Open / Save)
+│       ├── LeftToolbar.tsx          # Tool mode buttons
+│       ├── ViewportPanel.tsx        # Canvas container
+│       ├── RightSidebar.tsx         # Object / Metrics / Explain tabs
+│       ├── BottomStatusBar.tsx      # Status bar
+│       └── tabs/
+│           ├── ObjectTab.tsx        # Add, rename, delete, colour cuboids
+│           ├── MetricsTab.tsx       # IoU / GIoU readout for selected pair
+│           └── ExplainTab.tsx       # Contextual documentation
+├── types/
+│   ├── Cuboid.ts                    # CuboidData interface and transform modes
+│   ├── Workspace.ts                 # Tool modes, view modes, UI state types
+│   └── Scenefile.ts                 # Scene file format (v1)
+├── utils/
+│   ├── giou.ts                      # Axis-aligned IoU / GIoU (2D and 3D) - Original GIoU calculation as per paper from Stanford.
+│   ├── giouOriented.ts              # IoU / GIoU for rotated bounding boxes - this is an adaptation on the original GIoU calculations to allow for rotations.
+│   ├── cuboidBoxConvert.ts          # Data conversion helpers
+│   ├── saveScene.ts                 # JSON scene export
+│   └── loadScene.ts                 # JSON scene import
+└── hooks/
+    └── useUiScale.ts                # Responsive UI scaling
 ```
 
 ## Metrics
